@@ -86,7 +86,7 @@ Docker itself must be installed separately.
 Create the local environment file:
 
 ```bash
-cp .env.example .env
+php -r "copy('.env.example', '.env');"
 ```
 
 The `.env` file contains local configuration such as:
