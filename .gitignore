@@ -1,0 +1,39 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Composer
+/vendor/
+
+# Yii runtime
+/apps/*/runtime/*
+!/apps/*/runtime/.gitignore
+
+# Yii published assets
+/apps/*/web/assets/*
+!/apps/*/web/assets/.gitignore
+
+# Compiled Tailwind CSS
+/apps/*/web/css/globals.css
+
+# IDE / editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Node tooling cache, in case any tool creates them
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Mise local overrides/cache
+.mise.local.toml

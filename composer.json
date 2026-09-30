@@ -1,0 +1,39 @@
+{
+	"name": "cinelis/cinelis",
+	"description": "Cinelis cinema management system",
+	"type": "project",
+	"require": {
+		"php": "^8.4",
+		"yiisoft/yii2": "~2.0.54",
+		"yiisoft/yii2-symfonymailer": "~4.0.0",
+		"vlucas/phpdotenv": "^5.7"
+	},
+	"require-dev": {
+		"yiisoft/yii2-debug": "~2.1.0",
+		"yiisoft/yii2-gii": "~2.2.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"common\\": "packages/common/",
+			"frontend\\": "apps/frontend/",
+			"backend\\": "apps/backend/",
+			"api\\": "apps/api/",
+			"console\\": "apps/console/"
+		}
+	},
+	"config": {
+		"process-timeout": 1800,
+		"allow-plugins": {
+			"yiisoft/yii2-composer": true
+		},
+		"fxp-asset": {
+			"enabled": false
+		}
+	},
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://asset-packagist.org"
+		}
+	]
+}

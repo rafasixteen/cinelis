@@ -1,0 +1,98 @@
+@layer components {
+	.site-header {
+		@apply border-b border-border;
+
+		position: sticky;
+		top: 0;
+		z-index: 50;
+
+		background-color: color-mix(
+			in srgb,
+			var(--background) 88%,
+			transparent
+		);
+
+		backdrop-filter: blur(16px);
+
+		.container {
+			width: min(100%, 80rem);
+			height: 4.5rem;
+
+			margin-inline: auto;
+			padding-inline: 2rem;
+
+			display: flex;
+			align-items: center;
+			gap: 2rem;
+		}
+
+		.brand {
+			font-size: 1.35rem;
+			font-weight: 800;
+			letter-spacing: -0.04em;
+		}
+
+		.nav {
+			display: flex;
+			align-items: center;
+			gap: 1.5rem;
+
+			margin-left: 2rem;
+		}
+
+		.link {
+			@apply text-muted-foreground;
+
+			font-size: 0.875rem;
+			font-weight: 500;
+
+			transition: color 150ms ease;
+
+			&:hover {
+				@apply text-foreground;
+			}
+		}
+
+		.actions {
+			margin-left: auto;
+		}
+
+		.login {
+			@apply border border-border bg-secondary text-secondary-foreground;
+
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+
+			height: 2.5rem;
+			padding-inline: 1rem;
+
+			border-radius: 0.5rem;
+
+			font-size: 0.875rem;
+			font-weight: 600;
+
+			transition:
+				background-color 150ms ease,
+				border-color 150ms ease;
+
+			&:hover {
+				border-color: color-mix(
+					in srgb,
+					var(--foreground) 25%,
+					var(--border)
+				);
+			}
+		}
+
+		@media (max-width: 640px) {
+			.container {
+				padding-inline: 1.25rem;
+			}
+
+			.nav {
+				display: none;
+			}
+		}
+	}
+}

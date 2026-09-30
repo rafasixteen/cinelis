@@ -1,0 +1,4 @@
+name: cinelis_dev
+
+include:
+    - services/postgres.yml

@@ -1,0 +1,16 @@
+[tool_alias]
+php = "github:adwinying/php"
+
+[tools]
+php = "8.4"
+
+make = "latest"
+node = "24"
+
+"github:pvolok/dekit" = "latest"
+
+"npm:prettier" = "3.6.2"
+"npm:@tailwindcss/cli" = "4.3.3"
+
+[env]
+_.file = ".env"
