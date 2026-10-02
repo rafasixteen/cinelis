@@ -1,0 +1,195 @@
+@layer components {
+	.sidebar {
+		background:
+			radial-gradient(circle at 20% 0%, rgb(167 111 24 / 14%), transparent 26rem),
+			var(--sidebar);
+		color: var(--sidebar-foreground);
+
+		position: sticky;
+		top: 0;
+		height: 100vh;
+		display: flex;
+		flex-direction: column;
+		padding: 0 1rem 1rem;
+
+		.sidebar-brand {
+			height: 5rem;
+			display: flex;
+			align-items: center;
+			padding-inline: 0.5rem;
+			border-bottom: 1px solid rgb(255 255 255 / 8%);
+		}
+
+		.brand {
+			display: flex;
+			align-items: center;
+			gap: 0.75rem;
+			font-size: 1rem;
+			font-weight: 750;
+			letter-spacing: -0.02em;
+		}
+
+		.brand-mark {
+			width: 2.25rem;
+			height: 2.25rem;
+			display: grid;
+			place-items: center;
+			border-radius: 0.65rem;
+			background: var(--primary);
+			color: var(--primary-foreground);
+			font-size: 1.1rem;
+			font-weight: 850;
+		}
+
+		.brand small {
+			display: block;
+			margin-top: 0.15rem;
+			color: var(--sidebar-muted);
+			font-size: 0.65rem;
+			font-weight: 650;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+		}
+
+		.sidebar-nav {
+			flex: 1;
+			padding-top: 1.25rem;
+		}
+
+		.nav-label {
+			margin: 0 0 0.5rem;
+			padding-inline: 0.75rem;
+			color: #858b98;
+			font-size: 0.65rem;
+			font-weight: 750;
+			letter-spacing: 0.11em;
+			text-transform: uppercase;
+		}
+
+		.management-label {
+			margin-top: 1.75rem;
+		}
+
+		.nav-link {
+			display: flex;
+			align-items: center;
+			gap: 0.8rem;
+			height: 2.75rem;
+			padding-inline: 0.75rem;
+			border-radius: 0.55rem;
+			color: #abb0bc;
+			font-size: 0.85rem;
+			font-weight: 560;
+			transition: background-color 150ms ease, color 150ms ease;
+
+			& + .nav-link {
+				margin-top: 0.2rem;
+			}
+
+			&:hover {
+				background: rgb(255 255 255 / 5%);
+				color: var(--sidebar-foreground);
+			}
+
+			&.active {
+				background: rgb(167 111 24 / 17%);
+				color: #e9bd6d;
+			}
+
+			&.disabled {
+				cursor: not-allowed;
+				color: #8f95a2;
+
+				&:hover {
+					background: transparent;
+					color: #8f95a2;
+				}
+			}
+
+			svg {
+				width: 1.1rem;
+				height: 1.1rem;
+				flex: 0 0 auto;
+				fill: currentColor;
+			}
+		}
+
+		.sidebar-footer {
+			display: flex;
+			align-items: center;
+			gap: 0.7rem;
+			padding: 0.9rem 0.65rem 0;
+			border-top: 1px solid rgb(255 255 255 / 8%);
+		}
+
+		.venue-mark {
+			width: 2rem;
+			height: 2rem;
+			display: grid;
+			place-items: center;
+			border: 1px solid rgb(255 255 255 / 10%);
+			border-radius: 50%;
+			background: rgb(255 255 255 / 6%);
+			font-size: 0.68rem;
+			font-weight: 750;
+		}
+
+		.sidebar-footer strong,
+		.sidebar-footer span {
+			display: block;
+		}
+
+		.sidebar-footer strong {
+			font-size: 0.76rem;
+			font-weight: 650;
+		}
+
+		.sidebar-footer span {
+			margin-top: 0.15rem;
+			color: var(--sidebar-muted);
+			font-size: 0.65rem;
+		}
+
+		@media (max-width: 900px) {
+			position: relative;
+			height: auto;
+			padding: 0;
+
+			.sidebar-brand {
+				height: 4.25rem;
+				padding-inline: 1.25rem;
+			}
+
+			.sidebar-nav {
+				display: flex;
+				gap: 0.35rem;
+				overflow-x: auto;
+				padding: 0.65rem 1rem;
+			}
+
+			.nav-label,
+			.sidebar-footer {
+				display: none;
+			}
+
+			.nav-link {
+				flex: 0 0 auto;
+				height: 2.4rem;
+
+				& + .nav-link {
+					margin-top: 0;
+				}
+			}
+		}
+
+		@media (max-width: 560px) {
+			.nav-link {
+				padding-inline: 0.7rem;
+
+				span {
+					display: none;
+				}
+			}
+		}
+	}
+}
