@@ -15,8 +15,8 @@
 	"autoload": {
 		"psr-4": {
 			"common\\": "packages/common/",
-			"frontend\\": "apps/frontend/",
-			"backend\\": "apps/backend/",
+			"frontoffice\\": "apps/frontoffice/",
+			"backoffice\\": "apps/backoffice/",
 			"api\\": "apps/api/",
 			"console\\": "apps/console/"
 		}

@@ -1,0 +1,147 @@
+@layer components {
+	.topbar {
+		position: sticky;
+		top: 0;
+		z-index: 30;
+		height: 5rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 2rem;
+		padding-inline: clamp(1.25rem, 3vw, 2.5rem);
+		border-bottom: 1px solid var(--border);
+		background: rgb(255 255 255 / 88%);
+		backdrop-filter: blur(16px);
+
+		.topbar-context,
+		.topbar-title {
+			margin: 0;
+		}
+
+		.topbar-context {
+			color: var(--muted-foreground);
+			font-size: 0.67rem;
+			font-weight: 650;
+			letter-spacing: 0.04em;
+		}
+
+		.topbar-title {
+			margin-top: 0.1rem;
+			font-size: 1rem;
+			font-weight: 750;
+			letter-spacing: -0.025em;
+		}
+
+		.topbar-actions,
+		.profile {
+			display: flex;
+			align-items: center;
+		}
+
+		.topbar-actions {
+			gap: 1.25rem;
+		}
+
+		.icon-button {
+			position: relative;
+			width: 2.4rem;
+			height: 2.4rem;
+			display: grid;
+			place-items: center;
+			border: 1px solid var(--border);
+			border-radius: 50%;
+			background: var(--card);
+			color: #636874;
+
+			svg {
+				width: 1.05rem;
+				height: 1.05rem;
+				fill: currentColor;
+			}
+
+			&.disabled {
+				background: #f1f2f4;
+				color: #747985;
+				cursor: not-allowed;
+
+				.notification-dot {
+					display: none;
+				}
+			}
+		}
+
+		.notification-dot {
+			position: absolute;
+			top: 0.35rem;
+			right: 0.35rem;
+			width: 0.42rem;
+			height: 0.42rem;
+			border: 2px solid white;
+			border-radius: 50%;
+			background: #c84e42;
+		}
+
+		.profile {
+			gap: 0.65rem;
+			padding-left: 1.25rem;
+			border-left: 1px solid var(--border);
+		}
+
+		.avatar {
+			width: 2.35rem;
+			height: 2.35rem;
+			display: grid;
+			place-items: center;
+			border-radius: 50%;
+			background: #292d37;
+			color: #f3d59e;
+			font-size: 0.7rem;
+			font-weight: 750;
+		}
+
+		.profile-copy strong,
+		.profile-copy span {
+			display: block;
+		}
+
+		.profile-copy strong {
+			font-size: 0.77rem;
+			font-weight: 680;
+		}
+
+		.profile-copy span {
+			margin-top: 0.15rem;
+			color: var(--muted-foreground);
+			font-size: 0.65rem;
+		}
+
+		.chevron {
+			width: 0.95rem;
+			height: 0.95rem;
+			margin-left: 0.25rem;
+			fill: #8d919b;
+		}
+
+		@media (max-width: 900px) {
+			position: relative;
+		}
+
+		@media (max-width: 560px) {
+			height: 4.25rem;
+			padding-inline: 1rem;
+
+			.profile-copy,
+			.chevron {
+				display: none;
+			}
+
+			.topbar-actions {
+				gap: 0.65rem;
+			}
+
+			.profile {
+				padding-left: 0.65rem;
+			}
+		}
+	}
+}
