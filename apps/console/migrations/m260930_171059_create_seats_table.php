@@ -7,10 +7,10 @@ class m260930_171059_create_seats_table extends Migration
     public function safeUp()
     {
         $this->createTable('seats', [
-            'id' => 'uuid PRIMARY KEY DEFAULT uuidv7()',
-            'room_id' => 'uuid NOT NULL REFERENCES rooms(id)',
-            'row' => 'varchar(10) NOT NULL',
-            'number' => 'integer NOT NULL',
+            'id' => 'UUID PRIMARY KEY DEFAULT uuidv7()',
+            'room_id' => 'UUID NOT NULL REFERENCES rooms(id)',
+            'row' => 'TEXT NOT NULL',
+            'number' => 'INTEGER NOT NULL',
         ]);
 
         $this->createIndex(
