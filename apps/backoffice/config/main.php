@@ -10,7 +10,7 @@ return [
 		'request' => [
 			'cookieValidationKey' => $_ENV['BACKOFFICE_COOKIE_VALIDATION_KEY'],
 		],
-		'db' => require dirname(__DIR__, 3) . '/packages/common/config/db.php',
+		'db' => require dirname(__DIR__, 3) . '/common/config/db.php',
 		'urlManager' => [
 			'enablePrettyUrl' => true,
 			'showScriptName' => false,

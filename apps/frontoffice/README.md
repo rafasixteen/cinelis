@@ -40,7 +40,7 @@ controllers/
 
 They should contain HTTP and presentation orchestration only.
 
-Business logic shared with other applications belongs in `packages/common`.
+Business logic shared with other applications belongs in `common`.
 
 ### Views
 

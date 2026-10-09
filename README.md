@@ -12,8 +12,7 @@ cine-lis/
 │   ├── console/
 │   ├── frontoffice/
 │   └── mobile/
-├── packages/
-│   └── common/
+├── common/
 ├── infra/
 ├── composer.json
 ├── composer.lock
@@ -32,7 +31,7 @@ cine-lis/
 
 ### Shared code
 
-[`packages/common`](packages/common/README.md) contains PHP code shared between the PHP applications.
+[`common`](common/README.md) contains PHP code shared between the PHP applications.
 
 This includes:
 
@@ -234,7 +233,7 @@ Do not place shared business logic directly in frontoffice, backoffice, or API c
 Shared business logic belongs under:
 
 ```text
-packages/common/
+common/
 ```
 
 ### Views

@@ -37,7 +37,7 @@ Controllers and views should contain backoffice-specific presentation logic.
 Shared business rules and persistence logic should live in:
 
 ```text
-packages/common/
+common/
 ```
 
 ## Development
