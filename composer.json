@@ -14,7 +14,6 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"common\\": "packages/common/",
 			"frontoffice\\": "apps/frontoffice/",
 			"backoffice\\": "apps/backoffice/",
 			"api\\": "apps/api/",
