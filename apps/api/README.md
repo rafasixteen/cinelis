@@ -15,7 +15,7 @@ Business logic should not be duplicated in API controllers.
 Shared application and domain logic belongs in:
 
 ```text
-packages/common/
+common/
 ```
 
 ## Structure
