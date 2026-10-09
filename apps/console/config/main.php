@@ -5,7 +5,7 @@ return [
 	'basePath' => dirname(__DIR__),
 	'controllerNamespace' => 'console\controllers',
 	'components' => [
-		'db' => require dirname(__DIR__, 3) . '/packages/common/config/db.php',
+		'db' => require dirname(__DIR__, 3) . '/common/config/db.php',
 	],
 	'controllerMap' => [
 		'migrate' => [
