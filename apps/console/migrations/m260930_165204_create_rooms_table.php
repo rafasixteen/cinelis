@@ -7,8 +7,9 @@ class m260930_165204_create_rooms_table extends Migration
     public function safeUp()
     {
         $this->createTable('rooms', [
-            'id' => 'uuid PRIMARY KEY DEFAULT uuidv7()',
-            'name' => 'varchar(100) NOT NULL',
+            'id' => 'UUID PRIMARY KEY DEFAULT uuidv7()',
+            'name' => 'TEXT NOT NULL',
+            'layout' => 'JSONB',
         ]);
     }
 
