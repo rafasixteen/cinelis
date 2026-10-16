@@ -1,0 +1,1095 @@
+openapi: 3.1.0
+info:
+  title: CineLis API
+  version: 1.0.0
+  description: 'API REST utilizada pela aplicação Android do CineLis.
+
+
+    O Frontoffice e o Backoffice são aplicações Yii2 server-rendered e acedem diretamente à camada de
+    modelos/serviços e à base de dados. Esta API existe especificamente para permitir à aplicação Android
+    registar e autenticar clientes, consultar filmes e sessões, selecionar lugares, efetuar compras e
+    consultar bilhetes.'
+servers:
+- url: https://api.cinelis.pt/v1
+  description: Produção
+- url: http://localhost:8080/v1
+  description: Desenvolvimento local
+tags:
+- name: Authentication
+  description: Autenticação da aplicação móvel.
+- name: Movies
+  description: Consulta dos filmes disponíveis.
+- name: Sessions
+  description: Consulta de sessões e lugares.
+- name: Seat Holds
+  description: Reserva e libertação temporária de lugares durante o checkout.
+- name: Orders
+  description: Finalização de compras e consulta do histórico do cliente.
+- name: Tickets
+  description: Consulta dos bilhetes emitidos.
+paths:
+  /auth/login:
+    post:
+      tags:
+      - Authentication
+      summary: Autenticar cliente
+      description: "Valida o email e a palavra-passe do cliente e cria uma sessão de API.\n\nO token devolvido\
+        \ deve ser enviado nos pedidos protegidos:\n\n```bash\ncurl -H \"Authorization: Bearer <token>\"\
+        \ \\\n  https://api.cinelis.pt/v1/users/me\n```\n"
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Autenticação efetuada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /auth/logout:
+    post:
+      tags:
+      - Authentication
+      summary: Terminar sessão
+      description: "Revoga o token Bearer utilizado no pedido.\n\n```bash\ncurl -X POST \\\n  -H \"Authorization:\
+        \ Bearer <token>\" \\\n  https://api.cinelis.pt/v1/auth/logout\n```\n"
+      operationId: logout
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: Sessão terminada.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /movies:
+    get:
+      tags:
+      - Movies
+      summary: Listar filmes
+      description: 'Lista os filmes disponíveis e permite pesquisa e filtragem.
+
+
+        ```bash
+
+        curl "https://api.cinelis.pt/v1/movies?q=dune&genre=Sci-Fi"
+
+        ```
+
+        '
+      operationId: listMovies
+      parameters:
+      - name: q
+        in: query
+        description: Texto a pesquisar no título do filme.
+        schema:
+          type: string
+      - name: genre
+        in: query
+        description: Género pelo qual filtrar.
+        schema:
+          type: string
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: Lista paginada de filmes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieList'
+  /movies/{movieId}:
+    get:
+      tags:
+      - Movies
+      summary: Consultar detalhes de um filme
+      description: 'Devolve a informação detalhada do filme indicado.
+
+
+        ```bash
+
+        curl https://api.cinelis.pt/v1/movies/<movieId>
+
+        ```
+
+        '
+      operationId: getMovie
+      parameters:
+      - $ref: '#/components/parameters/MovieId'
+      responses:
+        '200':
+          description: Filme encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /movies/{movieId}/sessions:
+    get:
+      tags:
+      - Movies
+      - Sessions
+      summary: Consultar sessões de um filme
+      description: 'Relação master/detail da API. O filme é o recurso master e as sessões
+
+        constituem os detalhes associados.
+
+
+        Pode ser fornecida uma data para apresentar apenas as sessões desse dia.
+
+
+        ```bash
+
+        curl "https://api.cinelis.pt/v1/movies/<movieId>/sessions?date=2026-10-20"
+
+        ```
+
+        '
+      operationId: listMovieSessions
+      parameters:
+      - $ref: '#/components/parameters/MovieId'
+      - name: date
+        in: query
+        description: Data das sessões a devolver.
+        schema:
+          type: string
+          format: date
+      responses:
+        '200':
+          description: Sessões do filme.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SessionSummary'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /sessions/{sessionId}:
+    get:
+      tags:
+      - Sessions
+      summary: Consultar sessão
+      description: 'Devolve filme, sala, data/hora, preço e estado da sessão.
+
+
+        ```bash
+
+        curl https://api.cinelis.pt/v1/sessions/<sessionId>
+
+        ```
+
+        '
+      operationId: getSession
+      parameters:
+      - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: Sessão encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /sessions/{sessionId}/seats:
+    get:
+      tags:
+      - Sessions
+      summary: Consultar layout e disponibilidade dos lugares
+      description: 'Devolve o layout da sala e o estado de cada lugar para esta sessão.
+
+
+        Os estados possíveis são:
+
+        - `available`: disponível;
+
+        - `held`: temporariamente reservado;
+
+        - `sold`: já vendido.
+
+
+        ```bash
+
+        curl https://api.cinelis.pt/v1/sessions/<sessionId>/seats
+
+        ```
+
+        '
+      operationId: getSessionSeats
+      parameters:
+      - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: Layout e disponibilidade dos lugares.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionSeats'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /orders:
+    post:
+      tags:
+      - Orders
+      summary: Efetuar uma compra
+      description: "Converte os lugares temporariamente reservados numa compra e em\nbilhetes. Corresponde\
+        \ à operação Create.\n\nA operação deve ser transacional: ou todos os bilhetes são comprados,\n\
+        ou nenhuma alteração é confirmada.\n\n```bash\ncurl -X POST https://api.cinelis.pt/v1/orders \\\
+        \n  -H \"Authorization: Bearer <token>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d\
+        \ '{\"sessionId\":\"<sessionId>\",\"seatIds\":[\"<seatId1>\",\"<seatId2>\"]}'\n```\n"
+      operationId: createOrder
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: Compra efetuada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: A reserva expirou ou um lugar deixou de estar disponível.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    get:
+      tags:
+      - Orders
+      summary: Consultar histórico de compras
+      description: "Lista as compras efetuadas pelo cliente autenticado. Corresponde à\noperação Read\
+        \ do controlador Orders.\n\n```bash\ncurl https://api.cinelis.pt/v1/orders \\\n  -H \"Authorization:\
+        \ Bearer <token>\"\n```\n"
+      operationId: listOrders
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: Histórico de compras.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /orders/{orderId}:
+    get:
+      tags:
+      - Orders
+      summary: Consultar uma compra
+      description: "Devolve uma compra do cliente, incluindo os bilhetes associados.\n\n```bash\ncurl\
+        \ https://api.cinelis.pt/v1/orders/<orderId> \\\n  -H \"Authorization: Bearer <token>\"\n```\n"
+      operationId: getOrder
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/OrderId'
+      responses:
+        '200':
+          description: Compra encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /tickets:
+    get:
+      tags:
+      - Tickets
+      summary: Listar bilhetes do cliente
+      description: "Lista os bilhetes pertencentes ao cliente autenticado.\n\n```bash\ncurl https://api.cinelis.pt/v1/tickets\
+        \ \\\n  -H \"Authorization: Bearer <token>\"\n```\n"
+      operationId: listTickets
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: upcoming
+        in: query
+        description: Se `true`, devolve apenas bilhetes de sessões futuras.
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: Lista de bilhetes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /tickets/{ticketId}:
+    get:
+      tags:
+      - Tickets
+      summary: Consultar bilhete
+      description: "Devolve os detalhes e o código de um bilhete pertencente ao cliente.\n\n```bash\n\
+        curl https://api.cinelis.pt/v1/tickets/<ticketId> \\\n  -H \"Authorization: Bearer <token>\"\n\
+        ```\n"
+      operationId: getTicket
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/TicketId'
+      responses:
+        '200':
+          description: Bilhete encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /auth/register:
+    post:
+      tags:
+      - Authentication
+      summary: Criar conta de cliente
+      description: "Cria uma nova conta de cliente e permite posteriormente a autenticação através de\
+        \ `POST /auth/login`.\n\n```bash\ncurl -X POST https://api.cinelis.pt/v1/auth/register \\\n  -H\
+        \ \"Content-Type: application/json\" \\\n  -d '{\"name\":\"João Silva\",\"email\":\"joao@example.com\"\
+        ,\"password\":\"password123\"}'\n```"
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: Conta criada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '409':
+          description: O email já está registado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /auth/me:
+    get:
+      tags:
+      - Authentication
+      summary: Consultar utilizador autenticado
+      description: "Devolve os dados da conta associada ao token Bearer atual.\n\n```bash\ncurl https://api.cinelis.pt/v1/auth/me\
+        \ \\\n  -H \"Authorization: Bearer <token>\"\n```"
+      operationId: getCurrentUser
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Dados do utilizador autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      tags:
+      - Authentication
+      summary: Atualizar utilizador autenticado
+      description: "Atualiza os dados editáveis da conta autenticada.\n\n```bash\ncurl -X PUT https://api.cinelis.pt/v1/auth/me\
+        \ \\\n  -H \"Authorization: Bearer <token>\" \\\n  -H \"Content-Type: application/json\" \\\n\
+        \  -d '{\"name\":\"João Silva\",\"email\":\"novo@example.com\"}'\n```"
+      operationId: updateCurrentUser
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: Conta atualizada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: O email já é utilizado por outra conta.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags:
+      - Authentication
+      summary: Eliminar conta autenticada
+      description: "Elimina a conta autenticada e revoga as respetivas sessões.\n\n```bash\ncurl -X DELETE\
+        \ https://api.cinelis.pt/v1/auth/me \\\n  -H \"Authorization: Bearer <token>\"\n```"
+      operationId: deleteCurrentUser
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: Conta eliminada.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /sessions/{sessionId}/holds:
+    post:
+      tags:
+      - Seat Holds
+      summary: Reservar temporariamente lugares
+      description: "Reserva temporariamente os lugares selecionados durante o checkout. A operação falha\
+        \ se algum lugar já estiver vendido ou reservado por outro cliente.\n\n```bash\ncurl -X POST https://api.cinelis.pt/v1/sessions/<sessionId>/holds\
+        \ \\\n  -H \"Authorization: Bearer <token>\" \\\n  -H \"Content-Type: application/json\" \\\n\
+        \  -d '{\"seatIds\":[\"<seatId1>\",\"<seatId2>\"]}'\n```"
+      operationId: createSeatHold
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/SessionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+              - seatIds
+              properties:
+                seatIds:
+                  $ref: '#/components/schemas/SeatIdList'
+      responses:
+        '201':
+          description: Lugares reservados temporariamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeatHoldGroup'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Um ou mais lugares já não se encontram disponíveis.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: opaque
+      description: Token opaco criado por `POST /auth/login`.
+  parameters:
+    MovieId:
+      name: movieId
+      in: path
+      required: true
+      description: UUID do filme.
+      schema:
+        type: string
+        format: uuid
+    SessionId:
+      name: sessionId
+      in: path
+      required: true
+      description: UUID da sessão.
+      schema:
+        type: string
+        format: uuid
+    OrderId:
+      name: orderId
+      in: path
+      required: true
+      description: UUID da compra.
+      schema:
+        type: string
+        format: uuid
+    TicketId:
+      name: ticketId
+      in: path
+      required: true
+      description: UUID do bilhete.
+      schema:
+        type: string
+        format: uuid
+    Page:
+      name: page
+      in: query
+      description: Página a devolver, começando em 1.
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PerPage:
+      name: perPage
+      in: query
+      description: Número máximo de resultados por página.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+  responses:
+    Unauthorized:
+      description: Token inexistente, inválido ou expirado.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: O recurso solicitado não foi encontrado.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Os dados fornecidos não são válidos.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+  schemas:
+    LoginRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - email
+      - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+    AuthResponse:
+      type: object
+      required:
+      - token
+      - expiresAt
+      - user
+      properties:
+        token:
+          type: string
+          description: Token Bearer opaco.
+        expiresAt:
+          type: string
+          format: date-time
+        user:
+          $ref: '#/components/schemas/User'
+    CreateUserRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - email
+      - password
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        password:
+          type: string
+          format: password
+          minLength: 8
+    UpdateUserRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - email
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          maxLength: 255
+    User:
+      type: object
+      required:
+      - id
+      - name
+      - email
+      - role
+      - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum:
+          - customer
+        createdAt:
+          type: string
+          format: date-time
+    Movie:
+      type: object
+      required:
+      - id
+      - title
+      - durationMinutes
+      - genres
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        synopsis:
+          type:
+          - string
+          - 'null'
+        durationMinutes:
+          type: integer
+          minimum: 1
+        releaseDate:
+          type:
+          - string
+          - 'null'
+          format: date
+        ageRating:
+          type:
+          - string
+          - 'null'
+        posterUrl:
+          type:
+          - string
+          - 'null'
+          format: uri
+        trailerUrl:
+          type:
+          - string
+          - 'null'
+          format: uri
+        genres:
+          type: array
+          items:
+            type: string
+    MovieList:
+      type: object
+      required:
+      - items
+      - pagination
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Movie'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    SessionSummary:
+      type: object
+      required:
+      - id
+      - startsAt
+      - price
+      - status
+      - room
+      properties:
+        id:
+          type: string
+          format: uuid
+        startsAt:
+          type: string
+          format: date-time
+        price:
+          $ref: '#/components/schemas/Money'
+        status:
+          $ref: '#/components/schemas/SessionStatus'
+        room:
+          $ref: '#/components/schemas/RoomSummary'
+    Session:
+      type: object
+      required:
+      - id
+      - movie
+      - room
+      - startsAt
+      - price
+      - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        movie:
+          $ref: '#/components/schemas/Movie'
+        room:
+          $ref: '#/components/schemas/RoomSummary'
+        startsAt:
+          type: string
+          format: date-time
+        price:
+          $ref: '#/components/schemas/Money'
+        status:
+          $ref: '#/components/schemas/SessionStatus'
+    SessionStatus:
+      type: string
+      enum:
+      - scheduled
+      - cancelled
+    RoomSummary:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+    Seat:
+      type: object
+      required:
+      - id
+      - row
+      - number
+      properties:
+        id:
+          type: string
+          format: uuid
+        row:
+          type: string
+        number:
+          type: integer
+    SeatAvailability:
+      allOf:
+      - $ref: '#/components/schemas/Seat'
+      - type: object
+        required:
+        - status
+        properties:
+          status:
+            type: string
+            enum:
+            - available
+            - held
+            - sold
+    SessionSeats:
+      type: object
+      required:
+      - sessionId
+      - layout
+      - seats
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+        layout:
+          $ref: '#/components/schemas/RoomLayout'
+        seats:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeatAvailability'
+    RoomLayout:
+      type: object
+      required:
+      - version
+      - grid
+      - seats
+      - elements
+      properties:
+        version:
+          type: integer
+          const: 1
+        grid:
+          type: object
+          required:
+          - columns
+          - rows
+          properties:
+            columns:
+              type: integer
+              minimum: 1
+            rows:
+              type: integer
+              minimum: 1
+        seats:
+          type: array
+          items:
+            type: object
+            required:
+            - seatId
+            - x
+            - y
+            properties:
+              seatId:
+                type: string
+                format: uuid
+              x:
+                type: integer
+                minimum: 0
+              y:
+                type: integer
+                minimum: 0
+        elements:
+          type: array
+          items:
+            type: object
+            required:
+            - type
+            - x
+            - y
+            - width
+            - height
+            properties:
+              type:
+                type: string
+                enum:
+                - screen
+                - aisle
+                - entrance
+                - exit
+                - stairs
+                - wheelchair_area
+              x:
+                type: integer
+                minimum: 0
+              y:
+                type: integer
+                minimum: 0
+              width:
+                type: integer
+                minimum: 1
+              height:
+                type: integer
+                minimum: 1
+    SeatIdList:
+      type: array
+      minItems: 1
+      uniqueItems: true
+      items:
+        type: string
+        format: uuid
+    CreateSeatHoldRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - seatIds
+      properties:
+        seatIds:
+          $ref: '#/components/schemas/SeatIdList'
+    SeatHoldGroup:
+      type: object
+      required:
+      - sessionId
+      - seats
+      - expiresAt
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+        seats:
+          type: array
+          items:
+            $ref: '#/components/schemas/Seat'
+        expiresAt:
+          type: string
+          format: date-time
+    CreateOrderRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - sessionId
+      - seatIds
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+        seatIds:
+          $ref: '#/components/schemas/SeatIdList'
+    Order:
+      type: object
+      required:
+      - id
+      - total
+      - createdAt
+      - tickets
+      properties:
+        id:
+          type: string
+          format: uuid
+        total:
+          $ref: '#/components/schemas/Money'
+        createdAt:
+          type: string
+          format: date-time
+        tickets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ticket'
+    OrderList:
+      type: object
+      required:
+      - items
+      - pagination
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Ticket:
+      type: object
+      required:
+      - id
+      - orderId
+      - session
+      - seat
+      - price
+      - code
+      - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        session:
+          $ref: '#/components/schemas/SessionSummary'
+        seat:
+          $ref: '#/components/schemas/Seat'
+        price:
+          $ref: '#/components/schemas/Money'
+        code:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        usedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    TicketList:
+      type: object
+      required:
+      - items
+      - pagination
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ticket'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Pagination:
+      type: object
+      required:
+      - page
+      - perPage
+      - total
+      properties:
+        page:
+          type: integer
+          minimum: 1
+        perPage:
+          type: integer
+          minimum: 1
+        total:
+          type: integer
+          minimum: 0
+    Money:
+      type: number
+      format: double
+      minimum: 0
+      multipleOf: 0.01
+    Error:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    ValidationError:
+      type: object
+      required:
+      - code
+      - message
+      - fields
+      properties:
+        code:
+          type: string
+          const: validation_error
+        message:
+          type: string
+        fields:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+x-cinelis-messaging:
+  description: 'O requisito de messaging publish/subscribe não faz parte do standard
+
+    OpenAPI, pelo que é documentado através desta extensão.
+
+
+    Uma utilização adequada no CineLis é publicar alterações à disponibilidade
+
+    dos lugares de uma sessão, permitindo que a aplicação Android atualize o
+
+    mapa de lugares sem polling constante.
+
+    '
+  channels:
+    session-seat-updates:
+      name: sessions.{sessionId}.seats
+      purpose: Atualização dinâmica da disponibilidade dos lugares.
+      events:
+      - seat.held
+      - seat.released
+      - seat.sold

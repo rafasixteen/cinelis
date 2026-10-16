@@ -1,0 +1,15 @@
+version: '3'
+
+tasks:
+  dev:
+    desc: Run the frontoffice server and Tailwind watcher
+    cmds:
+      - task --parallel server tailwind
+
+  server:
+    cmds:
+      - php -S "127.0.0.1:${FRONTOFFICE_PORT:-8000}" -t web
+
+  tailwind:
+    cmds:
+      - tailwindcss -i assets/css/globals.css -o web/css/globals.css --watch=always

@@ -20,7 +20,8 @@ console/
 ├── config/
 ├── controllers/
 ├── migrations/
-└── runtime/
+├── runtime/
+└── Taskfile.yml
 ```
 
 ## Database migrations
@@ -28,13 +29,13 @@ console/
 Create a migration from the repository root:
 
 ```bash
-make migrate/create NAME=create_movies_table
+task migrate:create -- create_movies_table
 ```
 
 Apply migrations:
 
 ```bash
-make migrate
+task migrate
 ```
 
 Migration files belong in:
