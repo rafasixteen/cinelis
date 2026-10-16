@@ -11,7 +11,7 @@ infra/
 ├── services/
 │   └── postgres.yml
 ├── compose.yml
-├── Makefile
+├── Taskfile.yml
 └── README.md
 ```
 
@@ -171,27 +171,27 @@ Other services that depend on PostgreSQL can use this health state when startup 
 Infrastructure commands can be run from the repository root:
 
 ```bash
-make infra/up
-make infra/down
-make infra/restart
-make infra/logs
-make infra/ps
+task infra:up
+task infra:down
+task infra:restart
+task infra:logs
+task infra:ps
 ```
 
 Or directly from this directory:
 
 ```bash
-make up
-make down
-make restart
-make logs
-make ps
+task up
+task down
+task restart
+task logs
+task ps
 ```
 
 ## Start infrastructure
 
 ```bash
-make up
+task up
 ```
 
 This starts the configured infrastructure services in the background.
@@ -199,7 +199,7 @@ This starts the configured infrastructure services in the background.
 ## Stop infrastructure
 
 ```bash
-make down
+task down
 ```
 
 This stops and removes the Compose containers and network while preserving named volumes.
@@ -207,19 +207,19 @@ This stops and removes the Compose containers and network while preserving named
 ## Restart infrastructure
 
 ```bash
-make restart
+task restart
 ```
 
 ## View logs
 
 ```bash
-make logs
+task logs
 ```
 
 ## View status
 
 ```bash
-make ps
+task ps
 ```
 
 ## Database migrations
@@ -229,13 +229,13 @@ Docker is responsible for running PostgreSQL, but schema changes are managed by 
 From the repository root:
 
 ```bash
-make migrate
+task migrate
 ```
 
 Create a new migration with:
 
 ```bash
-make migrate/create NAME=create_example_table
+task migrate:create -- create_example_table
 ```
 
 Migration files live in:

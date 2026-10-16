@@ -1,0 +1,27 @@
+version: '3'
+
+tasks:
+  up:
+    desc: Start infrastructure
+    cmds:
+      - docker compose -f compose.yml up -d
+
+  down:
+    desc: Stop infrastructure
+    cmds:
+      - docker compose -f compose.yml down
+
+  restart:
+    desc: Restart infrastructure
+    cmds:
+      - docker compose -f compose.yml restart
+
+  logs:
+    desc: Follow infrastructure logs
+    cmds:
+      - docker compose -f compose.yml logs -f
+
+  ps:
+    desc: Show infrastructure status
+    cmds:
+      - docker compose -f compose.yml ps

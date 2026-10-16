@@ -1,0 +1,7 @@
+version: '3'
+
+tasks:
+  serve:
+    desc: Serve the documentation locally
+    cmds:
+      - python -m http.server "${DOCS_PORT:-8003}" --bind 127.0.0.1
