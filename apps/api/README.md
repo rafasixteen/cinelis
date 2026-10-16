@@ -27,7 +27,7 @@ api/
 ├── models/
 ├── runtime/
 ├── web/
-└── Makefile
+└── Taskfile.yml
 ```
 
 The public web root is:
@@ -47,11 +47,11 @@ web/index.php
 From the repository root:
 
 ```bash
-make api/dev
+task api:dev
 ```
 
 Or from this directory:
 
 ```bash
-make dev
+task dev
 ```

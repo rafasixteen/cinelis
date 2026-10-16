@@ -26,8 +26,7 @@ frontoffice/
 │   ├── layouts/
 │   └── ...
 ├── web/
-├── dekit.yaml
-└── Makefile
+└── Taskfile.yml
 ```
 
 ### Controllers
@@ -103,13 +102,13 @@ Do not manually edit the generated file.
 From the repository root:
 
 ```bash
-make frontoffice/dev
+task fo:dev
 ```
 
 Or from this directory:
 
 ```bash
-make dev
+task dev
 ```
 
-Dekit runs the development processes defined in `dekit.yaml`, including the PHP server and Tailwind watcher.
+Task runs the PHP server and Tailwind watcher together.

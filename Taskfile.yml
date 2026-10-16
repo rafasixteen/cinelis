@@ -1,0 +1,33 @@
+version: '3'
+
+includes:
+  api:
+    taskfile: ./apps/api/Taskfile.yml
+    dir: ./apps/api
+  bo:
+    taskfile: ./apps/backoffice/Taskfile.yml
+    dir: ./apps/backoffice
+    excludes: [server, tailwind]
+  docs:
+    taskfile: ./docs/Taskfile.yml
+    dir: ./docs
+  fo:
+    taskfile: ./apps/frontoffice/Taskfile.yml
+    dir: ./apps/frontoffice
+    excludes: [server, tailwind]
+  infra:
+    taskfile: ./infra/Taskfile.yml
+    dir: ./infra
+  migrations:
+    taskfile: ./apps/console/Taskfile.yml
+    dir: .
+    flatten: true
+
+dotenv: ['.env']
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+    silent: true

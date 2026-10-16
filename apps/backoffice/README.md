@@ -28,8 +28,7 @@ backoffice/
 │   ├── layouts/
 │   └── ...
 ├── web/
-├── dekit.yaml
-└── Makefile
+└── Taskfile.yml
 ```
 
 Controllers and views should contain backoffice-specific presentation logic.
@@ -45,11 +44,11 @@ common/
 From the repository root:
 
 ```bash
-make backoffice/dev
+task bo:dev
 ```
 
 Or from this directory:
 
 ```bash
-make dev
+task dev
 ```

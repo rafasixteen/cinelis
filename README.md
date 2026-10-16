@@ -12,12 +12,13 @@ cine-lis/
 │   ├── console/
 │   ├── frontoffice/
 │   └── mobile/
+├── docs/
 ├── common/
 ├── infra/
 ├── composer.json
 ├── composer.lock
 ├── mise.toml
-├── Makefile
+├── Taskfile.yml
 └── yii
 ```
 
@@ -72,8 +73,7 @@ The project currently uses:
 - Composer
 - Node.js
 - Tailwind CSS CLI
-- Dekit
-- Make
+- Task
 - Docker
 
 Docker itself must be installed separately.
@@ -129,25 +129,25 @@ composer dump-autoload
 ## Start infrastructure
 
 ```bash
-make infra/up
+task infra:up
 ```
 
 Check its status:
 
 ```bash
-make infra/ps
+task infra:ps
 ```
 
 Follow logs:
 
 ```bash
-make infra/logs
+task infra:logs
 ```
 
 Stop it:
 
 ```bash
-make infra/down
+task infra:down
 ```
 
 ---
@@ -157,13 +157,13 @@ make infra/down
 Create a migration:
 
 ```bash
-make migrate/create NAME=create_movies_table
+task migrate:create -- create_movies_table
 ```
 
 Apply pending migrations:
 
 ```bash
-make migrate
+task migrate
 ```
 
 Migrations live in:
@@ -178,32 +178,34 @@ The PHP applications share the same PostgreSQL database.
 
 ## Running applications
 
-Each application has its own `Makefile`.
-
 Run the frontoffice:
 
 ```bash
-make frontoffice/dev
+task fo:dev
 ```
 
 Run the backoffice:
 
 ```bash
-make backoffice/dev
+task bo:dev
 ```
 
 Run the API:
 
 ```bash
-make api/dev
+task api:dev
 ```
 
-You can see the commands available for an application with:
+You can see all available commands with:
 
 ```bash
-make frontoffice/help
-make backoffice/help
-make api/help
+task --list
+```
+
+## Serve documentation locally
+
+```bash
+task docs:serve
 ```
 
 ---
@@ -343,8 +345,8 @@ Make sure:
 
 ```bash
 composer install
-make infra/up
-make migrate
+task infra:up
+task migrate
 ```
 
 work on your branch and that the applications you modified start successfully.
