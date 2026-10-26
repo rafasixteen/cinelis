@@ -6,11 +6,11 @@ Cinelis is a cinema management system composed of several applications sharing t
 
 ```text
 cine-lis/
+├── api/
+├── backoffice/
+├── console/
+├── frontoffice/
 ├── apps/
-│   ├── api/
-│   ├── backoffice/
-│   ├── console/
-│   ├── frontoffice/
 │   └── mobile/
 ├── docs/
 ├── common/
@@ -24,10 +24,10 @@ cine-lis/
 
 ### Applications
 
-- [`apps/api`](apps/api/README.md) — HTTP API used by the mobile app and other clients.
-- [`apps/backoffice`](apps/backoffice/README.md) — internal web application for cinema management.
-- [`apps/frontoffice`](apps/frontoffice/README.md) — public-facing cinema website.
-- [`apps/console`](apps/console/README.md) — Yii console application for migrations, maintenance tasks, seeders, and CLI commands.
+- [`api`](api/README.md) — HTTP API used by the mobile app and other clients.
+- [`backoffice`](backoffice/README.md) — internal web application for cinema management.
+- [`frontoffice`](frontoffice/README.md) — public-facing cinema website.
+- [`console`](console/README.md) — Yii console application for migrations, maintenance tasks, seeders, and CLI commands.
 - [`apps/mobile`](apps/mobile/README.md) — Android application.
 
 ### Shared code
@@ -169,7 +169,7 @@ task migrate
 Migrations live in:
 
 ```text
-apps/console/migrations/
+console/migrations/
 ```
 
 The PHP applications share the same PostgreSQL database.
@@ -252,7 +252,7 @@ views/
 For example:
 
 ```text
-apps/frontoffice/views/
+frontoffice/views/
 ├── components/
 │   ├── header.php
 │   └── footer.php

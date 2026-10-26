@@ -14,10 +14,10 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"frontoffice\\": "apps/frontoffice/",
-			"backoffice\\": "apps/backoffice/",
-			"api\\": "apps/api/",
-			"console\\": "apps/console/"
+			"frontoffice\\": "frontoffice/",
+			"backoffice\\": "backoffice/",
+			"api\\": "api/",
+			"console\\": "console/"
 		}
 	},
 	"config": {

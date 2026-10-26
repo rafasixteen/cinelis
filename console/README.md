@@ -41,7 +41,7 @@ task migrate
 Migration files belong in:
 
 ```text
-apps/console/migrations/
+console/migrations/
 ```
 
 There should be one migration history for the Cinelis database rather than separate migration sets for each application.

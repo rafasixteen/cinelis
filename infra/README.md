@@ -241,7 +241,7 @@ task migrate:create -- create_example_table
 Migration files live in:
 
 ```text
-apps/console/migrations/
+console/migrations/
 ```
 
 ## Adding a new infrastructure service
