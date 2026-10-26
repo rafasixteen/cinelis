@@ -15,8 +15,8 @@ tasks:
 
   frontoffice/tailwind:
     label: Frontoffice Tailwind
-    cmd: ["tailwindcss", "-i", "assets/css/globals.css", "-o", "web/css/globals.css", "--watch=always"]
-    cwd: frontoffice
+    cmd: ["tailwindcss", "-i", "frontoffice/assets/css/globals.css", "-o", "frontoffice/web/css/globals.css", "--watch=always"]
+    cwd: .
     autostart: true
 
   backoffice/server:
@@ -28,6 +28,6 @@ tasks:
 
   backoffice/tailwind:
     label: Backoffice Tailwind
-    cmd: ["tailwindcss", "-i", "assets/css/globals.css", "-o", "web/css/globals.css", "--watch=always"]
-    cwd: backoffice
+    cmd: ["tailwindcss", "-i", "backoffice/assets/css/globals.css", "-o", "backoffice/web/css/globals.css", "--watch=always"]
+    cwd: .
     autostart: true
