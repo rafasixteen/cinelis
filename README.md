@@ -74,6 +74,7 @@ The project currently uses:
 - Node.js
 - Tailwind CSS CLI
 - Task
+- dekit
 - Docker
 
 Docker itself must be installed separately.
@@ -178,22 +179,30 @@ The PHP applications share the same PostgreSQL database.
 
 ## Running applications
 
-Run the frontoffice:
+Run the API, backoffice, and frontoffice together:
 
 ```bash
-task fo:dev
+task dev
 ```
 
-Run the backoffice:
+This opens the dekit TUI with separate, labeled processes for the API,
+frontoffice, and backoffice. Use the TUI to inspect output and start, stop, or
+restart individual processes. Reattach with:
 
 ```bash
-task bo:dev
+task dev:attach
 ```
 
-Run the API:
+Stop all development processes with:
 
 ```bash
-task api:dev
+task dev:stop
+```
+
+Restart an individual process from the command line, for example:
+
+```bash
+dekit restart api
 ```
 
 You can see all available commands with:

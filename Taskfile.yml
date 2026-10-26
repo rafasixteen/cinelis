@@ -24,6 +24,22 @@ includes:
 dotenv: ['.env']
 
 tasks:
+  dev:
+    desc: Run the API, backoffice, and frontoffice in dekit
+    cmds:
+      - dekit up
+      - dekit attach
+
+  dev:attach:
+    desc: Attach to the dekit development session
+    cmds:
+      - dekit attach
+
+  dev:stop:
+    desc: Stop the dekit development session
+    cmds:
+      - dekit down
+
   default:
     desc: List available tasks
     cmds:

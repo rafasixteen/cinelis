@@ -1,0 +1,33 @@
+tasks:
+  api:
+    label: API
+    cmd: ["php", "-S", "127.0.0.1:8002", "-t", "web"]
+    cwd: api
+    ready: {tcp: "127.0.0.1:8002"}
+    autostart: true
+
+  frontoffice/server:
+    label: Frontoffice server
+    cmd: ["php", "-S", "127.0.0.1:8000", "-t", "web"]
+    cwd: frontoffice
+    ready: {tcp: "127.0.0.1:8000"}
+    autostart: true
+
+  frontoffice/tailwind:
+    label: Frontoffice Tailwind
+    cmd: ["tailwindcss", "-i", "assets/css/globals.css", "-o", "web/css/globals.css", "--watch=always"]
+    cwd: frontoffice
+    autostart: true
+
+  backoffice/server:
+    label: Backoffice server
+    cmd: ["php", "-S", "127.0.0.1:8001", "-t", "web"]
+    cwd: backoffice
+    ready: {tcp: "127.0.0.1:8001"}
+    autostart: true
+
+  backoffice/tailwind:
+    label: Backoffice Tailwind
+    cmd: ["tailwindcss", "-i", "assets/css/globals.css", "-o", "web/css/globals.css", "--watch=always"]
+    cwd: backoffice
+    autostart: true

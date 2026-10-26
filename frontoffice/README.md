@@ -99,16 +99,11 @@ Do not manually edit the generated file.
 
 ## Development
 
-From the repository root:
-
-```bash
-task fo:dev
-```
-
-Or from this directory:
+From the repository root, start the frontoffice together with the other applications:
 
 ```bash
 task dev
 ```
 
-Task runs the PHP server and Tailwind watcher together.
+The dekit TUI exposes the frontoffice server and Tailwind watcher as separate
+processes.

@@ -3,13 +3,17 @@ version: '3'
 tasks:
   dev:
     desc: Run the backoffice server and Tailwind watcher
-    cmds:
-      - task --parallel server tailwind
+    internal: true
+    deps:
+      - server
+      - tailwind
 
   server:
+    internal: true
     cmds:
       - php -S "127.0.0.1:${BACKOFFICE_PORT:-8001}" -t web
 
   tailwind:
+    internal: true
     cmds:
       - tailwindcss -i assets/css/globals.css -o web/css/globals.css --watch=always

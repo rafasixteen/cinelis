@@ -44,13 +44,7 @@ web/index.php
 
 ## Development
 
-From the repository root:
-
-```bash
-task api:dev
-```
-
-Or from this directory:
+From the repository root, start the API together with the other applications:
 
 ```bash
 task dev
