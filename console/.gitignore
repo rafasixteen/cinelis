@@ -1,0 +1,6 @@
+# Yii runtime and published assets
+/runtime/*
+/web/assets/*
+
+# Compiled Tailwind CSS
+/web/css/globals.css
