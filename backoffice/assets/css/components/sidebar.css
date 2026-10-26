@@ -1,7 +1,7 @@
 @layer components {
 	.sidebar {
 		background:
-			radial-gradient(circle at 20% 0%, rgb(167 111 24 / 14%), transparent 26rem),
+			radial-gradient(circle at 20% 0%, color-mix(in srgb, var(--primary) 14%, transparent), transparent 26rem),
 			var(--sidebar);
 		color: var(--sidebar-foreground);
 
@@ -17,7 +17,7 @@
 			display: flex;
 			align-items: center;
 			padding-inline: 0.5rem;
-			border-bottom: 1px solid hsl(40 10% 94% / 8%);
+			border-bottom: 1px solid color-mix(in srgb, var(--sidebar-foreground) 8%, transparent);
 		}
 
 		.brand {
@@ -56,10 +56,16 @@
 			padding-top: 1.25rem;
 		}
 
+		.sidebar-menu {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
 		.nav-label {
 			margin: 0 0 0.5rem;
 			padding-inline: 0.75rem;
-			color: #858b98;
+			color: var(--sidebar-muted);
 			font-size: 0.65rem;
 			font-weight: 750;
 			letter-spacing: 0.11em;
@@ -70,6 +76,15 @@
 			margin-top: 1.75rem;
 		}
 
+		.nav-item + .nav-item {
+			margin-top: 0.2rem;
+		}
+
+		.sidebar-menu > .active > .nav-link {
+			background: color-mix(in srgb, var(--primary) 17%, transparent);
+			color: var(--primary);
+		}
+
 		.nav-link {
 			display: flex;
 			align-items: center;
@@ -77,32 +92,23 @@
 			height: 2.75rem;
 			padding-inline: 0.75rem;
 			border-radius: 0.55rem;
-			color: #abb0bc;
+			color: color-mix(in srgb, var(--sidebar-foreground) 72%, transparent);
 			font-size: 0.85rem;
 			font-weight: 560;
 			transition: background-color 150ms ease, color 150ms ease;
 
-			& + .nav-link {
-				margin-top: 0.2rem;
-			}
-
 			&:hover {
-				background: hsl(40 10% 94% / 5%);
+				background: color-mix(in srgb, var(--sidebar-foreground) 5%, transparent);
 				color: var(--sidebar-foreground);
-			}
-
-			&.active {
-				background: rgb(167 111 24 / 17%);
-				color: #e9bd6d;
 			}
 
 			&.disabled {
 				cursor: not-allowed;
-				color: #8f95a2;
+				color: color-mix(in srgb, var(--sidebar-foreground) 52%, transparent);
 
 				&:hover {
 					background: transparent;
-					color: #8f95a2;
+					color: color-mix(in srgb, var(--sidebar-foreground) 52%, transparent);
 				}
 			}
 
@@ -119,7 +125,7 @@
 			align-items: center;
 			gap: 0.7rem;
 			padding: 0.9rem 0.65rem 0;
-			border-top: 1px solid hsl(40 10% 94% / 8%);
+			border-top: 1px solid color-mix(in srgb, var(--sidebar-foreground) 8%, transparent);
 		}
 
 		.venue-mark {
@@ -127,9 +133,9 @@
 			height: 2rem;
 			display: grid;
 			place-items: center;
-			border: 1px solid hsl(40 10% 94% / 10%);
+			border: 1px solid color-mix(in srgb, var(--sidebar-foreground) 10%, transparent);
 			border-radius: 50%;
-			background: hsl(40 10% 94% / 6%);
+			background: color-mix(in srgb, var(--sidebar-foreground) 6%, transparent);
 			font-size: 0.68rem;
 			font-weight: 750;
 		}
@@ -175,10 +181,10 @@
 			.nav-link {
 				flex: 0 0 auto;
 				height: 2.4rem;
+			}
 
-				& + .nav-link {
-					margin-top: 0;
-				}
+			.nav-item + .nav-item {
+				margin-top: 0;
 			}
 		}
 

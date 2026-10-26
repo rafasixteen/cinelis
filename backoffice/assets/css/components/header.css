@@ -51,7 +51,7 @@
 			border: 1px solid var(--border);
 			border-radius: 50%;
 			background: var(--card);
-			color: #636874;
+			color: var(--muted-foreground);
 
 			svg {
 				width: 1.05rem;
@@ -60,8 +60,8 @@
 			}
 
 			&.disabled {
-				background: #f1f2f4;
-				color: #747985;
+				background: var(--secondary);
+				color: var(--muted-foreground);
 				cursor: not-allowed;
 
 				.notification-dot {
@@ -78,7 +78,7 @@
 			height: 0.42rem;
 			border: 2px solid var(--card);
 			border-radius: 50%;
-			background: #c84e42;
+			background: var(--danger);
 		}
 
 		.profile {
@@ -93,8 +93,8 @@
 			display: grid;
 			place-items: center;
 			border-radius: 50%;
-			background: #292d37;
-			color: #f3d59e;
+			background: var(--foreground);
+			color: var(--background);
 			font-size: 0.7rem;
 			font-weight: 750;
 		}
@@ -119,7 +119,7 @@
 			width: 0.95rem;
 			height: 0.95rem;
 			margin-left: 0.25rem;
-			fill: #8d919b;
+			fill: var(--muted-foreground);
 		}
 
 		@media (max-width: 900px) {

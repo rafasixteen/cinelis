@@ -34,43 +34,6 @@
 			font-size: 0.88rem;
 		}
 
-		.primary-action {
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			gap: 0.55rem;
-			height: 2.65rem;
-			padding-inline: 1.05rem;
-			border-radius: 0.55rem;
-			background: var(--foreground);
-			color: var(--background);
-			font-size: 0.78rem;
-			font-weight: 650;
-			box-shadow: 0 0.25rem 0.75rem rgb(30 32 40 / 12%);
-			transition: transform 150ms ease, background-color 150ms ease;
-
-			&:hover {
-				transform: translateY(-1px);
-				background: #343741;
-			}
-
-			span {
-				font-size: 1.15rem;
-				font-weight: 400;
-				line-height: 1;
-			}
-
-			&.disabled {
-				background: #686d78;
-				cursor: not-allowed;
-
-				&:hover {
-					transform: none;
-					background: #686d78;
-				}
-			}
-		}
-
 		.section-heading,
 		.panel-header {
 			display: flex;
@@ -94,15 +57,16 @@
 			display: inline-flex;
 			align-items: center;
 			gap: 0.45rem;
-			color: var(--muted-foreground);
-			font-size: 0.67rem;
+			background: color-mix(in srgb, var(--success) 12%, var(--card));
+			color: color-mix(in srgb, var(--success) 72%, var(--foreground));
 
-			> span {
+			&::before {
+				content: "";
 				width: 0.45rem;
 				height: 0.45rem;
 				border-radius: 50%;
-				background: #3f9b68;
-				box-shadow: 0 0 0 0.22rem rgb(63 155 104 / 12%);
+				background: var(--success);
+				box-shadow: 0 0 0 0.22rem color-mix(in srgb, var(--success) 12%, transparent);
 			}
 		}
 
@@ -110,14 +74,6 @@
 			display: grid;
 			grid-template-columns: repeat(4, minmax(0, 1fr));
 			gap: 0.9rem;
-		}
-
-		.metric-card,
-		.panel {
-			border: 1px solid var(--border);
-			border-radius: 0.8rem;
-			background: var(--card);
-			box-shadow: 0 1px 2px rgb(22 25 32 / 3%);
 		}
 
 		.metric-card {
@@ -137,10 +93,10 @@
 				background: var(--metric-tint);
 			}
 
-			&.revenue { --metric-color: #a76f18; --metric-tint: #faf1df; }
-			&.tickets { --metric-color: #4b6fa9; --metric-tint: #edf2fa; }
-			&.occupancy { --metric-color: #52836b; --metric-tint: #edf6f1; }
-			&.sessions { --metric-color: #795a97; --metric-tint: #f3eef8; }
+			&.revenue { --metric-color: var(--warning); --metric-tint: color-mix(in srgb, var(--warning) 14%, var(--card)); }
+			&.tickets { --metric-color: var(--primary); --metric-tint: color-mix(in srgb, var(--primary) 14%, var(--card)); }
+			&.occupancy { --metric-color: var(--success); --metric-tint: color-mix(in srgb, var(--success) 14%, var(--card)); }
+			&.sessions { --metric-color: var(--muted-foreground); --metric-tint: var(--secondary); }
 		}
 
 		.metric-icon {
@@ -183,8 +139,10 @@
 				font-weight: 450;
 			}
 
-			&.positive { color: #39805a; }
-			&.neutral { color: #626774; }
+			&--success { color: color-mix(in srgb, var(--success) 72%, var(--foreground)); }
+			&--warning { color: color-mix(in srgb, var(--warning) 72%, var(--foreground)); }
+			&--info,
+			&--default { color: var(--muted-foreground); }
 		}
 
 		.dashboard-grid {
@@ -200,6 +158,8 @@
 		}
 
 		.text-action {
+			min-height: auto;
+			padding: 0;
 			color: var(--primary);
 			font-size: 0.7rem;
 			font-weight: 650;
@@ -208,6 +168,15 @@
 				color: var(--muted-foreground);
 				cursor: not-allowed;
 			}
+		}
+
+		.dashboard-filters {
+			display: grid;
+			grid-template-columns: 1.4fr 1fr 1fr auto;
+			align-items: end;
+			gap: 0.75rem;
+			padding: 1rem 1.35rem;
+			border-bottom: 1px solid var(--border);
 		}
 
 		.table-scroll {
@@ -228,8 +197,8 @@
 		}
 
 		th {
-			background: #fafafb;
-			color: #666b76;
+			background: var(--secondary);
+			color: var(--muted-foreground);
 			font-size: 0.62rem;
 			font-weight: 700;
 			letter-spacing: 0.04em;
@@ -237,8 +206,8 @@
 		}
 
 		td {
-			border-top: 1px solid #ededf0;
-			color: #666b76;
+			border-top: 1px solid var(--border);
+			color: var(--muted-foreground);
 
 			&:first-child {
 				color: var(--foreground);
@@ -253,10 +222,10 @@
 			border-radius: 1rem;
 			vertical-align: middle;
 
-			&.dune { background: #b88645; }
-			&.past { background: #8ba9c7; }
-			&.zone { background: #718070; }
-			&.poor { background: #b17f94; }
+			&--warning { background: var(--warning); }
+			&--info { background: var(--primary); }
+			&--success { background: var(--success); }
+			&--danger { background: var(--danger); }
 		}
 
 		.occupancy-bar {
@@ -266,32 +235,15 @@
 			margin-right: 0.45rem;
 			overflow: hidden;
 			border-radius: 1rem;
-			background: #eceef1;
+			background: var(--secondary);
 			vertical-align: middle;
 
 			span {
 				display: block;
 				height: 100%;
 				border-radius: inherit;
-				background: #a76f18;
+				background: var(--primary);
 			}
-		}
-
-		.status,
-		.room-state {
-			display: inline-flex;
-			align-items: center;
-			border-radius: 2rem;
-			font-size: 0.59rem;
-			font-weight: 700;
-		}
-
-		.status {
-			padding: 0.3rem 0.55rem;
-
-			&.upcoming { background: #eef2f8; color: #4c668f; }
-			&.selling { background: #edf6f1; color: #43775c; }
-			&.almost-full { background: #fbefec; color: #a45447; }
 		}
 
 		.room-list {
@@ -305,7 +257,7 @@
 				align-items: center;
 				gap: 0.7rem;
 				padding-block: 0.9rem;
-				border-bottom: 1px solid #ededf0;
+				border-bottom: 1px solid var(--border);
 
 				&:last-child {
 					border-bottom: 0;
@@ -319,8 +271,8 @@
 			display: grid;
 			place-items: center;
 			border-radius: 0.5rem;
-			background: #f0f1f3;
-			color: #555b67;
+			background: var(--secondary);
+			color: var(--secondary-foreground);
 			font-size: 0.66rem;
 			font-weight: 750;
 		}
@@ -340,21 +292,9 @@
 			font-size: 0.6rem;
 		}
 
-		.room-state {
+		.room-list .ui-badge {
 			gap: 0.3rem;
-			padding: 0.25rem 0.45rem;
-
-			&::before {
-				content: "";
-				width: 0.35rem;
-				height: 0.35rem;
-				border-radius: 50%;
-				background: currentColor;
-			}
-
-			&.live { background: #f8ece9; color: #9d493e; }
-			&.ready { background: #edf6f1; color: #43775c; }
-			&.cleaning { background: #faf2e4; color: #855a1d; }
+			padding-inline: 0.45rem;
 		}
 
 		.activity-panel {
@@ -388,9 +328,9 @@
 			font-size: 0.65rem;
 			font-weight: 750;
 
-			&.ticket { background: #edf6f1; color: #43775c; }
-			&.schedule { background: #eef2f8; color: #4c668f; }
-			&.movie { background: #f6eef4; color: #84536d; }
+			&--success { background: color-mix(in srgb, var(--success) 16%, var(--card)); color: color-mix(in srgb, var(--success) 72%, var(--foreground)); }
+			&--info { background: color-mix(in srgb, var(--primary) 16%, var(--card)); color: color-mix(in srgb, var(--primary) 72%, var(--foreground)); }
+			&--primary { background: color-mix(in srgb, var(--primary) 16%, var(--card)); color: color-mix(in srgb, var(--primary) 72%, var(--foreground)); }
 		}
 
 		.activity-list p,
@@ -429,6 +369,10 @@
 				grid-template-columns: 1fr;
 			}
 
+			.dashboard-filters {
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+			}
+
 			.activity-list {
 				grid-template-columns: 1fr;
 
@@ -453,6 +397,10 @@
 			}
 
 			.metrics-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.dashboard-filters {
 				grid-template-columns: 1fr;
 			}
 
