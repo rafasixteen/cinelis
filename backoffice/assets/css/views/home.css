@@ -43,7 +43,7 @@
 			padding-inline: 1.05rem;
 			border-radius: 0.55rem;
 			background: var(--foreground);
-			color: white;
+			color: var(--background);
 			font-size: 0.78rem;
 			font-weight: 650;
 			box-shadow: 0 0.25rem 0.75rem rgb(30 32 40 / 12%);

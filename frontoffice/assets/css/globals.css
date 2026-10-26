@@ -8,24 +8,3 @@
 @import "./components/header.css";
 @import "./components/footer.css";
 @import "./views/home.css";
-
-@layer base {
-	:root {
-		--background: #0b0d12;
-		--foreground: #f5f2ea;
-
-		--card: #131720;
-		--card-foreground: #f5f2ea;
-
-		--primary: #d9a441;
-		--primary-foreground: #17120a;
-
-		--secondary: #1b2230;
-		--secondary-foreground: #f5f2ea;
-
-		--muted: #171c26;
-		--muted-foreground: #9ca3af;
-
-		--border: #2a3140;
-	}
-}

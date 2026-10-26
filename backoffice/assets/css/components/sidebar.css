@@ -17,7 +17,7 @@
 			display: flex;
 			align-items: center;
 			padding-inline: 0.5rem;
-			border-bottom: 1px solid rgb(255 255 255 / 8%);
+			border-bottom: 1px solid hsl(40 10% 94% / 8%);
 		}
 
 		.brand {
@@ -87,7 +87,7 @@
 			}
 
 			&:hover {
-				background: rgb(255 255 255 / 5%);
+				background: hsl(40 10% 94% / 5%);
 				color: var(--sidebar-foreground);
 			}
 
@@ -119,7 +119,7 @@
 			align-items: center;
 			gap: 0.7rem;
 			padding: 0.9rem 0.65rem 0;
-			border-top: 1px solid rgb(255 255 255 / 8%);
+			border-top: 1px solid hsl(40 10% 94% / 8%);
 		}
 
 		.venue-mark {
@@ -127,9 +127,9 @@
 			height: 2rem;
 			display: grid;
 			place-items: center;
-			border: 1px solid rgb(255 255 255 / 10%);
+			border: 1px solid hsl(40 10% 94% / 10%);
 			border-radius: 50%;
-			background: rgb(255 255 255 / 6%);
+			background: hsl(40 10% 94% / 6%);
 			font-size: 0.68rem;
 			font-weight: 750;
 		}

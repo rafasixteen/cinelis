@@ -11,20 +11,9 @@
 
 @layer base {
 	:root {
-		--background: #f3f4f6;
-		--foreground: #1e2028;
-		--card: #ffffff;
-		--card-foreground: #1e2028;
-		--primary: #8a5a0a;
-		--primary-foreground: #ffffff;
-		--secondary: #eceef2;
-		--secondary-foreground: #343741;
-		--muted: #f7f7f8;
-		--muted-foreground: #646975;
-		--border: #e2e3e7;
-		--sidebar: #12151c;
-		--sidebar-foreground: #f7f4ec;
-		--sidebar-muted: #9298a6;
+		--sidebar: hsl(40 10% 12%);
+		--sidebar-foreground: hsl(40 10% 94%);
+		--sidebar-muted: hsl(40 10% 64%);
 	}
 
 	* {
