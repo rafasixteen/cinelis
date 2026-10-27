@@ -41,8 +41,17 @@ common/
 
 ## Development
 
-From the repository root, start the backoffice together with the other applications:
+From the repository root, start the shared Docker infrastructure and all
+development processes:
 
 ```bash
 task dev
 ```
+
+The backoffice is available through the Caddy path prefix:
+
+```text
+http://cinelis.localhost/admin/
+```
+
+The dekit TUI exposes separate backoffice PHP-FPM and Tailwind processes.
