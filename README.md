@@ -105,6 +105,8 @@ CADDY_FRONTOFFICE_UPSTREAM=frontoffice:9000
 
 DB_HOST=localhost
 DB_PORT=5432
+DB_CONTAINER_HOST=postgres
+DB_CONTAINER_PORT=5432
 DB_NAME=cinelis
 DB_USER=postgres
 DB_PASSWORD=postgres
@@ -118,16 +120,12 @@ Do not commit `.env`.
 
 ## Install dependencies
 
-Install PHP dependencies from the repository root:
+PHP dependencies are installed inside the Docker images during
+`task infra:up`. The host-side console commands also require the repository
+Composer dependencies:
 
 ```bash
 composer install
-```
-
-After changing Composer namespaces or autoload configuration:
-
-```bash
-composer dump-autoload
 ```
 
 ---
@@ -369,7 +367,6 @@ CSS classes may be locally scoped using nesting:
 Make sure:
 
 ```bash
-composer install
 task infra:up
 task migrate
 ```

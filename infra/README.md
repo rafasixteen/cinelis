@@ -51,7 +51,7 @@ Development adds:
 
 - Read-only bind mounts for `common/` and each application directory.
 - Composer development dependencies.
-- Local PostgreSQL access on `127.0.0.1:5432`.
+- A fixed local PostgreSQL mapping on `127.0.0.1:5432` for external tools.
 - Caddy access on `127.0.0.1:${CADDY_HTTP_PORT}`.
 - The local HTTP-only `dev/Caddyfile`.
 - `YII_DEBUG=1` and `YII_ENV=dev`.
@@ -66,6 +66,12 @@ http://cinelis.localhost/       # frontoffice
 http://cinelis.localhost/admin/ # backoffice
 http://cinelis.localhost/api/   # API
 ```
+
+Database configuration separates host access from the Docker network:
+`DB_HOST` and `DB_PORT` describe host-side access, while
+`DB_CONTAINER_HOST` and `DB_CONTAINER_PORT` are injected into the PHP
+containers and used by PostgreSQL. The fixed host mapping is only a local
+convenience and is not used by the PHP applications.
 
 ## Production
 
@@ -124,6 +130,13 @@ task infra:down
 task infra:restart
 task infra:logs
 task infra:ps
+```
+
+Database migrations run through the host-side Yii console application. The
+console is not a Compose service:
+
+```bash
+task migrate
 ```
 
 The root `task dev` command starts this development stack and the Tailwind

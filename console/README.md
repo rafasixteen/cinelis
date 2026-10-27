@@ -26,7 +26,8 @@ console/
 
 ## Database migrations
 
-Create a migration from the repository root:
+Create a migration from the repository root. The command runs through the
+host-side Yii console application:
 
 ```bash
 task migrate:create -- create_movies_table
