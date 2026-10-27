@@ -17,6 +17,14 @@ services:
         volumes:
             - ../common:/var/www/cinelis/common:ro
             - ../api:/var/www/cinelis/api:ro
+        develop:
+            watch:
+                - action: rebuild
+                  path: ../composer.json
+                - action: rebuild
+                  path: ../composer.lock
+                - action: rebuild
+                  path: docker/php-fpm/Dockerfile
 
     backoffice:
         image: cinelis-backoffice-php-fpm:dev
@@ -32,6 +40,14 @@ services:
         volumes:
             - ../common:/var/www/cinelis/common:ro
             - ../backoffice:/var/www/cinelis/backoffice:ro
+        develop:
+            watch:
+                - action: rebuild
+                  path: ../composer.json
+                - action: rebuild
+                  path: ../composer.lock
+                - action: rebuild
+                  path: docker/php-fpm/Dockerfile
 
     frontoffice:
         image: cinelis-frontoffice-php-fpm:dev
@@ -47,6 +63,14 @@ services:
         volumes:
             - ../common:/var/www/cinelis/common:ro
             - ../frontoffice:/var/www/cinelis/frontoffice:ro
+        develop:
+            watch:
+                - action: rebuild
+                  path: ../composer.json
+                - action: rebuild
+                  path: ../composer.lock
+                - action: rebuild
+                  path: docker/php-fpm/Dockerfile
 
     caddy:
         ports:

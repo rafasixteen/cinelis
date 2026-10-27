@@ -139,6 +139,11 @@ task dev
 Use `task dev:attach` to reattach to the dekit TUI and `task dev:stop` to stop
 the TUI and infrastructure together.
 
+The development stack uses Docker's Compose Watch integration. PHP source
+changes are live-mounted; changes to Composer dependencies or the PHP-FPM
+Dockerfile automatically rebuild the affected PHP-FPM services. Docker's
+build cache keeps `task dev` fast when those build inputs are unchanged.
+
 To start only the Docker infrastructure:
 
 ```bash
