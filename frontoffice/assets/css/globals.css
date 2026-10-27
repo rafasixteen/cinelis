@@ -1,0 +1,11 @@
+@import "tailwindcss";
+@import "../../../common/assets/css/base.css";
+@import "../../../common/assets/css/primitives.css";
+
+@source "../../components";
+@source "../../views";
+@source "../../layouts";
+
+@import "./components/header.css";
+@import "./components/footer.css";
+@import "./views/home.css";

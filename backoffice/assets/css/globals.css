@@ -1,0 +1,65 @@
+@import "tailwindcss";
+@import "../../../common/assets/css/base.css";
+@import "../../../common/assets/css/primitives.css";
+
+@source "../../components";
+@source "../../views";
+@source "../../layouts";
+
+@import "./components/sidebar.css";
+@import "./components/header.css";
+@import "./views/home.css";
+
+@layer base {
+	:root {
+		--sidebar: hsl(40 10% 12%);
+		--sidebar-foreground: hsl(40 10% 94%);
+		--sidebar-muted: hsl(40 10% 64%);
+	}
+
+	* {
+		box-sizing: border-box;
+	}
+
+	a {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	button,
+	input,
+	select,
+	textarea {
+		font: inherit;
+	}
+}
+
+@layer components {
+	.backoffice-shell {
+		min-height: 100vh;
+		display: grid;
+		grid-template-columns: 16.5rem minmax(0, 1fr);
+	}
+
+	.workspace {
+		min-width: 0;
+	}
+
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+	}
+
+	@media (max-width: 900px) {
+		.backoffice-shell {
+			display: block;
+		}
+	}
+}

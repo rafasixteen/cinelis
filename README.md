@@ -6,11 +6,11 @@ Cinelis is a cinema management system composed of several applications sharing t
 
 ```text
 cine-lis/
+├── api/
+├── backoffice/
+├── console/
+├── frontoffice/
 ├── apps/
-│   ├── api/
-│   ├── backoffice/
-│   ├── console/
-│   ├── frontoffice/
 │   └── mobile/
 ├── docs/
 ├── common/
@@ -24,10 +24,10 @@ cine-lis/
 
 ### Applications
 
-- [`apps/api`](apps/api/README.md) — HTTP API used by the mobile app and other clients.
-- [`apps/backoffice`](apps/backoffice/README.md) — internal web application for cinema management.
-- [`apps/frontoffice`](apps/frontoffice/README.md) — public-facing cinema website.
-- [`apps/console`](apps/console/README.md) — Yii console application for migrations, maintenance tasks, seeders, and CLI commands.
+- [`api`](api/README.md) — HTTP API used by the mobile app and other clients.
+- [`backoffice`](backoffice/README.md) — internal web application for cinema management.
+- [`frontoffice`](frontoffice/README.md) — public-facing cinema website.
+- [`console`](console/README.md) — Yii console application for migrations, maintenance tasks, seeders, and CLI commands.
 - [`apps/mobile`](apps/mobile/README.md) — Android application.
 
 ### Shared code
@@ -49,7 +49,10 @@ Application-specific HTTP concerns, views, forms, and presentation logic should 
 
 [`infra`](infra/README.md) contains the local infrastructure required by the applications, such as PostgreSQL.
 
-Infrastructure runs through Docker while the PHP applications run directly on the host during development.
+Infrastructure and PHP applications run through Docker Compose during
+development. Each PHP-FPM container contains only its application code and
+the shared `common/` code, with those source directories mounted read-only for
+live changes. Caddy provides the single local entrypoint.
 
 See [`infra/README.md`](infra/README.md) for details.
 
@@ -74,6 +77,7 @@ The project currently uses:
 - Node.js
 - Tailwind CSS CLI
 - Task
+- dekit
 - Docker
 
 Docker itself must be installed separately.
@@ -93,12 +97,16 @@ The `.env` file contains local configuration such as:
 ```dotenv
 APP_ENV=development
 
-API_PORT=8002
-BACKOFFICE_PORT=8001
-FRONTOFFICE_PORT=8000
+CADDY_DOMAIN=cinelis.localhost
+CADDY_HTTP_PORT=80
+CADDY_API_UPSTREAM=api:9000
+CADDY_BACKOFFICE_UPSTREAM=backoffice:9000
+CADDY_FRONTOFFICE_UPSTREAM=frontoffice:9000
 
-DB_HOST=127.0.0.1
+DB_HOST=localhost
 DB_PORT=5432
+DB_CONTAINER_HOST=postgres
+DB_CONTAINER_PORT=5432
 DB_NAME=cinelis
 DB_USER=postgres
 DB_PASSWORD=postgres
@@ -112,16 +120,12 @@ Do not commit `.env`.
 
 ## Install dependencies
 
-Install PHP dependencies from the repository root:
+PHP dependencies are installed inside the Docker images during
+`task infra:up`. The host-side console commands also require the repository
+Composer dependencies:
 
 ```bash
 composer install
-```
-
-After changing Composer namespaces or autoload configuration:
-
-```bash
-composer dump-autoload
 ```
 
 ---
@@ -169,7 +173,7 @@ task migrate
 Migrations live in:
 
 ```text
-apps/console/migrations/
+console/migrations/
 ```
 
 The PHP applications share the same PostgreSQL database.
@@ -178,22 +182,41 @@ The PHP applications share the same PostgreSQL database.
 
 ## Running applications
 
-Run the frontoffice:
+Run the API, backoffice, and frontoffice together:
 
 ```bash
-task fo:dev
+task dev
 ```
 
-Run the backoffice:
+This opens the dekit TUI with separate, labeled processes for the API,
+frontoffice, and backoffice. Use the TUI to inspect output and start, stop, or
+restart individual processes. Reattach with:
 
 ```bash
-task bo:dev
+task dev:attach
 ```
 
-Run the API:
+Stop all development processes with:
 
 ```bash
-task api:dev
+task dev:stop
+```
+
+With infrastructure running, use the local proxy at:
+
+```text
+http://cinelis.localhost/       # frontoffice
+http://cinelis.localhost/admin/ # backoffice
+http://cinelis.localhost/api/   # API
+```
+
+The proxy runs in the Caddy container and is the only HTTP entrypoint. The PHP
+applications are reachable only through the internal Compose network.
+
+Restart an individual process from the command line, for example:
+
+```bash
+dekit restart api
 ```
 
 You can see all available commands with:
@@ -252,7 +275,7 @@ views/
 For example:
 
 ```text
-apps/frontoffice/views/
+frontoffice/views/
 ├── components/
 │   ├── header.php
 │   └── footer.php
@@ -344,7 +367,6 @@ CSS classes may be locally scoped using nesting:
 Make sure:
 
 ```bash
-composer install
 task infra:up
 task migrate
 ```

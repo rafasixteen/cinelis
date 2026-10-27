@@ -2,26 +2,26 @@ version: '3'
 
 tasks:
   up:
-    desc: Start infrastructure
+    desc: Start the development infrastructure
     cmds:
-      - docker compose -f compose.yml up -d
+      - docker compose --env-file ../.env -f compose.yml -f dev/compose.yml up -d --build
 
   down:
-    desc: Stop infrastructure
+    desc: Stop the development infrastructure
     cmds:
-      - docker compose -f compose.yml down
+      - docker compose --env-file ../.env -f compose.yml -f dev/compose.yml down
 
   restart:
-    desc: Restart infrastructure
+    desc: Restart the development infrastructure
     cmds:
-      - docker compose -f compose.yml restart
+      - docker compose --env-file ../.env -f compose.yml -f dev/compose.yml restart
 
   logs:
-    desc: Follow infrastructure logs
+    desc: Follow development infrastructure logs
     cmds:
-      - docker compose -f compose.yml logs -f
+      - docker compose --env-file ../.env -f compose.yml -f dev/compose.yml logs -f
 
   ps:
-    desc: Show infrastructure status
+    desc: Show development infrastructure status
     cmds:
-      - docker compose -f compose.yml ps
+      - docker compose --env-file ../.env -f compose.yml -f dev/compose.yml ps

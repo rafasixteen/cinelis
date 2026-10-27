@@ -2,30 +2,46 @@ version: '3'
 
 includes:
   api:
-    taskfile: ./apps/api/Taskfile.yml
-    dir: ./apps/api
-  bo:
-    taskfile: ./apps/backoffice/Taskfile.yml
-    dir: ./apps/backoffice
-    excludes: [server, tailwind]
+    taskfile: ./api/Taskfile.yml
+    dir: ./api
   docs:
     taskfile: ./docs/Taskfile.yml
     dir: ./docs
-  fo:
-    taskfile: ./apps/frontoffice/Taskfile.yml
-    dir: ./apps/frontoffice
-    excludes: [server, tailwind]
+  bo:
+    taskfile: ./backoffice/Taskfile.yml
+    dir: ./backoffice
   infra:
     taskfile: ./infra/Taskfile.yml
     dir: ./infra
+  fo:
+    taskfile: ./frontoffice/Taskfile.yml
+    dir: ./frontoffice
   migrations:
-    taskfile: ./apps/console/Taskfile.yml
+    taskfile: ./console/Taskfile.yml
     dir: .
     flatten: true
 
 dotenv: ['.env']
 
 tasks:
+  dev:
+    desc: Run the Docker development stack and Tailwind watchers in dekit
+    cmds:
+      - task infra:up
+      - dekit up
+      - dekit attach
+
+  dev:attach:
+    desc: Attach to the dekit development session
+    cmds:
+      - dekit attach
+
+  dev:stop:
+    desc: Stop the dekit development session
+    cmds:
+      - dekit down
+      - task infra:down
+
   default:
     desc: List available tasks
     cmds:

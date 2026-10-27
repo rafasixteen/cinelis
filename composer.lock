@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7384b1fb34addc1768b0cc6ded540c7b",
+    "content-hash": "c5fad7c0c90269f127a308e88c1eb7a7",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -409,6 +409,18 @@
                 }
             ],
             "time": "2026-08-24T09:06:52+00:00"
+        },
+        {
+            "name": "npm-asset/lucide-static",
+            "version": "1.61.0",
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.61.0.tgz"
+            },
+            "type": "npm-asset",
+            "license": [
+                "ISC"
+            ]
         },
         {
             "name": "phpoption/phpoption",

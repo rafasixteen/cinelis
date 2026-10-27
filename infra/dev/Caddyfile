@@ -1,0 +1,52 @@
+{
+	# Development runs on a local HTTP domain; do not provision certificates.
+	auto_https off
+
+	# The admin API is unnecessary for this local proxy.
+	admin off
+}
+
+# Route the single local domain through the three PHP-FPM services.
+http://{$CADDY_DOMAIN} {
+	# Preserve /api in the request so Yii can resolve API routes and generate
+	# URLs with the same public prefix.
+	@api path /api /api/*
+	handle @api {
+		root * /var/www/cinelis/api/web
+		php_fastcgi {$CADDY_API_UPSTREAM} {
+			root /var/www/cinelis/api/web
+			# Tell Yii that the API is mounted below /api at the public domain.
+			header_up X-Forwarded-Prefix /api
+		}
+	}
+
+	# Static admin files live under backoffice/web, without the /admin prefix.
+	# Strip that public prefix before Caddy looks up the file.
+	@admin path /admin /admin/*
+	@admin_static path /admin/assets/* /admin/css/* /admin/favicon.ico
+	handle @admin_static {
+		uri strip_prefix /admin
+		root * /var/www/cinelis/backoffice/web
+		file_server
+	}
+
+	# Keep /admin on dynamic requests so Yii can generate /admin/... links.
+	handle @admin {
+		root * /var/www/cinelis/backoffice/web
+		php_fastcgi {$CADDY_BACKOFFICE_UPSTREAM} {
+			root /var/www/cinelis/backoffice/web
+			# Tell Yii that the backoffice is mounted below /admin.
+			header_up X-Forwarded-Prefix /admin
+		}
+		file_server
+	}
+
+	# Any path not claimed above belongs to the public frontoffice.
+	handle {
+		root * /var/www/cinelis/frontoffice/web
+		php_fastcgi {$CADDY_FRONTOFFICE_UPSTREAM} {
+			root /var/www/cinelis/frontoffice/web
+		}
+		file_server
+	}
+}

@@ -1,0 +1,30 @@
+tasks:
+  api:
+    label: API PHP-FPM logs
+    cmd: ["docker", "compose", "--env-file", ".env", "-f", "infra/compose.yml", "logs", "-f", "api"]
+    cwd: .
+    autostart: true
+
+  frontoffice/server:
+    label: Frontoffice PHP-FPM logs
+    cmd: ["docker", "compose", "--env-file", ".env", "-f", "infra/compose.yml", "logs", "-f", "frontoffice"]
+    cwd: .
+    autostart: true
+
+  frontoffice/tailwind:
+    label: Frontoffice Tailwind
+    cmd: ["tailwindcss", "-i", "frontoffice/assets/css/globals.css", "-o", "frontoffice/web/css/globals.css", "--watch=always"]
+    cwd: .
+    autostart: true
+
+  backoffice/server:
+    label: Backoffice PHP-FPM logs
+    cmd: ["docker", "compose", "--env-file", ".env", "-f", "infra/compose.yml", "logs", "-f", "backoffice"]
+    cwd: .
+    autostart: true
+
+  backoffice/tailwind:
+    label: Backoffice Tailwind
+    cmd: ["tailwindcss", "-i", "backoffice/assets/css/globals.css", "-o", "backoffice/web/css/globals.css", "--watch=always"]
+    cwd: .
+    autostart: true

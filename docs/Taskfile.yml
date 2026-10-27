@@ -4,4 +4,4 @@ tasks:
   serve:
     desc: Serve the documentation locally
     cmds:
-      - python -m http.server "${DOCS_PORT:-8003}" --bind 127.0.0.1
+      - php -S "127.0.0.1:${DOCS_PORT:-8003}" -t .
