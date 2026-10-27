@@ -99,11 +99,17 @@ Do not manually edit the generated file.
 
 ## Development
 
-From the repository root, start the frontoffice together with the other applications:
+From the repository root, start the shared Docker infrastructure and all
+development processes:
 
 ```bash
 task dev
 ```
 
-The dekit TUI exposes the frontoffice server and Tailwind watcher as separate
-processes.
+The frontoffice is available at:
+
+```text
+http://cinelis.localhost/
+```
+
+The dekit TUI exposes separate frontoffice PHP-FPM and Tailwind processes.

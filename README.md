@@ -129,6 +129,18 @@ composer install
 
 ## Start infrastructure
 
+Start the complete development workflow, including PostgreSQL, PHP-FPM,
+Caddy, and the dekit process manager:
+
+```bash
+task dev
+```
+
+Use `task dev:attach` to reattach to the dekit TUI and `task dev:stop` to stop
+the TUI and infrastructure together.
+
+To start only the Docker infrastructure:
+
 ```bash
 task infra:up
 ```
@@ -150,6 +162,9 @@ Stop it:
 ```bash
 task infra:down
 ```
+
+Use `task infra:up` when you need the database and Caddy without the dekit
+watchers.
 
 ---
 
@@ -179,15 +194,10 @@ The PHP applications share the same PostgreSQL database.
 
 ## Running applications
 
-Run the API, backoffice, and frontoffice together:
-
-```bash
-task dev
-```
-
-This opens the dekit TUI with separate, labeled processes for the API,
-frontoffice, and backoffice. Use the TUI to inspect output and start, stop, or
-restart individual processes. Reattach with:
+`task dev` opens the dekit TUI with separate, labeled processes for the API,
+frontoffice, backoffice PHP-FPM logs, and both Tailwind watchers. Use the TUI
+to inspect output and start, stop, or restart individual processes. Reattach
+with:
 
 ```bash
 task dev:attach
@@ -209,6 +219,12 @@ http://cinelis.localhost/api/   # API
 
 The proxy runs in the Caddy container and is the only HTTP entrypoint. The PHP
 applications are reachable only through the internal Compose network.
+
+List available dekit processes with:
+
+```bash
+dekit ls
+```
 
 Restart an individual process from the command line, for example:
 

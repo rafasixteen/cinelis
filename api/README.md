@@ -44,8 +44,18 @@ web/index.php
 
 ## Development
 
-From the repository root, start the API together with the other applications:
+From the repository root, start the shared Docker infrastructure and all
+development processes:
 
 ```bash
 task dev
 ```
+
+The API is available through the Caddy path prefix:
+
+```text
+http://cinelis.localhost/api/
+```
+
+Use the dekit TUI to inspect the API PHP-FPM logs or run `dekit screen api` to
+print its current output.

@@ -26,8 +26,17 @@ console/
 
 ## Database migrations
 
+Install the host-side Composer dependencies once, then start the database
+infrastructure:
+
+```bash
+composer install
+task infra:up
+```
+
 Create a migration from the repository root. The command runs through the
-host-side Yii console application:
+host-side Yii console application and connects to the published PostgreSQL
+port:
 
 ```bash
 task migrate:create -- create_movies_table

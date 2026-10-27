@@ -31,7 +31,7 @@ Compose files are applied on top of it.
 
 ## Development
 
-Start the development stack from the repository root:
+Start the Docker infrastructure from the repository root:
 
 ```bash
 task infra:up
@@ -58,6 +58,14 @@ Development adds:
 
 Source changes are visible immediately because only the application source is
 mounted. Runtime data and Yii-published assets remain in named volumes.
+
+For the complete workflow, including dekit and the Tailwind watchers, use:
+
+```bash
+task dev
+```
+
+Use `task dev:stop` to stop both the dekit processes and the infrastructure.
 
 The local routes are:
 
