@@ -1,16 +1,14 @@
 tasks:
   api:
-    label: API
-    cmd: ["php", "-S", "127.0.0.1:8002", "-t", "web"]
-    cwd: api
-    ready: {tcp: "127.0.0.1:8002"}
+    label: API PHP-FPM logs
+    cmd: ["docker", "compose", "--env-file", ".env", "-f", "infra/compose.yml", "logs", "-f", "api"]
+    cwd: .
     autostart: true
 
   frontoffice/server:
-    label: Frontoffice server
-    cmd: ["php", "-S", "127.0.0.1:8000", "-t", "web"]
-    cwd: frontoffice
-    ready: {tcp: "127.0.0.1:8000"}
+    label: Frontoffice PHP-FPM logs
+    cmd: ["docker", "compose", "--env-file", ".env", "-f", "infra/compose.yml", "logs", "-f", "frontoffice"]
+    cwd: .
     autostart: true
 
   frontoffice/tailwind:
@@ -20,10 +18,9 @@ tasks:
     autostart: true
 
   backoffice/server:
-    label: Backoffice server
-    cmd: ["php", "-S", "127.0.0.1:8001", "-t", "web"]
-    cwd: backoffice
-    ready: {tcp: "127.0.0.1:8001"}
+    label: Backoffice PHP-FPM logs
+    cmd: ["docker", "compose", "--env-file", ".env", "-f", "infra/compose.yml", "logs", "-f", "backoffice"]
+    cwd: .
     autostart: true
 
   backoffice/tailwind:

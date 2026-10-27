@@ -1,4 +1,113 @@
-name: cinelis_dev
+name: ${COMPOSE_PROJECT_NAME:-cinelis}
 
-include:
-    - services/postgres.yml
+x-php-app: &php-app
+    working_dir: /var/www/cinelis
+
+    environment:
+        APP_ENV: ${APP_ENV:-production}
+        YII_DEBUG: ${YII_DEBUG:-0}
+        YII_ENV: ${YII_ENV:-prod}
+        DB_HOST: postgres
+        DB_PORT: 5432
+        DB_NAME: ${DB_NAME:?Set DB_NAME}
+        DB_USER: ${DB_USER:?Set DB_USER}
+        DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD}
+
+    depends_on:
+        postgres:
+            condition: service_healthy
+
+services:
+    postgres:
+        image: postgres:18-alpine
+        restart: unless-stopped
+
+        environment:
+            POSTGRES_DB: ${DB_NAME:?Set DB_NAME}
+            POSTGRES_USER: ${DB_USER:?Set DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD}
+
+        volumes:
+            - postgres-data:/var/lib/postgresql
+
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+
+    api:
+        <<: *php-app
+        image: ${API_IMAGE:-cinelis-api-php-fpm:latest}
+
+        build:
+            context: ..
+            dockerfile: infra/docker/php-fpm/Dockerfile
+            args:
+                APP_DIRECTORY: api
+                COMPOSER_DEV_DEPENDENCIES: ${COMPOSER_DEV_DEPENDENCIES:-false}
+
+        volumes:
+            - cinelis-api-assets:/var/www/cinelis/api/web/assets
+            - cinelis-api-runtime:/var/www/cinelis/api/runtime
+
+    backoffice:
+        <<: *php-app
+        image: ${BACKOFFICE_IMAGE:-cinelis-backoffice-php-fpm:latest}
+
+        build:
+            context: ..
+            dockerfile: infra/docker/php-fpm/Dockerfile
+            args:
+                APP_DIRECTORY: backoffice
+                COMPOSER_DEV_DEPENDENCIES: ${COMPOSER_DEV_DEPENDENCIES:-false}
+
+        volumes:
+            - cinelis-backoffice-assets:/var/www/cinelis/backoffice/web/assets
+            - cinelis-backoffice-runtime:/var/www/cinelis/backoffice/runtime
+
+    frontoffice:
+        <<: *php-app
+        image: ${FRONTOFFICE_IMAGE:-cinelis-frontoffice-php-fpm:latest}
+
+        build:
+            context: ..
+            dockerfile: infra/docker/php-fpm/Dockerfile
+            args:
+                APP_DIRECTORY: frontoffice
+                COMPOSER_DEV_DEPENDENCIES: ${COMPOSER_DEV_DEPENDENCIES:-false}
+
+        volumes:
+            - cinelis-frontoffice-assets:/var/www/cinelis/frontoffice/web/assets
+            - cinelis-frontoffice-runtime:/var/www/cinelis/frontoffice/runtime
+
+    caddy:
+        image: caddy:2-alpine
+
+        environment:
+            CADDY_DOMAIN: ${CADDY_DOMAIN:?Set CADDY_DOMAIN}
+            CADDY_API_UPSTREAM: ${CADDY_API_UPSTREAM:-api:9000}
+            CADDY_BACKOFFICE_UPSTREAM: ${CADDY_BACKOFFICE_UPSTREAM:-backoffice:9000}
+            CADDY_FRONTOFFICE_UPSTREAM: ${CADDY_FRONTOFFICE_UPSTREAM:-frontoffice:9000}
+
+        depends_on:
+            api:
+                condition: service_started
+            backoffice:
+                condition: service_started
+            frontoffice:
+                condition: service_started
+
+        volumes:
+            - cinelis-api-assets:/var/www/cinelis/api/web/assets:ro
+            - cinelis-backoffice-assets:/var/www/cinelis/backoffice/web/assets:ro
+            - cinelis-frontoffice-assets:/var/www/cinelis/frontoffice/web/assets:ro
+
+volumes:
+    postgres-data:
+    cinelis-api-assets:
+    cinelis-api-runtime:
+    cinelis-backoffice-assets:
+    cinelis-backoffice-runtime:
+    cinelis-frontoffice-assets:
+    cinelis-frontoffice-runtime:

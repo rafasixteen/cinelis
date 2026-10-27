@@ -49,7 +49,10 @@ Application-specific HTTP concerns, views, forms, and presentation logic should 
 
 [`infra`](infra/README.md) contains the local infrastructure required by the applications, such as PostgreSQL.
 
-Infrastructure runs through Docker while the PHP applications run directly on the host during development.
+Infrastructure and PHP applications run through Docker Compose during
+development. Each PHP-FPM container contains only its application code and
+the shared `common/` code, with those source directories mounted read-only for
+live changes. Caddy provides the single local entrypoint.
 
 See [`infra/README.md`](infra/README.md) for details.
 
@@ -94,11 +97,13 @@ The `.env` file contains local configuration such as:
 ```dotenv
 APP_ENV=development
 
-API_PORT=8002
-BACKOFFICE_PORT=8001
-FRONTOFFICE_PORT=8000
+CADDY_DOMAIN=cinelis.localhost
+CADDY_HTTP_PORT=80
+CADDY_API_UPSTREAM=api:9000
+CADDY_BACKOFFICE_UPSTREAM=backoffice:9000
+CADDY_FRONTOFFICE_UPSTREAM=frontoffice:9000
 
-DB_HOST=127.0.0.1
+DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=cinelis
 DB_USER=postgres
@@ -198,6 +203,17 @@ Stop all development processes with:
 ```bash
 task dev:stop
 ```
+
+With infrastructure running, use the local proxy at:
+
+```text
+http://cinelis.localhost/       # frontoffice
+http://cinelis.localhost/admin/ # backoffice
+http://cinelis.localhost/api/   # API
+```
+
+The proxy runs in the Caddy container and is the only HTTP entrypoint. The PHP
+applications are reachable only through the internal Compose network.
 
 Restart an individual process from the command line, for example:
 

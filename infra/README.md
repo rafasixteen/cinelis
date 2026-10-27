@@ -1,174 +1,122 @@
 # Cinelis Infrastructure
 
-This directory contains the local infrastructure used by Cinelis during development.
-
-Application processes such as the API, frontoffice and backoffice run directly on the host. Docker is used only for infrastructure services.
+The API, frontoffice, backoffice, PostgreSQL, and Caddy run through Docker
+Compose. Development and production use the same PHP-FPM architecture, but
+their filesystem mounts, images, ports, and Caddy configuration are kept
+separate.
 
 ## Structure
 
 ```text
 infra/
-├── services/
-│   └── postgres.yml
-├── compose.yml
+├── compose.yml              # Shared service topology
+├── dev/
+│   ├── compose.yml          # Development overrides
+│   └── Caddyfile            # Local HTTP proxy
+├── prod/
+│   ├── compose.yml          # Production overrides
+│   └── Caddyfile            # HTTPS proxy
+├── docker/
+│   ├── caddy/
+│   │   └── Dockerfile
+│   └── php-fpm/
+│       └── Dockerfile
 ├── Taskfile.yml
 └── README.md
 ```
 
-`compose.yml` is the main Docker Compose entrypoint.
+`compose.yml` contains the shared services, internal network behavior, health
+checks, PHP-FPM configuration, and named volumes. The environment-specific
+Compose files are applied on top of it.
 
-Individual infrastructure services are defined under:
+## Development
 
-```text
-services/
-```
-
-This keeps each service isolated and makes the Compose configuration easier to extend.
-
-## Current services
-
-The development infrastructure currently includes:
-
-- PostgreSQL 18
-
-PostgreSQL is defined in:
-
-```text
-services/postgres.yml
-```
-
-## Docker Compose
-
-The main `compose.yml` defines the Compose project and includes the individual service files:
-
-```yaml
-name: cinelis_dev
-
-include:
-    - services/postgres.yml
-```
-
-Additional infrastructure services should be added as separate files under `services/` and included from `compose.yml`.
-
-For example:
-
-```text
-services/
-├── postgres.yml
-├── redis.yml
-└── storage.yml
-```
-
-## Environment
-
-Infrastructure configuration is read from the environment.
-
-The PostgreSQL service expects:
-
-```dotenv
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_NAME=cinelis
-DB_USER=postgres
-DB_PASSWORD=postgres
-```
-
-Required Compose variables use the `${VAR:?message}` syntax, so Docker Compose will fail immediately if they are missing.
-
-For example:
-
-```yaml
-POSTGRES_DB: ${DB_NAME:?Set DB_NAME}
-```
-
-## PostgreSQL
-
-The development PostgreSQL container is named:
-
-```text
-cinelis-dev-postgres
-```
-
-and uses:
-
-```text
-postgres:18-alpine
-```
-
-The service is exposed only on the local machine:
-
-```yaml
-ports:
-    - "127.0.0.1:${DB_PORT:?Set DB_PORT}:5432"
-```
-
-Because the PHP applications run directly on the host, they connect to PostgreSQL through:
-
-```text
-127.0.0.1:${DB_PORT}
-```
-
-The internal PostgreSQL container port remains:
-
-```text
-5432
-```
-
-## Persistence
-
-PostgreSQL data is stored in the named Docker volume:
-
-```text
-postgres-data
-```
-
-The service mounts it at:
-
-```text
-/var/lib/postgresql
-```
-
-This means database data survives normal container recreation.
-
-Running:
+Start the development stack from the repository root:
 
 ```bash
-docker compose down
+task infra:up
 ```
 
-does not remove the volume.
-
-Commands such as:
+This is equivalent to:
 
 ```bash
-docker compose down -v
+docker compose \
+    --env-file .env \
+    -f infra/compose.yml \
+    -f infra/dev/compose.yml \
+    up -d --build
 ```
 
-or:
+Development adds:
+
+- Read-only bind mounts for `common/` and each application directory.
+- Composer development dependencies.
+- Local PostgreSQL access on `127.0.0.1:5432`.
+- Caddy access on `127.0.0.1:${CADDY_HTTP_PORT}`.
+- The local HTTP-only `dev/Caddyfile`.
+- `YII_DEBUG=1` and `YII_ENV=dev`.
+
+Source changes are visible immediately because only the application source is
+mounted. Runtime data and Yii-published assets remain in named volumes.
+
+The local routes are:
+
+```text
+http://cinelis.localhost/       # frontoffice
+http://cinelis.localhost/admin/ # backoffice
+http://cinelis.localhost/api/   # API
+```
+
+## Production
+
+Production uses the same base topology with the production overrides:
 
 ```bash
-docker volume prune
+docker compose \
+    --env-file .env.production \
+    -f infra/compose.yml \
+    -f infra/prod/compose.yml \
+    up -d --build
 ```
 
-may permanently delete the local development database.
+Production adds:
 
-## Healthcheck
+- Immutable application images without source bind mounts.
+- Composer production dependencies only.
+- A Caddy image containing the public `web/` directories.
+- Caddy certificate and configuration volumes.
+- Public ports `80` and `443` only on Caddy.
+- No published PostgreSQL port.
+- The HTTPS `prod/Caddyfile`.
+- `YII_DEBUG=0` and `YII_ENV=prod`.
 
-PostgreSQL uses `pg_isready` to report when it is ready to accept connections:
+Set `CADDY_DOMAIN` to the real domain and provide the database credentials and
+cookie keys through the production environment or a secret manager. The
+production PHP-FPM services are reachable only on the internal Compose
+network.
 
-```yaml
-healthcheck:
-    test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
-    interval: 5s
-    timeout: 5s
-    retries: 5
+## Routing
+
+Both Caddy configurations use the same path-based routing:
+
+```text
+/api/*   -> api:9000
+/admin/* -> backoffice:9000
+/*       -> frontoffice:9000
 ```
 
-Other services that depend on PostgreSQL can use this health state when startup ordering becomes necessary.
+The PHP-FPM services listen on their internal FastCGI port `9000`. They do not
+publish host ports. Caddy is the only HTTP entrypoint.
+
+## Volumes
+
+PostgreSQL data is stored in `postgres-data`. Each Yii application has separate
+runtime and published-asset volumes. Caddy mounts the asset volumes read-only.
+
+Normal `docker compose down` preserves these volumes. Use `down -v` only when
+intentionally deleting local database and generated application data.
 
 ## Commands
-
-Infrastructure commands can be run from the repository root:
 
 ```bash
 task infra:up
@@ -178,103 +126,5 @@ task infra:logs
 task infra:ps
 ```
 
-Or directly from this directory:
-
-```bash
-task up
-task down
-task restart
-task logs
-task ps
-```
-
-## Start infrastructure
-
-```bash
-task up
-```
-
-This starts the configured infrastructure services in the background.
-
-## Stop infrastructure
-
-```bash
-task down
-```
-
-This stops and removes the Compose containers and network while preserving named volumes.
-
-## Restart infrastructure
-
-```bash
-task restart
-```
-
-## View logs
-
-```bash
-task logs
-```
-
-## View status
-
-```bash
-task ps
-```
-
-## Database migrations
-
-Docker is responsible for running PostgreSQL, but schema changes are managed by the Yii console application.
-
-From the repository root:
-
-```bash
-task migrate
-```
-
-Create a new migration with:
-
-```bash
-task migrate:create -- create_example_table
-```
-
-Migration files live in:
-
-```text
-console/migrations/
-```
-
-## Adding a new infrastructure service
-
-Create a new file under:
-
-```text
-infra/services/
-```
-
-For example:
-
-```text
-infra/services/redis.yml
-```
-
-Then include it from `compose.yml`:
-
-```yaml
-name: cinelis_dev
-
-include:
-    - services/postgres.yml
-    - services/redis.yml
-```
-
-Keep each service definition self-contained where possible.
-
-When adding a service:
-
-1. Add its Compose definition under `services/`.
-2. Add any required environment variables to `.env.example`.
-3. Add persistent volumes where needed.
-4. Bind host ports to `127.0.0.1` unless external network access is intentionally required.
-5. Add an appropriate healthcheck where useful.
-6. Update this README.
+The root `task dev` command starts this development stack and the Tailwind
+watchers through dekit.

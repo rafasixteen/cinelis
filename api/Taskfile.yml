@@ -2,7 +2,7 @@ version: '3'
 
 tasks:
   dev:
-    desc: Run the API development server
+    desc: Follow the API PHP-FPM logs
     internal: true
     cmds:
-      - php -S "127.0.0.1:${API_PORT:-8002}" -t web
+      - docker compose --env-file ../.env -f ../infra/compose.yml -f ../infra/dev/compose.yml logs -f api

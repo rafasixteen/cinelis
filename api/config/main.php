@@ -5,6 +5,9 @@ return [
 	'basePath' => dirname(__DIR__),
 	'controllerNamespace' => 'api\controllers',
 	'components' => [
+		'request' => [
+			'baseUrl' => $_SERVER['HTTP_X_FORWARDED_PREFIX'] ?? '',
+		],
 		'urlManager' => [
 			'enablePrettyUrl' => true,
 			'showScriptName' => false,

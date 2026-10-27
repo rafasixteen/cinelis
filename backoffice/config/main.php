@@ -14,6 +14,7 @@ return [
 	'components' => [
 		'request' => [
 			'cookieValidationKey' => $_ENV['BACKOFFICE_COOKIE_VALIDATION_KEY'],
+			'baseUrl' => $_SERVER['HTTP_X_FORWARDED_PREFIX'] ?? '',
 		],
 		'db' => require dirname(__DIR__, 2) . '/common/config/db.php',
 		'urlManager' => [

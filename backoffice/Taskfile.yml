@@ -11,7 +11,7 @@ tasks:
   server:
     internal: true
     cmds:
-      - php -S "127.0.0.1:${BACKOFFICE_PORT:-8001}" -t web
+      - docker compose --env-file ../.env -f ../infra/compose.yml -f ../infra/dev/compose.yml logs -f backoffice
 
   tailwind:
     internal: true

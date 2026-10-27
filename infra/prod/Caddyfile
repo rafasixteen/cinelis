@@ -1,0 +1,47 @@
+{
+	# Caddy manages HTTPS certificates for the production domain.
+	admin off
+}
+
+# Route the production domain through the three PHP-FPM services.
+{$CADDY_DOMAIN} {
+	# Preserve /api in the request so Yii can resolve API routes and generate
+	# URLs with the same public prefix.
+	@api path /api /api/*
+	handle @api {
+		root * /var/www/cinelis/api/web
+		php_fastcgi {$CADDY_API_UPSTREAM} {
+			root /var/www/cinelis/api/web
+			header_up X-Forwarded-Prefix /api
+		}
+	}
+
+	# Strip /admin only for static files because those files are stored directly
+	# below backoffice/web in the Caddy image.
+	@admin path /admin /admin/*
+	@admin_static path /admin/assets/* /admin/css/* /admin/favicon.ico
+	handle @admin_static {
+		uri strip_prefix /admin
+		root * /var/www/cinelis/backoffice/web
+		file_server
+	}
+
+	# Keep /admin on dynamic requests so Yii can generate /admin/... links.
+	handle @admin {
+		root * /var/www/cinelis/backoffice/web
+		php_fastcgi {$CADDY_BACKOFFICE_UPSTREAM} {
+			root /var/www/cinelis/backoffice/web
+			header_up X-Forwarded-Prefix /admin
+		}
+		file_server
+	}
+
+	# Any path not claimed above belongs to the public frontoffice.
+	handle {
+		root * /var/www/cinelis/frontoffice/web
+		php_fastcgi {$CADDY_FRONTOFFICE_UPSTREAM} {
+			root /var/www/cinelis/frontoffice/web
+		}
+		file_server
+	}
+}
