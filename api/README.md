@@ -1,6 +1,6 @@
 # API
 
-The API exposes Cinelis functionality to external clients, primarily the Android application.
+The API exposes Cinelis functionality to external clients.
 
 The API is responsible for HTTP concerns such as:
 

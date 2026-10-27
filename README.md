@@ -10,8 +10,6 @@ cine-lis/
 ├── backoffice/
 ├── console/
 ├── frontoffice/
-├── apps/
-│   └── mobile/
 ├── docs/
 ├── common/
 ├── infra/
@@ -24,11 +22,10 @@ cine-lis/
 
 ### Applications
 
-- [`api`](api/README.md) — HTTP API used by the mobile app and other clients.
+- [`api`](api/README.md) — HTTP API used by external clients.
 - [`backoffice`](backoffice/README.md) — internal web application for cinema management.
 - [`frontoffice`](frontoffice/README.md) — public-facing cinema website.
 - [`console`](console/README.md) — Yii console application for migrations, maintenance tasks, seeders, and CLI commands.
-- [`apps/mobile`](apps/mobile/README.md) — Android application.
 
 ### Shared code
 
