@@ -1,6 +1,8 @@
 # Yii runtime and published assets
 /runtime/*
+!/runtime/.gitkeep
 /web/assets/*
+!/web/assets/.gitkeep
 
 # Compiled Tailwind CSS
 /web/css/globals.css
