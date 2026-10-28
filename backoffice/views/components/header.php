@@ -3,40 +3,58 @@
 use common\widgets\Icon;
 use yii\helpers\Html;
 
+/** @var yii\web\View $this */
 ?>
 
 <header class="topbar">
-	<div>
-		<p class="topbar-context">Cinelis Lisboa</p>
-		<p class="topbar-title">Backoffice</p>
+	<div class="breadcrumb">
+		<span>Operações</span>
+		<span aria-hidden="true">/</span>
+		<span><?= Html::encode($this->params['section'] ?? 'Dashboard') ?>
+		</span>
 	</div>
-
 	<div class="topbar-actions">
-		<?= Html::tag(
-			'span',
-			Icon::widget([
-				'name' => 'bell',
-				'options' => ['aria-hidden' => 'true'],
-			])
-			. '<span class="notification-dot"></span>'
-			. '<span class="sr-only">Notifications</span>',
-			[
-				'class' => 'icon-button disabled',
-				'aria-label' => 'Notifications',
-				'aria-disabled' => 'true',
-			],
-		) ?>
+		<button
+			class="icon-button"
+			type="button"
+			data-theme-toggle
+			aria-label="Alternar tema claro e escuro"
+		>
+			<?= Icon::widget(
+				[
+					'name' => 'sun-moon',
+				],
+			) ?>
+		</button>
+		<details class="profile-menu">
+			<summary class="profile" aria-label="Menu de Ana Silva">
+				<span class="avatar" aria-hidden="true">AS</span>
+				<span class="profile-copy">
+					<strong>Ana Silva</strong>
+					<span>Admin</span>
+				</span>
+				<?= Icon::widget([
+					'name' => 'chevron-down',
+					'options' => ['class' => 'chevron'],
+				]) ?>
+			</summary>
+			<div class="profile-dropdown">
+				<strong>Ana Silva</strong>
+				<small>ana@cinelis.pt</small>
+				<?= Html::a(
+					'O meu perfil',
+					[
+						'/users/edit',
+						'id' => 1,
+					],
+				) ?>
 
-		<div class="profile">
-			<div class="avatar" aria-hidden="true">SM</div>
-			<div class="profile-copy">
-				<strong>Admin</strong>
-				<span>Venue manager</span>
+				<?= Html::a(
+					'Login interno',
+					['/auth/login'],
+				) ?>
+				<button type="button" data-demo-action>Terminar sessão</button>
 			</div>
-			<?= Icon::widget([
-				'name' => 'chevron-down',
-				'options' => ['class' => 'chevron', 'aria-hidden' => 'true'],
-			]) ?>
-		</div>
+		</details>
 	</div>
 </header>
