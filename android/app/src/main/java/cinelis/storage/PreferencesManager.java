@@ -39,7 +39,8 @@ public final class PreferencesManager {
     }
 
     public void setServerUrl(String serverUrl) {
-        preferences.edit().putString(KEY_SERVER_URL, serverUrl).apply();
+        String normalized = serverUrl == null ? DEFAULT_SERVER_URL : serverUrl.trim().replaceAll("/+$", "");
+        preferences.edit().putString(KEY_SERVER_URL, normalized).apply();
     }
 
     public int getThemeMode() {

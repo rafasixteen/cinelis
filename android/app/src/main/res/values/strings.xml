@@ -54,4 +54,21 @@
     <string name="payment_notice">Este pagamento é apenas uma simulação para explorar o fluxo da aplicação.</string>
     <string name="pay_now">Pagar e emitir bilhete</string>
     <string name="invalid_phone">Indique um número de telemóvel português válido.</string>
+    <string name="ticket_ready">O seu bilhete está pronto.</string>
+    <string name="ticket_code">Código de entrada</string>
+    <string name="download_ticket">Descarregar bilhete</string>
+    <string name="download_demo">A descarga é ilustrativa neste protótipo.</string>
+    <string name="upcoming_tickets">Próximos</string>
+    <string name="previous_tickets">Anteriores</string>
+    <string name="empty_tickets">Ainda não tem bilhetes nesta categoria.</string>
+    <string name="purchase_history">Histórico de compras</string>
+    <string name="edit_profile">Editar perfil</string>
+    <string name="appearance">Aparência</string>
+    <string name="server_settings">Servidor da API</string>
+    <string name="logout">Terminar sessão</string>
+    <string name="delete_account">Eliminar conta</string>
+    <string name="save">Guardar</string>
+    <string name="system_theme">Sistema</string>
+    <string name="light_theme">Claro</string>
+    <string name="dark_theme">Escuro</string>
 </resources>

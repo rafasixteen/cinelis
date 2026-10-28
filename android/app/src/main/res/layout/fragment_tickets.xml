@@ -1,22 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/space_20">
-
-        <TextView style="@style/Widget.CineLis.Wordmark" android:text="@string/wordmark" />
-        <TextView
-            style="@style/TextAppearance.CineLis.PageTitle"
-            android:layout_marginTop="@dimen/space_32"
-            android:text="@string/tickets_title" />
-        <TextView
-            style="@style/TextAppearance.CineLis.BodyMuted"
-            android:layout_marginTop="@dimen/space_8"
-            android:text="@string/tickets_shell_description" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/background" android:orientation="vertical" android:padding="@dimen/space_20">
+    <TextView style="@style/Widget.CineLis.Wordmark" android:text="@string/wordmark" />
+    <TextView style="@style/TextAppearance.CineLis.PageTitle" android:layout_marginTop="@dimen/space_32" android:text="@string/tickets_title" />
+    <TextView style="@style/TextAppearance.CineLis.BodyMuted" android:layout_marginTop="@dimen/space_8" android:text="@string/tickets_shell_description" />
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_20" android:orientation="horizontal">
+        <Button android:id="@+id/upcoming_tab" android:layout_width="0dp" android:layout_height="@dimen/touch_target" android:layout_weight="1" android:text="@string/upcoming_tickets" />
+        <Button android:id="@+id/previous_tab" android:layout_width="0dp" android:layout_height="@dimen/touch_target" android:layout_weight="1" android:text="@string/previous_tickets" />
     </LinearLayout>
-</ScrollView>
+    <ProgressBar android:id="@+id/loading" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:layout_marginTop="@dimen/space_24" />
+    <TextView android:id="@+id/empty_message" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_32" android:gravity="center" android:text="@string/empty_tickets" android:textColor="@color/muted_foreground" android:visibility="gone" />
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/tickets_list" android:layout_width="match_parent" android:layout_height="0dp" android:layout_marginTop="@dimen/space_16" android:layout_weight="1" />
+</LinearLayout>

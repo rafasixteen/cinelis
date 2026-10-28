@@ -69,7 +69,10 @@ public class AuthFragment extends Fragment {
                 String sessionId = getArguments() == null ? null : getArguments().getString(AppNavigator.ARG_SESSION_ID);
                 controller.popBackStack();
                 AppNavigator navigator = new AppNavigator(controller);
-                if (sessionId != null) navigator.showSeats(sessionId); else navigator.showAccount();
+                int destination = getArguments() == null ? 0 : getArguments().getInt(ARG_RETURN_DESTINATION, 0);
+                if (sessionId != null) navigator.showSeats(sessionId);
+                else if (destination == R.id.ticketsFragment) navigator.showTickets();
+                else navigator.showAccount();
             }
             @Override public void onError(ApiError error) { finishError(error); }
         });

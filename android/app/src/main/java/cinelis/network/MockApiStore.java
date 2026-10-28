@@ -137,7 +137,8 @@ public final class MockApiStore {
     static JSONObject sessionSummary(JSONObject session) {
         return object("id", session.optString("id"), "startsAt", session.optString("startsAt"),
                 "price", session.optDouble("price"), "status", session.optString("status"),
-                "room", copy(session.optJSONObject("room")));
+                "room", copy(session.optJSONObject("room")),
+                "movie", copy(session.optJSONObject("movie")));
     }
 
     static JSONObject seatWithoutStatus(JSONObject seat) {
