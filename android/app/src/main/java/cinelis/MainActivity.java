@@ -13,6 +13,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import cinelis.databinding.ActivityMainBinding;
+import cinelis.ui.home.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -46,8 +47,13 @@ public class MainActivity extends AppCompatActivity {
 
     boolean navigateFromBottomBar(int id) {
         NavController navController = navController();
-        if (id == R.id.homeFragment || id == R.id.navigation_search) {
+        if (id == R.id.homeFragment) {
             navController.popBackStack(R.id.homeFragment, false);
+            return true;
+        }
+        if (id == R.id.navigation_search) {
+            navController.popBackStack(R.id.homeFragment, false);
+            binding.getRoot().post(this::focusHomeSearch);
             return true;
         }
         if (id == R.id.ticketsFragment || id == R.id.accountFragment) {
@@ -58,6 +64,14 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    private void focusHomeSearch() {
+        NavHostFragment host = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment);
+        if (host != null && host.getChildFragmentManager().getPrimaryNavigationFragment() instanceof HomeFragment) {
+            ((HomeFragment) host.getChildFragmentManager().getPrimaryNavigationFragment()).focusSearch();
+        }
     }
 
     private static void applySystemInsets(@NonNull View root) {

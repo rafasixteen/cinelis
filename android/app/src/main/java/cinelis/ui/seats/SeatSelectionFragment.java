@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.ArrayList;
 
 import cinelis.R;
 import cinelis.databinding.FragmentSeatSelectionBinding;
@@ -28,11 +29,14 @@ public class SeatSelectionFragment extends Fragment {
     private SeatGridAdapter adapter;
     private SeatSelectionState selection;
     private String sessionId;
+    private ArrayList<String> restoredSeatIds = new ArrayList<>();
 
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentSeatSelectionBinding.inflate(inflater, container, false);
+        if (savedInstanceState != null) restoredSeatIds = savedInstanceState.getStringArrayList("selectedSeatIds");
+        if (restoredSeatIds == null) restoredSeatIds = new ArrayList<>();
         adapter = new SeatGridAdapter(this::toggleSeat);
         binding.seatGrid.setLayoutManager(new GridLayoutManager(requireContext(), 8));
         binding.seatGrid.setAdapter(adapter);
@@ -60,6 +64,7 @@ public class SeatSelectionFragment extends Fragment {
             @Override public void onSuccess(List<Seat> seats) {
                 if (binding == null) return;
                 selection = new SeatSelectionState(seats, price);
+                for (String id : restoredSeatIds) selection.toggle(id);
                 adapter.submit(seats, selection);
                 binding.loading.setVisibility(View.GONE);
                 updateSummary();
@@ -113,6 +118,11 @@ public class SeatSelectionFragment extends Fragment {
     }
 
     private static String time(String startsAt) { return startsAt != null && startsAt.length() >= 16 ? startsAt.substring(11, 16) : startsAt; }
+
+    @Override public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (selection != null) outState.putStringArrayList("selectedSeatIds", selection.selectedSeatIds());
+    }
 
     @Override public void onDestroyView() { ApiClient.get().cancel(this); binding = null; super.onDestroyView(); }
 }

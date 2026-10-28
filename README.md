@@ -7,6 +7,7 @@ Cinelis is a cinema management system composed of several applications sharing t
 ```text
 cine-lis/
 ├── api/
+├── android/
 ├── backoffice/
 ├── console/
 ├── frontoffice/
@@ -23,6 +24,7 @@ cine-lis/
 ### Applications
 
 - [`api`](api/README.md) — HTTP API used by external clients.
+- [`android`](android/README.md) — native Java mobile UI prototype with an in-app Volley mock service.
 - [`backoffice`](backoffice/README.md) — internal web application for cinema management.
 - [`frontoffice`](frontoffice/README.md) — public-facing cinema website.
 - [`console`](console/README.md) — Yii console application for migrations, maintenance tasks, seeders, and CLI commands.

@@ -31,11 +31,13 @@ public class MovieDetailFragment extends Fragment {
     private UiStateController state;
     private SessionAdapter adapter;
     private String movieId;
+    private String selectedDate = "2026-10-28";
 
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentMovieDetailBinding.inflate(inflater, container, false);
+        if (savedInstanceState != null) selectedDate = savedInstanceState.getString("selectedDate", selectedDate);
         state = new UiStateController(binding.loadingContainer, binding.contentContainer,
                 binding.emptyContainer, binding.errorContainer, binding.errorMessage, binding.retryButton);
         adapter = new SessionAdapter(this::selectSession);
@@ -60,7 +62,7 @@ public class MovieDetailFragment extends Fragment {
                 binding.movieMeta.setText(movie.getDurationMinutes() + " min · " + genre + " · " + movie.getAgeRating());
                 binding.movieSynopsis.setText(movie.getSynopsis());
                 binding.detailPoster.setImageResource(MovieAdapter.poster(movie.getTitle()));
-                loadSessions("2026-10-28");
+                loadSessions(selectedDate);
             }
             @Override public void onError(ApiError error) {
                 if (binding != null) state.showError(error.getMessage(), MovieDetailFragment.this::loadMovie);
@@ -69,6 +71,7 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void loadSessions(String date) {
+        selectedDate = date;
         ApiClient.get().listMovieSessions(movieId, date, this, new ApiCallback<List<CinemaSession>>() {
             @Override public void onSuccess(List<CinemaSession> sessions) {
                 if (binding == null) return;
@@ -85,6 +88,11 @@ public class MovieDetailFragment extends Fragment {
         AppNavigator navigator = new AppNavigator(NavHostFragment.findNavController(this));
         if (ApiClient.get().isAuthenticated()) navigator.showSeats(session.getId());
         else navigator.showAuth(R.id.seatSelectionFragment, session.getId());
+    }
+
+    @Override public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("selectedDate", selectedDate);
     }
 
     @Override public void onDestroyView() {

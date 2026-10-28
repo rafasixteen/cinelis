@@ -29,6 +29,7 @@ public class AuthFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentAuthBinding.inflate(inflater, container, false);
+        if (savedInstanceState != null) setRegistration(savedInstanceState.getBoolean("registration", false));
         binding.authToggle.setOnClickListener(view -> setRegistration(!registration));
         binding.authSubmit.setOnClickListener(view -> submit());
         return binding.getRoot();
@@ -87,6 +88,11 @@ public class AuthFragment extends Fragment {
     private void showError(String message) {
         binding.authError.setText(message);
         binding.authError.setVisibility(View.VISIBLE);
+    }
+
+    @Override public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("registration", registration);
     }
 
     @Override public void onDestroyView() {
