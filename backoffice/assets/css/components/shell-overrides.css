@@ -1,0 +1,224 @@
+@layer components {
+    .sidebar .brand {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+
+    .sidebar .brand img,
+    .sidebar .brand svg {
+        display: block;
+        width: 9rem;
+        max-width: 100%;
+        height: auto;
+    }
+
+    .sidebar .brand small {
+        color: var(--sidebar-muted);
+        font-size: 0.58rem;
+        letter-spacing: 0.05em;
+    }
+
+    .sidebar .sidebar-brand {
+        height: 7rem;
+        border-bottom: 0;
+    }
+
+    .sidebar .sidebar-nav {
+        padding-top: 0.5rem;
+    }
+
+    .sidebar .nav-group + .nav-group {
+        margin-top: 1.75rem;
+    }
+
+    .sidebar .nav-label {
+        padding-inline: 0.6rem;
+        font-size: 0.55rem;
+        letter-spacing: 0.04em;
+        font-weight: 450;
+        margin-bottom: 1rem;
+    }
+
+    .sidebar .nav-link {
+        font-size: 0.75rem;
+        gap: 0.65rem;
+        border-radius: var(--radius-md);
+    }
+
+    .sidebar .nav-link svg {
+        width: 1rem;
+        height: 1rem;
+        fill: none;
+    }
+
+    .topbar {
+        height: 4rem;
+        padding-inline: 2rem;
+        background: var(--background);
+        backdrop-filter: none;
+    }
+
+    .breadcrumb {
+        display: flex;
+        gap: 0.65rem;
+        font-size: 0.7rem;
+        color: var(--muted-foreground);
+        min-width: 0;
+    }
+
+    .breadcrumb > :last-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .topbar .icon-button {
+        width: 2rem;
+        height: 2rem;
+        border-radius: var(--radius-md);
+        background: var(--secondary);
+        cursor: pointer;
+    }
+
+    .topbar .icon-button svg,
+    .topbar .chevron {
+        fill: none;
+    }
+
+    .topbar .avatar {
+        width: 1.9rem;
+        height: 1.9rem;
+        background: var(--secondary);
+        color: var(--foreground);
+        font-size: 0.65rem;
+    }
+
+    .topbar .profile {
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+        list-style: none;
+    }
+
+    .topbar .profile::-webkit-details-marker {
+        display: none;
+    }
+
+    .topbar .profile-copy strong {
+        font-size: 0.72rem;
+    }
+
+    .topbar .profile-copy span {
+        font-size: 0.6rem;
+    }
+
+    .profile-menu {
+        position: relative;
+    }
+
+    .profile-dropdown {
+        position: absolute;
+        top: calc(100% + 1rem);
+        right: 0;
+        min-width: 13rem;
+        display: flex;
+        flex-direction: column;
+        padding: 0.8rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        z-index: 50;
+    }
+
+    .profile-dropdown strong {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.5rem;
+    }
+
+    .profile-dropdown small {
+        color: var(--muted-foreground);
+        padding: 0 0.5rem 0.7rem;
+        font-size: 0.7rem;
+    }
+
+    .profile-dropdown a,
+    .profile-dropdown button {
+        border: 0;
+        background: none;
+        text-align: left;
+        padding: 0.65rem 0.5rem;
+        font-size: 0.78rem;
+        cursor: pointer;
+        border-radius: var(--radius-md);
+    }
+
+    .profile-dropdown a:hover,
+    .profile-dropdown button:hover {
+        background: var(--secondary);
+    }
+
+    @media (max-width: 900px) {
+        .sidebar .sidebar-brand {
+            height: 4.25rem;
+        }
+
+        .sidebar .brand {
+            flex-direction: row;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sidebar .brand img,
+        .sidebar .brand svg {
+            width: 7.5rem;
+        }
+
+        .sidebar .sidebar-nav {
+            padding: 0.5rem 0.75rem;
+        }
+
+        .sidebar .sidebar-menu {
+            display: flex;
+        }
+
+        .sidebar .nav-group + .nav-group {
+            margin: 0;
+        }
+
+        .sidebar .nav-link {
+            white-space: nowrap;
+            padding-inline: 0.75rem;
+        }
+
+        .topbar {
+            padding-inline: 1.25rem;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .sidebar .nav-link span {
+            display: inline;
+        }
+
+        .sidebar .nav-link {
+            height: 2.6rem;
+        }
+
+        .topbar {
+            height: 3.75rem;
+            gap: 1rem;
+            padding-inline: 1rem;
+        }
+
+        .topbar .topbar-actions {
+            gap: 0.75rem;
+        }
+
+        .breadcrumb {
+            font-size: 0.65rem;
+            gap: 0.4rem;
+        }
+    }
+}
