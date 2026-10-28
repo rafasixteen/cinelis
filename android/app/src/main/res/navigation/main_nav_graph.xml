@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="cinelis.ui.home.HomeFragment"
+        android:label="@string/nav_home" />
+
+    <fragment
+        android:id="@+id/movieDetailFragment"
+        android:name="cinelis.ui.movie.MovieDetailFragment"
+        android:label="@string/movie_detail_title">
+        <argument android:name="movieId" app:argType="string" app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/authFragment"
+        android:name="cinelis.ui.auth.AuthFragment"
+        android:label="@string/auth_title">
+        <argument android:name="returnDestination" android:defaultValue="0" app:argType="integer" />
+        <argument android:name="sessionId" app:argType="string" app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/seatSelectionFragment"
+        android:name="cinelis.ui.seats.SeatSelectionFragment"
+        android:label="@string/seats_title">
+        <argument android:name="sessionId" app:argType="string" app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="cinelis.ui.checkout.CheckoutFragment"
+        android:label="@string/checkout_title">
+        <argument android:name="sessionId" app:argType="string" app:nullable="true" />
+        <argument android:name="seatIds" app:argType="string[]" app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/ticketFragment"
+        android:name="cinelis.ui.ticket.TicketFragment"
+        android:label="@string/ticket_title">
+        <argument android:name="ticketId" app:argType="string" app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/ticketsFragment"
+        android:name="cinelis.ui.tickets.TicketsFragment"
+        android:label="@string/tickets_title" />
+
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="cinelis.ui.account.AccountFragment"
+        android:label="@string/account_title" />
+</navigation>
