@@ -186,7 +186,11 @@ public final class ApiClient {
     }
 
     private static String encode(String value) {
-        return URLEncoder.encode(value == null ? "" : value, StandardCharsets.UTF_8);
+        try {
+            return URLEncoder.encode(value == null ? "" : value, "UTF-8");
+        } catch (java.io.UnsupportedEncodingException exception) {
+            throw new IllegalStateException(exception);
+        }
     }
 
     private static <T> void map(JSONObject value, ObjectMapper<T> mapper, ApiCallback<T> callback) {

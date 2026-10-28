@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/space_20">
-
-        <TextView style="@style/Widget.CineLis.Wordmark" android:text="@string/wordmark" />
-        <TextView
-            style="@style/TextAppearance.CineLis.PageTitle"
-            android:layout_marginTop="@dimen/space_32"
-            android:text="@string/movie_detail_title" />
-        <TextView
-            style="@style/TextAppearance.CineLis.BodyMuted"
-            android:layout_marginTop="@dimen/space_8"
-            android:text="@string/movie_detail_shell_description" />
-    </LinearLayout>
-</ScrollView>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/background">
+    <ScrollView android:id="@+id/content_container" android:layout_width="match_parent" android:layout_height="match_parent">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="@dimen/space_20">
+            <TextView style="@style/Widget.CineLis.Wordmark" android:text="@string/wordmark" />
+            <ImageView android:id="@+id/detail_poster" android:layout_width="match_parent" android:layout_height="210dp" android:layout_marginTop="@dimen/space_24" android:contentDescription="@null" android:scaleType="centerCrop" />
+            <TextView android:id="@+id/movie_title" style="@style/TextAppearance.CineLis.PageTitle" android:layout_marginTop="@dimen/space_24" />
+            <TextView android:id="@+id/movie_meta" style="@style/TextAppearance.CineLis.BodyMuted" android:layout_marginTop="@dimen/space_8" />
+            <Button android:id="@+id/trailer_button" android:layout_width="match_parent" android:layout_height="@dimen/touch_target" android:layout_marginTop="@dimen/space_20" android:background="@drawable/bg_button_secondary" android:text="@string/watch_trailer" android:textColor="@color/foreground" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_32" android:text="@string/synopsis" android:textColor="@color/foreground" android:textSize="@dimen/section_title_size" android:textStyle="bold" />
+            <TextView android:id="@+id/movie_synopsis" style="@style/TextAppearance.CineLis.BodyMuted" android:layout_marginTop="@dimen/space_8" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_32" android:text="@string/choose_session" android:textColor="@color/foreground" android:textSize="@dimen/section_title_size" android:textStyle="bold" />
+            <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_12" android:scrollbars="none">
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <Button android:id="@+id/date_today" android:layout_width="wrap_content" android:layout_height="@dimen/touch_target" android:text="Hoje · 28 out." />
+                    <Button android:id="@+id/date_tomorrow" android:layout_width="wrap_content" android:layout_height="@dimen/touch_target" android:layout_marginStart="@dimen/space_8" android:text="Amanhã" />
+                    <Button android:id="@+id/date_later" android:layout_width="wrap_content" android:layout_height="@dimen/touch_target" android:layout_marginStart="@dimen/space_8" android:text="30 out." />
+                </LinearLayout>
+            </HorizontalScrollView>
+            <androidx.recyclerview.widget.RecyclerView android:id="@+id/sessions_list" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_16" android:nestedScrollingEnabled="false" />
+        </LinearLayout>
+    </ScrollView>
+    <ProgressBar android:id="@+id/loading_container" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" />
+    <LinearLayout android:id="@+id/empty_container" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="center" android:gravity="center" android:orientation="vertical" android:padding="@dimen/space_32" android:visibility="gone"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sem sessões disponíveis." android:textColor="@color/foreground" /></LinearLayout>
+    <LinearLayout android:id="@+id/error_container" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="center" android:gravity="center" android:orientation="vertical" android:padding="@dimen/space_32" android:visibility="gone"><TextView android:id="@+id/error_message" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/danger"/><Button android:id="@+id/retry_button" android:layout_width="wrap_content" android:layout_height="@dimen/touch_target" android:text="@string/retry"/></LinearLayout>
+</FrameLayout>

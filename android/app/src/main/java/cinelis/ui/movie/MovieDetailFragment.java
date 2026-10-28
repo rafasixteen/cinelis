@@ -8,22 +8,87 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.List;
+
+import cinelis.R;
 import cinelis.databinding.FragmentMovieDetailBinding;
+import cinelis.model.CinemaSession;
+import cinelis.model.Movie;
+import cinelis.navigation.AppNavigator;
+import cinelis.network.ApiCallback;
+import cinelis.network.ApiClient;
+import cinelis.network.ApiError;
+import cinelis.ui.common.UiStateController;
+import cinelis.ui.home.MovieAdapter;
 
 public class MovieDetailFragment extends Fragment {
     private FragmentMovieDetailBinding binding;
+    private UiStateController state;
+    private SessionAdapter adapter;
+    private String movieId;
 
-    @Nullable
-    @Override
+    @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
         binding = FragmentMovieDetailBinding.inflate(inflater, container, false);
+        state = new UiStateController(binding.loadingContainer, binding.contentContainer,
+                binding.emptyContainer, binding.errorContainer, binding.errorMessage, binding.retryButton);
+        adapter = new SessionAdapter(this::selectSession);
+        binding.sessionsList.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.sessionsList.setAdapter(adapter);
+        binding.trailerButton.setOnClickListener(view -> Snackbar.make(view, R.string.trailer_demo, Snackbar.LENGTH_SHORT).show());
+        binding.dateToday.setOnClickListener(view -> loadSessions("2026-10-28"));
+        binding.dateTomorrow.setOnClickListener(view -> loadSessions("2026-10-29"));
+        binding.dateLater.setOnClickListener(view -> loadSessions("2026-10-30"));
+        movieId = getArguments() == null ? null : getArguments().getString(AppNavigator.ARG_MOVIE_ID);
+        loadMovie();
         return binding.getRoot();
     }
 
-    @Override
-    public void onDestroyView() {
+    private void loadMovie() {
+        state.showLoading();
+        ApiClient.get().getMovie(movieId, this, new ApiCallback<Movie>() {
+            @Override public void onSuccess(Movie movie) {
+                if (binding == null) return;
+                binding.movieTitle.setText(movie.getTitle());
+                String genre = movie.getGenres().isEmpty() ? "" : movie.getGenres().get(0);
+                binding.movieMeta.setText(movie.getDurationMinutes() + " min · " + genre + " · " + movie.getAgeRating());
+                binding.movieSynopsis.setText(movie.getSynopsis());
+                binding.detailPoster.setImageResource(MovieAdapter.poster(movie.getTitle()));
+                loadSessions("2026-10-28");
+            }
+            @Override public void onError(ApiError error) {
+                if (binding != null) state.showError(error.getMessage(), MovieDetailFragment.this::loadMovie);
+            }
+        });
+    }
+
+    private void loadSessions(String date) {
+        ApiClient.get().listMovieSessions(movieId, date, this, new ApiCallback<List<CinemaSession>>() {
+            @Override public void onSuccess(List<CinemaSession> sessions) {
+                if (binding == null) return;
+                adapter.submit(sessions);
+                if (sessions.isEmpty()) state.showEmpty(); else state.showContent();
+            }
+            @Override public void onError(ApiError error) {
+                if (binding != null) state.showError(error.getMessage(), MovieDetailFragment.this::loadMovie);
+            }
+        });
+    }
+
+    private void selectSession(CinemaSession session) {
+        AppNavigator navigator = new AppNavigator(NavHostFragment.findNavController(this));
+        if (ApiClient.get().isAuthenticated()) navigator.showSeats(session.getId());
+        else navigator.showAuth(R.id.seatSelectionFragment, session.getId());
+    }
+
+    @Override public void onDestroyView() {
+        ApiClient.get().cancel(this);
         binding = null;
         super.onDestroyView();
     }

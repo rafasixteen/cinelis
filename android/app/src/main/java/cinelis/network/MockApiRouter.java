@@ -401,7 +401,11 @@ public final class MockApiRouter {
         }
 
         private static String decode(String value) {
-            return URLDecoder.decode(value == null ? "" : value, StandardCharsets.UTF_8);
+            try {
+                return URLDecoder.decode(value == null ? "" : value, "UTF-8");
+            } catch (java.io.UnsupportedEncodingException exception) {
+                throw new IllegalStateException(exception);
+            }
         }
     }
 }

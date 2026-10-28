@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="176dp" android:layout_height="wrap_content" android:layout_marginEnd="@dimen/space_12" android:background="@drawable/bg_card" android:clickable="true" android:focusable="true" android:orientation="vertical" android:padding="@dimen/space_8">
+    <ImageView android:id="@+id/movie_poster" android:layout_width="match_parent" android:layout_height="220dp" android:contentDescription="@null" android:scaleType="centerCrop" />
+    <TextView android:id="@+id/movie_title" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_12" android:maxLines="2" android:textColor="@color/foreground" android:textSize="18sp" android:textStyle="bold" />
+    <TextView android:id="@+id/movie_meta" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_4" android:maxLines="1" android:textColor="@color/muted_foreground" android:textSize="13sp" />
+</LinearLayout>

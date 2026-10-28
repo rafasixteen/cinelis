@@ -19,4 +19,25 @@
     <string name="tickets_shell_description">Tudo pronto para a próxima sessão.</string>
     <string name="account_title">A minha conta</string>
     <string name="account_shell_description">Histórico de compras e preferências.</string>
+    <string name="home_intro">Descubra histórias portuguesas no grande ecrã.</string>
+    <string name="search_movies">Pesquisar filmes</string>
+    <string name="now_showing">Em exibição</string>
+    <string name="coming_soon">Brevemente</string>
+    <string name="empty_movies">Não encontrámos filmes para esta pesquisa.</string>
+    <string name="clear_search">Limpar pesquisa</string>
+    <string name="retry">Tentar novamente</string>
+    <string name="choose_session">Escolha uma sessão</string>
+    <string name="synopsis">Sinopse</string>
+    <string name="watch_trailer">Ver trailer</string>
+    <string name="trailer_demo">O trailer é ilustrativo neste protótipo.</string>
+    <string name="login_description">Entre para continuar a sua reserva e guardar os seus bilhetes.</string>
+    <string name="name">Nome</string>
+    <string name="email">Email</string>
+    <string name="password">Palavra-passe</string>
+    <string name="sign_in">Entrar</string>
+    <string name="create_account">Criar conta</string>
+    <string name="need_account">Ainda não tem conta? Criar conta</string>
+    <string name="have_account">Já tem conta? Entrar</string>
+    <string name="auth_invalid">Verifique os dados indicados.</string>
+    <string name="loading">A carregar…</string>
 </resources>

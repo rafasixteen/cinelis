@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/space_20">
-
-        <TextView
-            style="@style/Widget.CineLis.Wordmark"
-            android:text="@string/wordmark" />
-
-        <TextView
-            style="@style/TextAppearance.CineLis.PageTitle"
-            android:layout_marginTop="@dimen/space_40"
-            android:text="@string/home_title" />
-
-        <TextView
-            style="@style/TextAppearance.CineLis.BodyMuted"
-            android:layout_marginTop="@dimen/space_12"
-            android:text="@string/home_shell_description" />
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/background">
+    <ScrollView android:id="@+id/content_container" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingTop="@dimen/space_20" android:paddingBottom="@dimen/space_32">
+            <TextView style="@style/Widget.CineLis.Wordmark" android:layout_marginHorizontal="@dimen/space_20" android:text="@string/wordmark" />
+            <TextView style="@style/TextAppearance.CineLis.PageTitle" android:layout_marginHorizontal="@dimen/space_20" android:layout_marginTop="@dimen/space_32" android:text="@string/home_title" />
+            <TextView style="@style/TextAppearance.CineLis.BodyMuted" android:layout_marginHorizontal="@dimen/space_20" android:layout_marginTop="@dimen/space_8" android:text="@string/home_intro" />
+            <EditText android:id="@+id/search_input" android:layout_width="match_parent" android:layout_height="@dimen/touch_target" android:layout_marginHorizontal="@dimen/space_20" android:layout_marginTop="@dimen/space_24" android:background="@drawable/bg_input" android:hint="@string/search_movies" android:imeOptions="actionSearch" android:inputType="text" android:singleLine="true" android:textColor="@color/foreground" android:textColorHint="@color/muted_foreground" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginHorizontal="@dimen/space_20" android:layout_marginTop="@dimen/space_32" android:text="@string/now_showing" android:textColor="@color/foreground" android:textSize="@dimen/section_title_size" android:textStyle="bold" />
+            <androidx.recyclerview.widget.RecyclerView android:id="@+id/current_movies" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_16" android:clipToPadding="false" android:paddingHorizontal="@dimen/space_20" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginHorizontal="@dimen/space_20" android:layout_marginTop="@dimen/space_32" android:text="@string/coming_soon" android:textColor="@color/foreground" android:textSize="@dimen/section_title_size" android:textStyle="bold" />
+            <androidx.recyclerview.widget.RecyclerView android:id="@+id/upcoming_movies" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_16" android:clipToPadding="false" android:paddingHorizontal="@dimen/space_20" />
+        </LinearLayout>
+    </ScrollView>
+    <ProgressBar android:id="@+id/loading_container" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" />
+    <LinearLayout android:id="@+id/empty_container" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="center" android:gravity="center" android:orientation="vertical" android:padding="@dimen/space_32" android:visibility="gone">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/empty_movies" android:textColor="@color/foreground" android:textSize="18sp" />
+        <Button android:id="@+id/clear_search_button" android:layout_width="wrap_content" android:layout_height="@dimen/touch_target" android:layout_marginTop="@dimen/space_16" android:text="@string/clear_search" />
     </LinearLayout>
-</ScrollView>
+    <LinearLayout android:id="@+id/error_container" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="center" android:gravity="center" android:orientation="vertical" android:padding="@dimen/space_32" android:visibility="gone">
+        <TextView android:id="@+id/error_message" android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:textColor="@color/danger" />
+        <Button android:id="@+id/retry_button" android:layout_width="wrap_content" android:layout_height="@dimen/touch_target" android:layout_marginTop="@dimen/space_16" android:text="@string/retry" />
+    </LinearLayout>
+</FrameLayout>
