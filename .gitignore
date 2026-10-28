@@ -5,6 +5,7 @@
 
 # Composer
 /vendor/
+/.php-cs-fixer.cache
 
 # IDE / editors
 .idea/

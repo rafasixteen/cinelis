@@ -1,0 +1,13 @@
+@layer components {
+    .empty {
+        text-align: center;
+        padding: 60px 24px;
+        border: 1px dashed var(--border);
+        border-radius: var(--radius-xl);
+    }
+
+    .empty p {
+        margin-block: 16px 24px;
+        color: var(--muted-foreground);
+    }
+}

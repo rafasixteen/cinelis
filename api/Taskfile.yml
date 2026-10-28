@@ -1,8 +1,8 @@
 version: '3'
 
 tasks:
-  dev:
-    desc: Follow the API PHP-FPM logs
-    internal: true
-    cmds:
-      - docker compose --env-file ../.env -f ../infra/compose.yml -f ../infra/dev/compose.yml logs -f api
+    dev:
+        desc: Follow the API PHP-FPM logs
+        internal: true
+        cmds:
+            - docker compose --env-file ../.env -f ../infra/compose.yml -f ../infra/dev/compose.yml logs -f api

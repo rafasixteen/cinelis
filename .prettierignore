@@ -1,0 +1,8 @@
+backoffice/web/
+frontoffice/web/
+vendor/
+node_modules/
+tmp/
+temp/
+composer.lock
+*.min.css

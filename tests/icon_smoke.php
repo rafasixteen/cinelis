@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-require dirname(__DIR__) . '/vendor/autoload.php';
-require dirname(__DIR__) . '/vendor/yiisoft/yii2/Yii.php';
+require dirname(__DIR__).'/vendor/autoload.php';
+require dirname(__DIR__).'/vendor/yiisoft/yii2/Yii.php';
 
-use common\widgets\Icon;
 use common\widgets\Button;
+use common\widgets\Icon;
 
 $composerIconPath = dirname(__DIR__)
-	. '/vendor/npm-asset/lucide-static/icons/calendar-days.svg';
+	.'/vendor/npm-asset/lucide-static/icons/calendar-days.svg';
 
 if (!is_file($composerIconPath)) {
 	throw new RuntimeException('Lucide icons must be installed through Composer.');

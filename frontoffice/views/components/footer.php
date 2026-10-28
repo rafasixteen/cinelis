@@ -1,48 +1,26 @@
 <?php
 
 use yii\helpers\Html;
+
 ?>
 
-<footer class="site-footer">
-	<div class="container">
-		<div class="main">
-			<div class="brand">
-				<?= Html::a(
-					'Cinelis',
-					['/'],
-					['class' => 'logo'],
-				) ?>
+<footer class="site-footer container">
+	<p>CineLis · O seu lugar no cinema.</p>
+	<nav aria-label="Informações">
+		<?= Html::a(
+			'Contacto',
+			['/site/contact'],
+		) ?>
 
-				<p class="description">
-					Your local cinema for great films and memorable experiences.
-				</p>
-			</div>
+		<?= Html::a(
+			'Ajuda',
+			['/site/help'],
+		) ?>
 
-			<nav class="nav">
-				<?= Html::a(
-					'Movies',
-					['/movie/index'],
-					['class' => 'link'],
-				) ?>
-
-				<?= Html::a(
-					'Sessions',
-					['/session/index'],
-					['class' => 'link'],
-				) ?>
-
-				<?= Html::a(
-					'Contact',
-					['/site/contact'],
-					['class' => 'link'],
-				) ?>
-			</nav>
-		</div>
-
-		<div class="bottom">
-			<p class="copyright">
-				© <?= date('Y') ?> Cinelis
-			</p>
-		</div>
-	</div>
+		<?= Html::a(
+			'Privacidade',
+			['/site/privacy'],
+		) ?>
+		<span lang="pt">PT</span>
+	</nav>
 </footer>

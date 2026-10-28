@@ -55,9 +55,16 @@ Development adds:
 - Caddy access on `127.0.0.1:${CADDY_HTTP_PORT}`.
 - The local HTTP-only `dev/Caddyfile`.
 - `YII_DEBUG=1` and `YII_ENV=dev`.
+- Compose Watch rebuilds the PHP-FPM services when Composer dependencies or
+  the PHP-FPM Dockerfile changes while `task dev` is running.
 
 Source changes are visible immediately because only the application source is
 mounted. Runtime data and Yii-published assets remain in named volumes.
+
+`task infra:up` keeps `--build` enabled, but Docker reuses cached layers when
+the build inputs are unchanged. During `task dev`, Compose Watch rebuilds the
+PHP-FPM services automatically when `composer.json`, `composer.lock`, or the
+PHP-FPM Dockerfile changes.
 
 For the complete workflow, including dekit and the Tailwind watchers, use:
 

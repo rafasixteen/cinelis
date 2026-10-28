@@ -1,49 +1,67 @@
 version: '3'
 
 includes:
-  api:
-    taskfile: ./api/Taskfile.yml
-    dir: ./api
-  docs:
-    taskfile: ./docs/Taskfile.yml
-    dir: ./docs
-  bo:
-    taskfile: ./backoffice/Taskfile.yml
-    dir: ./backoffice
-  infra:
-    taskfile: ./infra/Taskfile.yml
-    dir: ./infra
-  fo:
-    taskfile: ./frontoffice/Taskfile.yml
-    dir: ./frontoffice
-  migrations:
-    taskfile: ./console/Taskfile.yml
-    dir: .
-    flatten: true
+    api:
+        taskfile: ./api/Taskfile.yml
+        dir: ./api
+    docs:
+        taskfile: ./docs/Taskfile.yml
+        dir: ./docs
+    bo:
+        taskfile: ./backoffice/Taskfile.yml
+        dir: ./backoffice
+    infra:
+        taskfile: ./infra/Taskfile.yml
+        dir: ./infra
+    fo:
+        taskfile: ./frontoffice/Taskfile.yml
+        dir: ./frontoffice
+    migrations:
+        taskfile: ./console/Taskfile.yml
+        dir: .
+        flatten: true
 
 dotenv: ['.env']
 
 tasks:
-  dev:
-    desc: Run the Docker development stack and Tailwind watchers in dekit
-    cmds:
-      - task infra:up
-      - dekit up
-      - dekit attach
+    format:
+        desc: Format PHP and frontend source files
+        cmds:
+            - vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php
+            - >-
+                prettier --write --ignore-unknown --config=.prettierrc
+                --ignore-path=.prettierignore
+                "**/*.{css,js,mjs,json,yml,yaml}"
 
-  dev:attach:
-    desc: Attach to the dekit development session
-    cmds:
-      - dekit attach
+    format:check:
+        desc: Check PHP and frontend formatting without changing files
+        cmds:
+            - vendor/bin/php-cs-fixer check --config=.php-cs-fixer.dist.php
+            - >-
+                prettier --check --ignore-unknown --config=.prettierrc
+                --ignore-path=.prettierignore
+                "**/*.{css,js,mjs,json,yml,yaml}"
 
-  dev:stop:
-    desc: Stop the dekit development session
-    cmds:
-      - dekit down
-      - task infra:down
+    dev:
+        desc: Run the Docker development stack and Tailwind watchers in dekit
+        cmds:
+            - task infra:up
+            - dekit up
+            - dekit attach
 
-  default:
-    desc: List available tasks
-    cmds:
-      - task --list
-    silent: true
+    dev:attach:
+        desc: Attach to the dekit development session
+        cmds:
+            - dekit attach
+
+    dev:stop:
+        desc: Stop the dekit development session
+        cmds:
+            - dekit down
+            - task infra:down
+
+    default:
+        desc: List available tasks
+        cmds:
+            - task --list
+        silent: true

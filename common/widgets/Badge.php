@@ -18,7 +18,7 @@ final class Badge extends PrimitiveWidget
 		return Html::tag(
 			'span',
 			$label,
-			$this->withClass($this->options, 'ui-badge ui-badge--' . $this->variant),
+			$this->withClass($this->options, 'ui-badge ui-badge--'.$this->variant),
 		);
 	}
 }

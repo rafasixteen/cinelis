@@ -1,19 +1,19 @@
 version: '3'
 
 tasks:
-  dev:
-    desc: Run the frontoffice server and Tailwind watcher
-    internal: true
-    deps:
-      - server
-      - tailwind
+    dev:
+        desc: Run the frontoffice server and Tailwind watcher
+        internal: true
+        deps:
+            - server
+            - tailwind
 
-  server:
-    internal: true
-    cmds:
-      - docker compose --env-file ../.env -f ../infra/compose.yml -f ../infra/dev/compose.yml logs -f frontoffice
+    server:
+        internal: true
+        cmds:
+            - docker compose --env-file ../.env -f ../infra/compose.yml -f ../infra/dev/compose.yml logs -f frontoffice
 
-  tailwind:
-    internal: true
-    cmds:
-      - tailwindcss -i assets/css/globals.css -o web/css/globals.css --watch=always
+    tailwind:
+        internal: true
+        cmds:
+            - tailwindcss -i assets/css/globals.css -o web/css/globals.css --watch=always

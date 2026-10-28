@@ -1,0 +1,50 @@
+@layer components {
+    .empty {
+        text-align: center;
+        padding: 2rem;
+        color: var(--muted-foreground);
+    }
+
+    .empty strong {
+        color: var(--foreground);
+        font-size: 1rem;
+    }
+
+    .empty p {
+        margin: 0.6rem 0 0;
+    }
+
+    .demo-note {
+        margin-top: 1.8rem;
+        color: var(--muted-foreground);
+        font-size: 0.72rem;
+        line-height: 1.6;
+    }
+
+    .notice {
+        padding: 1.25rem;
+        background: var(--secondary);
+        border-radius: var(--radius-md);
+    }
+
+    .notice h2 {
+        font-size: 0.9rem;
+    }
+
+    .notice p {
+        margin: 0.6rem 0 0;
+        color: var(--muted-foreground);
+        font-size: 0.8rem;
+        line-height: 1.6;
+    }
+
+    .inline-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .back-link {
+        margin-top: 1.5rem;
+    }
+}

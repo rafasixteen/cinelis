@@ -1,0 +1,218 @@
+@layer components {
+    .seat-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 360px;
+        gap: 60px;
+    }
+
+    .seat-stage {
+        min-width: 0;
+        padding: 10px 20px;
+    }
+
+    .screen {
+        border-top: 5px solid var(--primary);
+        width: 90%;
+        margin: 0 auto 30px;
+        padding-top: 16px;
+        text-align: center;
+        font-size: 11px;
+        color: var(--muted-foreground);
+    }
+
+    .seat-scroll {
+        overflow: auto;
+        padding: 8px 0;
+    }
+
+    .seat-map {
+        width: max-content;
+        margin-inline: auto;
+        --seat-size: 34px;
+    }
+
+    .seat-row {
+        display: grid;
+        grid-template-columns: 16px repeat(10, var(--seat-size));
+        gap: 9px;
+        margin-bottom: 9px;
+    }
+
+    .row-label {
+        display: flex;
+        align-items: center;
+        font-size: 11px;
+        color: var(--muted-foreground);
+    }
+
+    .seat {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: var(--seat-size);
+        height: var(--seat-size);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        font-size: 11px;
+        background: var(--card);
+        color: var(--muted-foreground);
+        cursor: pointer;
+    }
+
+    .seat[aria-pressed='true'] {
+        background: var(--primary);
+        color: var(--primary-foreground);
+        border-color: var(--primary);
+    }
+
+    .seat.is-occupied {
+        background: var(--secondary);
+        cursor: not-allowed;
+    }
+
+    .seat-legend {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 34px;
+        margin-top: 28px;
+        color: var(--muted-foreground);
+        font-size: 11px;
+    }
+
+    .seat-legend > span {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+    .seat-legend i {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 18px;
+        width: 18px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--card);
+        font-style: normal;
+    }
+
+    .seat-legend .is-occupied {
+        background: var(--secondary);
+    }
+
+    .seat-legend .is-selected {
+        background: var(--primary);
+        color: var(--primary-foreground);
+    }
+
+    .seat-zoom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 26px;
+    }
+
+    .seat-zoom > div {
+        display: flex;
+        gap: 10px;
+    }
+
+    .selection h2 {
+        margin-bottom: 24px;
+    }
+
+    .selection > p {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .selection .ui-button {
+        width: 100%;
+    }
+
+    .selection > .note {
+        margin-top: 14px;
+        font-size: 11px;
+    }
+
+    @media (max-width: 1050px) {
+        .seat-layout {
+            grid-template-columns: minmax(0, 1fr) 290px;
+            gap: 24px;
+        }
+
+        .seat-stage {
+            padding-inline: 0;
+        }
+
+        .seat-map {
+            --seat-size: 28px;
+        }
+
+        .seat-row {
+            gap: 5px;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .seat-layout {
+            display: block;
+        }
+
+        .seat-stage {
+            padding: 0;
+        }
+
+        .screen {
+            width: 86%;
+            margin-bottom: 22px;
+        }
+
+        .seat-map {
+            --seat-size: 28px;
+        }
+
+        .seat-row {
+            grid-template-columns: 10px repeat(10, var(--seat-size));
+            gap: 4px;
+            margin-bottom: 6px;
+        }
+
+        .seat {
+            font-size: 10px;
+        }
+
+        .seat-legend {
+            gap: 20px;
+            font-size: 10px;
+            margin-top: 14px;
+        }
+
+        .seat-zoom {
+            margin-top: 24px;
+        }
+
+        .selection {
+            padding: 24px 0 0;
+            background: transparent;
+            border: 0;
+            border-top: 1px solid var(--border);
+            border-radius: 0;
+            margin-top: 24px;
+        }
+
+        .selection h2 {
+            font-size: 20px;
+            margin-bottom: 14px;
+        }
+
+        .selection .total {
+            margin: 22px 0;
+            padding: 0;
+            border: 0;
+        }
+    }
+}

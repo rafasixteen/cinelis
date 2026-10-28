@@ -27,20 +27,29 @@ final class Button extends PrimitiveWidget
 		$label = Html::tag(
 			'span',
 			$labelContent,
-			['class' => 'ui-button__label'],
+			[
+				'class' => 'ui-button__label',
+			],
 		);
 
 		if ($this->icon !== '') {
 			$label = Icon::widget([
 				'name' => $this->icon,
 				'options' => ['aria-hidden' => 'true'],
-			]) . $label;
+			]).$label;
 		}
 
-		$options = $this->withClass($this->options, 'ui-button ui-button--' . $this->variant);
+		$options = $this->withClass($this->options, 'ui-button ui-button--'.$this->variant);
 
 		return $this->tag === 'a'
-			? Html::a($label, $this->url ?? '#', $options)
-			: Html::button($label, $options);
+			? Html::a(
+				$label,
+				$this->url ?? '#',
+				$options,
+			)
+			: Html::button(
+				$label,
+				$options,
+			);
 	}
 }

@@ -1,0 +1,55 @@
+@layer components {
+    .login-page {
+        padding-top: 4rem;
+    }
+
+    .login {
+        max-width: 38rem;
+        margin: auto;
+        padding: 2.75rem 3rem;
+    }
+
+    .login h1 {
+        margin-top: 1.75rem;
+        font-size: 1.65rem;
+    }
+
+    .login form {
+        display: grid;
+        gap: 1.5rem;
+        margin-top: 2.5rem;
+    }
+
+    .login form .ui-button {
+        margin-top: 0.75rem;
+        width: 100%;
+    }
+
+    .login .demo-note {
+        margin-top: 1.5rem;
+        font-size: 0.7rem;
+    }
+
+    .login > .text-link {
+        display: inline-block;
+        margin-top: 0.75rem;
+    }
+
+    @media (max-width: 600px) {
+        .login-page {
+            padding-top: 1.5rem;
+        }
+
+        .login {
+            padding: 1.75rem 1.25rem;
+        }
+
+        .login h1 {
+            font-size: 1.4rem;
+        }
+
+        .login form {
+            margin-top: 1.75rem;
+        }
+    }
+}

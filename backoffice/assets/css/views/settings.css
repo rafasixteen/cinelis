@@ -1,0 +1,22 @@
+@layer components {
+    .preferences {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .preferences p {
+        font-size: 0.8rem;
+        color: var(--muted-foreground);
+        margin-top: 0.5rem;
+    }
+
+    @media (max-width: 600px) {
+        .preferences {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+}

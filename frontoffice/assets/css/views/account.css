@@ -1,0 +1,126 @@
+@layer components {
+    .profile {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        margin-bottom: 42px;
+    }
+
+    .avatar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        flex: 0 0 auto;
+    }
+
+    .profile h2 {
+        margin-bottom: 8px;
+    }
+
+    .profile > .ui-button {
+        margin-left: auto;
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        background: var(--card);
+    }
+
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+    .history-table th {
+        text-align: left;
+        font-weight: 500;
+        color: var(--muted-foreground);
+        background: var(--secondary);
+    }
+
+    .history-table :is(th, td) {
+        padding: 20px 18px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .history-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .history-table td:nth-child(3) {
+        white-space: nowrap;
+    }
+
+    .history-cards {
+        display: none;
+    }
+
+    .history-count {
+        margin-top: 26px !important;
+        margin-bottom: 24px !important;
+    }
+
+    .account-actions {
+        margin-top: 42px;
+    }
+
+    @media (max-width: 700px) {
+        .profile {
+            padding: 20px 16px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .profile h2 {
+            font-size: 22px;
+        }
+
+        .profile > .ui-button {
+            margin: 6px 0 0;
+            width: 100%;
+        }
+
+        .table-wrap {
+            display: none;
+        }
+
+        .history-cards {
+            display: grid;
+            gap: 14px;
+        }
+
+        .history-cards .panel {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 16px;
+        }
+
+        .history-cards h3 {
+            font-size: 16px;
+        }
+
+        .history-cards p {
+            margin-top: 8px;
+            font-size: 12px;
+        }
+
+        .history-cards .panel > span {
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .account-actions .ui-button {
+            width: 100%;
+        }
+    }
+}

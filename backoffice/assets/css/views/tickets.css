@@ -1,0 +1,13 @@
+@layer components {
+    .ticket-metrics {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.75rem;
+        flex-wrap: wrap;
+    }
+
+    .ticket-metrics .ui-badge {
+        min-width: 11rem;
+        justify-content: center;
+    }
+}

@@ -1,0 +1,33 @@
+@layer components {
+    .panel {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        background: var(--card);
+        padding: 1.5rem;
+    }
+
+    .panel h2 {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 550;
+    }
+
+    .panel-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 600px) {
+        .panel {
+            padding: 1.1rem;
+        }
+
+        .panel-heading {
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+    }
+}

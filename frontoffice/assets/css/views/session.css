@@ -1,0 +1,54 @@
+@layer components {
+    .session-list {
+        display: grid;
+        gap: 14px;
+    }
+
+    .session-list > article {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        padding: 22px;
+    }
+
+    .session-list > article > div {
+        flex: 1;
+    }
+
+    .session-list h2 {
+        font-size: 20px;
+        margin-bottom: 6px;
+    }
+
+    .session-list h2 a {
+        text-decoration: none;
+    }
+
+    .session-list strong {
+        font-size: 24px;
+        font-weight: 500;
+    }
+
+    @media (max-width: 1050px) {
+        .session-card {
+            padding: 14px;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .session-list > article {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            padding: 18px;
+            gap: 16px;
+        }
+
+        .session-list > article > .ui-button {
+            grid-column: 1 / -1;
+        }
+
+        .session-list h2 {
+            font-size: 18px;
+        }
+    }
+}
