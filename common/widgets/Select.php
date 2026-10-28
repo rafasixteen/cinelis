@@ -18,7 +18,12 @@ class Select extends PrimitiveWidget
 	{
 		$selectOptions = $this->withClass($this->options, 'ui-select');
 		$selectOptions['id'] ??= Html::getInputIdByName($this->name);
-		$select = Html::dropDownList($this->name, $this->value, $this->items, $selectOptions);
+		$select = Html::dropDownList(
+			$this->name,
+			$this->value,
+			$this->items,
+			$selectOptions,
+		);
 
 		if ($this->label === '') {
 			return $select;
@@ -26,11 +31,15 @@ class Select extends PrimitiveWidget
 
 		$labelOptions = $this->labelOptions;
 		$labelOptions['for'] ??= $selectOptions['id'];
-		$label = Html::label(Html::encode($this->label), $labelOptions['for'], $labelOptions);
+		$label = Html::label(
+			Html::encode($this->label),
+			$labelOptions['for'],
+			$labelOptions,
+		);
 
 		return Html::tag(
 			'div',
-			$label . $select,
+			$label.$select,
 			$this->withClass($this->containerOptions, 'ui-field'),
 		);
 	}

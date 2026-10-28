@@ -18,7 +18,12 @@ class Input extends PrimitiveWidget
 	{
 		$inputOptions = $this->withClass($this->options, 'ui-input');
 		$inputOptions['id'] ??= Html::getInputIdByName($this->name);
-		$input = Html::input($this->type, $this->name, $this->value, $inputOptions);
+		$input = Html::input(
+			$this->type,
+			$this->name,
+			$this->value,
+			$inputOptions,
+		);
 
 		if ($this->label === '') {
 			return $input;
@@ -26,11 +31,15 @@ class Input extends PrimitiveWidget
 
 		$labelOptions = $this->labelOptions;
 		$labelOptions['for'] ??= $inputOptions['id'];
-		$label = Html::label(Html::encode($this->label), $labelOptions['for'], $labelOptions);
+		$label = Html::label(
+			Html::encode($this->label),
+			$labelOptions['for'],
+			$labelOptions,
+		);
 
 		return Html::tag(
 			'div',
-			$label . $input,
+			$label.$input,
 			$this->withClass($this->containerOptions, 'ui-field'),
 		);
 	}

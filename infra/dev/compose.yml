@@ -1,7 +1,7 @@
 services:
     postgres:
         ports:
-            - "127.0.0.1:5432:${DB_CONTAINER_PORT:-5432}"
+            - '127.0.0.1:5432:${DB_CONTAINER_PORT:-5432}'
 
     api:
         image: cinelis-api-php-fpm:dev
@@ -9,11 +9,11 @@ services:
             - ../.env
         environment:
             APP_ENV: development
-            YII_DEBUG: "1"
+            YII_DEBUG: '1'
             YII_ENV: dev
         build:
             args:
-                COMPOSER_DEV_DEPENDENCIES: "true"
+                COMPOSER_DEV_DEPENDENCIES: 'true'
         volumes:
             - ../common:/var/www/cinelis/common:ro
             - ../api:/var/www/cinelis/api:ro
@@ -32,13 +32,14 @@ services:
             - ../.env
         environment:
             APP_ENV: development
-            YII_DEBUG: "1"
+            YII_DEBUG: '1'
             YII_ENV: dev
         build:
             args:
-                COMPOSER_DEV_DEPENDENCIES: "true"
+                COMPOSER_DEV_DEPENDENCIES: 'true'
         volumes:
             - ../common:/var/www/cinelis/common:ro
+            - ../assets:/var/www/cinelis/assets:ro
             - ../backoffice:/var/www/cinelis/backoffice:ro
         develop:
             watch:
@@ -55,13 +56,14 @@ services:
             - ../.env
         environment:
             APP_ENV: development
-            YII_DEBUG: "1"
+            YII_DEBUG: '1'
             YII_ENV: dev
         build:
             args:
-                COMPOSER_DEV_DEPENDENCIES: "true"
+                COMPOSER_DEV_DEPENDENCIES: 'true'
         volumes:
             - ../common:/var/www/cinelis/common:ro
+            - ../assets:/var/www/cinelis/assets:ro
             - ../frontoffice:/var/www/cinelis/frontoffice:ro
         develop:
             watch:
@@ -74,7 +76,7 @@ services:
 
     caddy:
         ports:
-            - "127.0.0.1:${CADDY_HTTP_PORT:-80}:80"
+            - '127.0.0.1:${CADDY_HTTP_PORT:-80}:80'
         volumes:
             - ./dev/Caddyfile:/etc/caddy/Caddyfile:ro
             - ../api/web:/var/www/cinelis/api/web:ro

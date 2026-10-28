@@ -28,6 +28,7 @@ RUN if [ "$COMPOSER_DEV_DEPENDENCIES" = "true" ]; then \
 	fi
 
 COPY common common
+COPY assets assets
 COPY ${APP_DIRECTORY} ${APP_DIRECTORY}
 
 RUN mkdir -p \

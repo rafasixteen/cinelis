@@ -19,12 +19,27 @@ final class Card extends PrimitiveWidget
 
 		if ($this->title !== '' || $this->subtitle !== '') {
 			echo Html::beginTag('header', ['class' => 'ui-card__header']);
+
 			if ($this->title !== '') {
-				echo Html::tag('h2', Html::encode($this->title), ['class' => 'ui-card__title']);
+				echo Html::tag(
+					'h2',
+					Html::encode($this->title),
+					[
+						'class' => 'ui-card__title',
+					],
+				);
 			}
+
 			if ($this->subtitle !== '') {
-				echo Html::tag('p', Html::encode($this->subtitle), ['class' => 'ui-card__subtitle']);
+				echo Html::tag(
+					'p',
+					Html::encode($this->subtitle),
+					[
+						'class' => 'ui-card__subtitle',
+					],
+				);
 			}
+
 			echo Html::endTag('header');
 		}
 	}

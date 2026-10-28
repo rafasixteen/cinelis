@@ -20,14 +20,14 @@ final class Icon extends PrimitiveWidget
 		}
 
 		$iconPath = dirname(__DIR__, 2)
-			. '/vendor/npm-asset/lucide-static/icons/'
-			. $this->name
-			. '.svg';
+			.'/vendor/npm-asset/lucide-static/icons/'
+			.$this->name
+			.'.svg';
 		$svg = file_get_contents($iconPath);
 
 		if ($svg === false) {
 			throw new InvalidConfigException(
-				'Lucide icon "' . $this->name . '" could not be found.',
+				'Lucide icon "'.$this->name.'" could not be found.',
 			);
 		}
 
@@ -54,9 +54,9 @@ final class Icon extends PrimitiveWidget
 				);
 
 				return '<svg'
-					. $attributes
-					. Html::renderTagAttributes($options)
-					. '>';
+					.$attributes
+					.Html::renderTagAttributes($options)
+					.'>';
 			},
 			$svg,
 			1,
