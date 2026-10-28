@@ -1,25 +1,25 @@
 version: '3'
 
 tasks:
-  migrate:
-    desc: Run pending database migrations
-    cmds:
-      - php yii migrate
+    migrate:
+        desc: Run pending database migrations
+        cmds:
+            - php yii migrate
 
-  migrate:create:
-    desc: Create a database migration (pass its name after --)
-    preconditions:
-      - sh: test -n "{{.CLI_ARGS}}"
-        msg: 'Usage: task migrate:create -- migration_name'
-    cmds:
-      - php yii migrate/create {{.CLI_ARGS}}
+    migrate:create:
+        desc: Create a database migration (pass its name after --)
+        preconditions:
+            - sh: test -n "{{.CLI_ARGS}}"
+              msg: 'Usage: task migrate:create -- migration_name'
+        cmds:
+            - php yii migrate/create {{.CLI_ARGS}}
 
-  migrate:down:
-    desc: Revert the last database migration
-    cmds:
-      - php yii migrate/down
+    migrate:down:
+        desc: Revert the last database migration
+        cmds:
+            - php yii migrate/down
 
-  migrate:status:
-    desc: Show migration history
-    cmds:
-      - php yii migrate/history
+    migrate:status:
+        desc: Show migration history
+        cmds:
+            - php yii migrate/history

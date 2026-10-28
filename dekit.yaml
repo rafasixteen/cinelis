@@ -3,16 +3,16 @@ tasks:
         label: Docker Compose Watch
         cmd:
             [
-                "docker",
-                "compose",
-                "--env-file",
-                ".env",
-                "-f",
-                "infra/compose.yml",
-                "-f",
-                "infra/dev/compose.yml",
-                "watch",
-                "--no-up",
+                'docker',
+                'compose',
+                '--env-file',
+                '.env',
+                '-f',
+                'infra/compose.yml',
+                '-f',
+                'infra/dev/compose.yml',
+                'watch',
+                '--no-up',
             ]
         cwd: .
         autostart: true
@@ -21,15 +21,15 @@ tasks:
         label: API
         cmd:
             [
-                "docker",
-                "compose",
-                "--env-file",
-                ".env",
-                "-f",
-                "infra/compose.yml",
-                "logs",
-                "-f",
-                "api",
+                'docker',
+                'compose',
+                '--env-file',
+                '.env',
+                '-f',
+                'infra/compose.yml',
+                'logs',
+                '-f',
+                'api',
             ]
         cwd: .
         autostart: true
@@ -38,15 +38,15 @@ tasks:
         label: Frontoffice
         cmd:
             [
-                "docker",
-                "compose",
-                "--env-file",
-                ".env",
-                "-f",
-                "infra/compose.yml",
-                "logs",
-                "-f",
-                "frontoffice",
+                'docker',
+                'compose',
+                '--env-file',
+                '.env',
+                '-f',
+                'infra/compose.yml',
+                'logs',
+                '-f',
+                'frontoffice',
             ]
         cwd: .
         autostart: true
@@ -55,12 +55,12 @@ tasks:
         label: Frontoffice Tailwind
         cmd:
             [
-                "tailwindcss",
-                "-i",
-                "frontoffice/assets/css/globals.css",
-                "-o",
-                "frontoffice/web/css/globals.css",
-                "--watch=always",
+                'tailwindcss',
+                '-i',
+                'frontoffice/assets/css/globals.css',
+                '-o',
+                'frontoffice/web/css/globals.css',
+                '--watch=always',
             ]
         cwd: .
         autostart: true
@@ -69,15 +69,15 @@ tasks:
         label: Backoffice
         cmd:
             [
-                "docker",
-                "compose",
-                "--env-file",
-                ".env",
-                "-f",
-                "infra/compose.yml",
-                "logs",
-                "-f",
-                "backoffice",
+                'docker',
+                'compose',
+                '--env-file',
+                '.env',
+                '-f',
+                'infra/compose.yml',
+                'logs',
+                '-f',
+                'backoffice',
             ]
         cwd: .
         autostart: true
@@ -86,12 +86,12 @@ tasks:
         label: Backoffice Tailwind
         cmd:
             [
-                "tailwindcss",
-                "-i",
-                "backoffice/assets/css/globals.css",
-                "-o",
-                "backoffice/web/css/globals.css",
-                "--watch=always",
+                'tailwindcss',
+                '-i',
+                'backoffice/assets/css/globals.css',
+                '-o',
+                'backoffice/web/css/globals.css',
+                '--watch=always',
             ]
         cwd: .
         autostart: true

@@ -3,21 +3,21 @@ services:
         image: ${API_IMAGE:-cinelis-api-php-fpm:prod}
         environment:
             APP_ENV: production
-            YII_DEBUG: "0"
+            YII_DEBUG: '0'
             YII_ENV: prod
 
     backoffice:
         image: ${BACKOFFICE_IMAGE:-cinelis-backoffice-php-fpm:prod}
         environment:
             APP_ENV: production
-            YII_DEBUG: "0"
+            YII_DEBUG: '0'
             YII_ENV: prod
 
     frontoffice:
         image: ${FRONTOFFICE_IMAGE:-cinelis-frontoffice-php-fpm:prod}
         environment:
             APP_ENV: production
-            YII_DEBUG: "0"
+            YII_DEBUG: '0'
             YII_ENV: prod
 
     caddy:
@@ -26,9 +26,9 @@ services:
             context: ..
             dockerfile: infra/docker/caddy/Dockerfile
         ports:
-            - "80:80"
-            - "443:443"
-            - "443:443/udp"
+            - '80:80'
+            - '443:443'
+            - '443:443/udp'
         volumes:
             - ./prod/Caddyfile:/etc/caddy/Caddyfile:ro
             - caddy-data:/data

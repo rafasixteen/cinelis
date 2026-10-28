@@ -1,40 +1,41 @@
 {
-	"name": "cinelis/cinelis",
-	"description": "Cinelis cinema management system",
-	"type": "project",
-	"require": {
-		"php": "^8.4",
-		"yiisoft/yii2": "~2.0.54",
-		"yiisoft/yii2-symfonymailer": "~4.0.0",
-		"vlucas/phpdotenv": "^5.7",
-		"npm-asset/lucide-static": "^1.61"
-	},
-	"require-dev": {
-		"yiisoft/yii2-debug": "~2.1.0",
-		"yiisoft/yii2-gii": "~2.2.0"
-	},
-	"autoload": {
-		"psr-4": {
-			"common\\": "common/",
-			"frontoffice\\": "frontoffice/",
-			"backoffice\\": "backoffice/",
-			"api\\": "api/",
-			"console\\": "console/"
-		}
-	},
-	"config": {
-		"process-timeout": 1800,
-		"allow-plugins": {
-			"yiisoft/yii2-composer": true
-		},
-		"fxp-asset": {
-			"enabled": false
-		}
-	},
-	"repositories": [
-		{
-			"type": "composer",
-			"url": "https://asset-packagist.org"
-		}
-	]
+    "name": "cinelis/cinelis",
+    "description": "Cinelis cinema management system",
+    "type": "project",
+    "require": {
+        "php": "^8.4",
+        "yiisoft/yii2": "~2.0.54",
+        "yiisoft/yii2-symfonymailer": "~4.0.0",
+        "vlucas/phpdotenv": "^5.7",
+        "npm-asset/lucide-static": "^1.61"
+    },
+    "require-dev": {
+        "yiisoft/yii2-debug": "~2.1.0",
+        "yiisoft/yii2-gii": "~2.2.0",
+        "friendsofphp/php-cs-fixer": "^3.95"
+    },
+    "autoload": {
+        "psr-4": {
+            "common\\": "common/",
+            "frontoffice\\": "frontoffice/",
+            "backoffice\\": "backoffice/",
+            "api\\": "api/",
+            "console\\": "console/"
+        }
+    },
+    "config": {
+        "process-timeout": 1800,
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
+        },
+        "fxp-asset": {
+            "enabled": false
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ]
 }
