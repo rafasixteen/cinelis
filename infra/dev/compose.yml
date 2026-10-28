@@ -34,6 +34,8 @@ services:
             APP_ENV: development
             YII_DEBUG: '1'
             YII_ENV: dev
+            CINELIS_APP_LABEL: Backoffice
+            CINELIS_APP_ORIGIN: http://${CADDY_DOMAIN:-cinelis.localhost}/admin/
         build:
             args:
                 COMPOSER_DEV_DEPENDENCIES: 'true'
@@ -58,6 +60,8 @@ services:
             APP_ENV: development
             YII_DEBUG: '1'
             YII_ENV: dev
+            CINELIS_APP_LABEL: Frontoffice
+            CINELIS_APP_ORIGIN: http://${CADDY_DOMAIN:-cinelis.localhost}/
         build:
             args:
                 COMPOSER_DEV_DEPENDENCIES: 'true'

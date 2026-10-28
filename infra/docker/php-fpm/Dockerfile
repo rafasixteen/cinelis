@@ -36,4 +36,10 @@ RUN mkdir -p \
 	${APP_DIRECTORY}/web/assets \
 	&& chown -R www-data:www-data /var/www/cinelis
 
+COPY infra/docker/php-fpm/entrypoint.sh /usr/local/bin/cinelis-entrypoint
+
+RUN chmod +x /usr/local/bin/cinelis-entrypoint
+
+ENTRYPOINT ["/usr/local/bin/cinelis-entrypoint"]
+
 CMD ["php-fpm", "-F"]
