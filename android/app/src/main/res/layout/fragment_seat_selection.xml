@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/space_20">
-
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/background">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="@dimen/space_20">
         <TextView style="@style/Widget.CineLis.Wordmark" android:text="@string/wordmark" />
-        <TextView
-            style="@style/TextAppearance.CineLis.PageTitle"
-            android:layout_marginTop="@dimen/space_32"
-            android:text="@string/seats_title" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_24" android:orientation="horizontal">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/step_seats" android:textColor="@color/primary" android:textStyle="bold" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/step_payment" android:textColor="@color/muted_foreground" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="end" android:text="@string/step_ticket" android:textColor="@color/muted_foreground" />
+        </LinearLayout>
+        <TextView style="@style/TextAppearance.CineLis.PageTitle" android:layout_marginTop="@dimen/space_32" android:text="@string/seats_title" />
+        <TextView android:id="@+id/session_summary" style="@style/TextAppearance.CineLis.BodyMuted" android:layout_marginTop="@dimen/space_8" />
+        <TextView android:layout_width="match_parent" android:layout_height="40dp" android:layout_marginTop="@dimen/space_32" android:background="@drawable/bg_screen" android:gravity="center" android:text="@string/screen" android:textColor="@color/foreground" android:textStyle="bold" />
+        <androidx.recyclerview.widget.RecyclerView android:id="@+id/seat_grid" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_20" android:nestedScrollingEnabled="false" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_16" android:gravity="center" android:text="@string/seat_legend" android:textColor="@color/muted_foreground" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_24" android:text="@string/selected_seats" android:textColor="@color/foreground" android:textStyle="bold" />
+        <TextView android:id="@+id/selected_labels" style="@style/TextAppearance.CineLis.BodyMuted" android:layout_marginTop="@dimen/space_4" android:text="—" />
+        <TextView android:id="@+id/selection_error" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_8" android:textColor="@color/danger" android:visibility="gone" />
+        <TextView android:id="@+id/total" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_16" android:gravity="end" android:text="0,00 €" android:textColor="@color/foreground" android:textSize="24sp" android:textStyle="bold" />
+        <Button android:id="@+id/continue_button" android:layout_width="match_parent" android:layout_height="@dimen/touch_target" android:layout_marginTop="@dimen/space_16" android:background="@drawable/bg_button_primary" android:enabled="false" android:text="@string/continue_to_payment" android:textColor="@color/primary_foreground" />
+        <ProgressBar android:id="@+id/loading" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:layout_marginTop="@dimen/space_16" />
     </LinearLayout>
 </ScrollView>

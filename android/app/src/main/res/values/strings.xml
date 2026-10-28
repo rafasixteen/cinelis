@@ -40,4 +40,18 @@
     <string name="have_account">Já tem conta? Entrar</string>
     <string name="auth_invalid">Verifique os dados indicados.</string>
     <string name="loading">A carregar…</string>
+    <string name="step_seats">1 Lugares</string>
+    <string name="step_payment">2 Pagamento</string>
+    <string name="step_ticket">3 Bilhete</string>
+    <string name="screen">ECRÃ</string>
+    <string name="seat_legend">Disponível   Selecionado   Ocupado</string>
+    <string name="selected_seats">Lugares selecionados</string>
+    <string name="continue_to_payment">Continuar para pagamento</string>
+    <string name="no_seats_selected">Selecione pelo menos um lugar.</string>
+    <string name="payment_method">Método de pagamento</string>
+    <string name="mb_way">MB WAY</string>
+    <string name="phone_number">Número de telemóvel</string>
+    <string name="payment_notice">Este pagamento é apenas uma simulação para explorar o fluxo da aplicação.</string>
+    <string name="pay_now">Pagar e emitir bilhete</string>
+    <string name="invalid_phone">Indique um número de telemóvel português válido.</string>
 </resources>
