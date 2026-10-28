@@ -1,0 +1,120 @@
+@layer components {
+    .total {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid var(--border);
+        padding-top: 24px;
+        margin: 40px 0;
+        gap: 18px;
+    }
+
+    .total strong {
+        font-size: 24px;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    .checkout-grid {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr;
+        gap: 50px;
+    }
+
+    .checkout-grid > .panel {
+        min-height: 410px;
+        padding: 26px;
+    }
+
+    .order-movie {
+        display: flex;
+        align-items: flex-start;
+        gap: 26px;
+    }
+
+    .order-poster {
+        width: 146px;
+        flex: 0 0 146px;
+    }
+
+    .order-movie h2 {
+        margin-top: 12px;
+        margin-bottom: 20px;
+    }
+
+    .order-summary .total {
+        margin-bottom: 22px;
+    }
+
+    .payment form {
+        margin-top: 32px;
+    }
+
+    .payment form .ui-button {
+        width: 100%;
+        margin-top: 12px;
+    }
+
+    .preview-link {
+        display: flex;
+        gap: 12px;
+        margin-top: 28px;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 1050px) {
+        .checkout-grid {
+            gap: 28px;
+        }
+
+        .order-poster {
+            width: 100px;
+            flex-basis: 100px;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        .checkout-grid > .panel {
+            min-height: 0;
+            padding: 22px;
+        }
+
+        .order-poster {
+            display: none;
+        }
+
+        .order-movie h2 {
+            margin: 0 0 20px;
+            font-size: 22px;
+        }
+
+        .order-summary .total {
+            margin-top: 36px;
+            margin-bottom: 14px;
+        }
+
+        .checkout-grid > .payment {
+            padding: 0;
+            border: 0;
+            background: transparent;
+        }
+
+        .payment h2 {
+            display: none;
+        }
+
+        .payment form {
+            margin-top: 0;
+        }
+
+        .preview-link {
+            display: grid;
+        }
+    }
+}

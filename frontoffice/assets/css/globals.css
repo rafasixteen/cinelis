@@ -1,11 +1,45 @@
-@import "tailwindcss";
-@import "../../../common/assets/css/base.css";
-@import "../../../common/assets/css/primitives.css";
+@import 'tailwindcss';
+
+@import '../../../common/assets/css/layouts/base.css';
+
+@import '../../../common/assets/css/components/primitives.css';
 
 @source "../../components";
+
 @source "../../views";
+
 @source "../../layouts";
 
-@import "./components/header.css";
-@import "./components/footer.css";
-@import "./views/home.css";
+@import './components/header.css';
+
+@import './components/footer.css';
+
+@import './layouts/main.css';
+
+@import './components/panel.css';
+
+@import './components/poster.css';
+
+@import './components/feedback.css';
+
+@import './components/steps.css';
+
+@import './components/seats.css';
+
+@import './components/accessibility.css';
+
+@import './views/catalog.css';
+
+@import './views/movie.css';
+
+@import './views/session.css';
+
+@import './views/auth.css';
+
+@import './views/checkout.css';
+
+@import './views/ticket.css';
+
+@import './views/account.css';
+
+@import './views/site.css';

@@ -1,0 +1,116 @@
+@layer components {
+    .auth-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 120px;
+        max-width: 1110px;
+        margin: 16px auto 0;
+    }
+
+    .auth-grid .panel {
+        padding: 34px;
+        min-height: 590px;
+    }
+
+    .auth-grid :is(h1, h2) {
+        margin-bottom: 10px;
+        font-size: 32px;
+        line-height: 1.25;
+        letter-spacing: -0.025em;
+    }
+
+    .app [data-demo-form] {
+        display: grid;
+        gap: 24px;
+        margin-top: 40px;
+    }
+
+    .auth-grid [data-demo-form] > .ui-button {
+        width: 100%;
+        margin-top: 12px;
+    }
+
+    .recover-link {
+        font-size: 12px;
+        color: var(--muted-foreground);
+        text-decoration: none;
+    }
+
+    .auth-switch {
+        display: none;
+    }
+
+    .narrow {
+        max-width: 520px;
+        margin: 20px auto;
+    }
+
+    .narrow > .text-link {
+        display: inline-block;
+        margin-top: 24px;
+    }
+
+    .narrow > p {
+        margin-top: 12px;
+    }
+
+    @media (max-width: 1050px) {
+        .auth-grid {
+            gap: 60px;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .auth-grid {
+            display: block;
+            margin-top: 22px;
+        }
+
+        .auth-grid :is(h1, h2) {
+            font-size: 26px;
+        }
+
+        .auth-grid .panel {
+            padding: 0;
+            border: 0;
+            background: transparent;
+            min-height: 0;
+        }
+
+        .register-panel {
+            display: none;
+        }
+
+        .auth-register .register-panel {
+            display: block;
+        }
+
+        .auth-register .login-panel {
+            display: none;
+        }
+
+        .app [data-demo-form] {
+            gap: 26px;
+        }
+
+        .auth-grid [data-demo-form] {
+            margin-top: 44px;
+        }
+
+        .recover-link {
+            text-align: right;
+        }
+
+        .auth-switch {
+            display: grid;
+            gap: 20px;
+            border-top: 1px solid var(--border);
+            margin-top: 42px;
+            padding-top: 28px;
+        }
+
+        .auth-switch .ui-button {
+            width: 100%;
+        }
+    }
+}

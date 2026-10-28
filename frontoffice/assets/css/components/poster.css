@@ -1,0 +1,136 @@
+@layer components {
+    .poster {
+        --poster-background: #2d2a25;
+        --poster-foreground: #f1f0ee;
+        --poster-muted: #b6b0a5;
+        --poster-border: #433f37;
+        --poster-accent: #5eead4;
+        --poster-bar: #22201c;
+        --poster-bar-deep: #161512;
+        color: var(--poster-foreground);
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        aspect-ratio: 0.69;
+        border: 1px solid var(--poster-border);
+        border-radius: var(--radius-xl);
+        background: var(--poster-background);
+    }
+
+    .poster-art {
+        position: relative;
+        height: 72%;
+        margin: 10% 8% 0;
+    }
+
+    .poster-art i {
+        position: absolute;
+        width: 64%;
+        aspect-ratio: 1;
+        background: var(--poster-accent);
+        border-radius: 50%;
+        top: 5%;
+        left: 18%;
+    }
+
+    .poster--sun .poster-art b {
+        position: absolute;
+        width: 100%;
+        height: 11%;
+        background: var(--poster-bar);
+        top: 65%;
+        left: 0;
+    }
+
+    .poster--sun .poster-art span {
+        position: absolute;
+        width: 77%;
+        height: 8%;
+        background: var(--poster-bar-deep);
+        top: 80%;
+        left: 11%;
+    }
+
+    .poster-type {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin-top: auto;
+        padding: 0 6% 10%;
+        display: grid;
+        gap: 10px;
+    }
+
+    .poster-type > span {
+        font-size: clamp(7px, 0.75vw, 10px);
+        letter-spacing: 0.3em;
+        color: var(--poster-muted);
+    }
+
+    .poster-type strong {
+        font-size: clamp(8px, 0.85vw, 12px);
+        font-weight: 500;
+    }
+
+    .poster--waves .poster-art {
+        transform: rotate(-7deg);
+        margin-top: 15%;
+    }
+
+    .poster--waves .poster-art i {
+        border-radius: 0;
+        top: 14%;
+        left: 0;
+        width: 100%;
+        height: 8%;
+        aspect-ratio: auto;
+        box-shadow:
+            0 -25px 0 var(--poster-border),
+            0 25px 0 var(--poster-border),
+            0 50px 0 var(--poster-border);
+    }
+
+    .poster--orbit .poster-art {
+        border: 1px solid var(--poster-accent);
+        border-radius: 50%;
+        aspect-ratio: 1;
+        height: auto;
+        width: 66%;
+        margin: 12% auto 0;
+    }
+
+    .poster--orbit .poster-art i {
+        width: 47%;
+        top: 26.5%;
+        left: 26.5%;
+    }
+
+    @media (max-width: 700px) {
+        .poster {
+            aspect-ratio: 0.89;
+        }
+
+        .poster-type {
+            gap: 8px;
+            padding-bottom: 10%;
+        }
+
+        .poster-type > span {
+            font-size: 8px;
+        }
+
+        .poster-type strong {
+            font-size: 10px;
+        }
+
+        .poster--waves .poster-art i {
+            top: 24%;
+            box-shadow:
+                0 -20px 0 var(--poster-border),
+                0 20px 0 var(--poster-border),
+                0 40px 0 var(--poster-border);
+        }
+    }
+}

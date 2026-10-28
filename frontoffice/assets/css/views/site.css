@@ -1,0 +1,37 @@
+@layer components {
+    .information {
+        max-width: 760px;
+    }
+
+    .information > p {
+        margin-top: 20px;
+        line-height: 1.65;
+        color: var(--muted-foreground);
+    }
+
+    .information details {
+        padding: 20px 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .information summary {
+        cursor: pointer;
+    }
+
+    .information details p {
+        margin-top: 14px;
+        line-height: 1.65;
+        color: var(--muted-foreground);
+    }
+
+    .information p a {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    @media (max-width: 700px) {
+        .information {
+            padding: 20px;
+        }
+    }
+}

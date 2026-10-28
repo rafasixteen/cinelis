@@ -1,0 +1,165 @@
+@layer components {
+    .movie-detail {
+        display: grid;
+        grid-template-columns: 310px minmax(0, 1fr);
+        grid-template-rows: auto 1fr;
+        gap: 22px 40px;
+    }
+
+    .detail-poster {
+        grid-row: span 2;
+    }
+
+    .detail-poster > .ui-button {
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .detail-heading h1 {
+        margin-block: 22px 14px;
+        font-size: 40px;
+    }
+
+    .detail-heading p span {
+        margin-inline: 10px;
+    }
+
+    .synopsis {
+        max-width: 540px;
+        font-size: 15px;
+        line-height: 1.5;
+        margin-bottom: 44px !important;
+    }
+
+    .detail-content h2 {
+        margin-bottom: 22px;
+    }
+
+    .tabs {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+    }
+
+    .tabs .ui-button {
+        min-width: 120px;
+    }
+
+    .session-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .session-card {
+        padding: 20px;
+    }
+
+    .session-card h3 {
+        font-size: 30px;
+    }
+
+    .session-card p {
+        margin-block: 8px 18px;
+        font-size: 12px;
+    }
+
+    .session-card .ui-button {
+        width: 100%;
+        padding-inline: 8px;
+    }
+
+    @media (max-width: 1050px) {
+        .movie-detail {
+            grid-template-columns: 240px minmax(0, 1fr);
+            gap: 24px;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .movie-detail {
+            grid-template-columns: 38% minmax(0, 1fr);
+            gap: 22px 20px;
+        }
+
+        .detail-poster {
+            grid-row: auto;
+        }
+
+        .detail-poster .poster {
+            aspect-ratio: 0.7;
+        }
+
+        .detail-poster > .ui-button {
+            font-size: 11px;
+            padding-inline: 5px;
+            margin-top: 12px;
+        }
+
+        .detail-heading h1 {
+            font-size: 26px;
+            margin-top: 16px;
+        }
+
+        .detail-heading p {
+            font-size: 12px;
+        }
+
+        .detail-heading p span {
+            margin-inline: 3px;
+        }
+
+        .detail-heading > .ui-badge {
+            font-size: 9px;
+            padding-inline: 8px;
+        }
+
+        .detail-content {
+            grid-column: 1 / -1;
+        }
+
+        .synopsis {
+            font-size: 13px;
+            margin-bottom: 30px !important;
+        }
+
+        .tabs {
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: nowrap;
+        }
+
+        .tabs .ui-button {
+            flex: 1;
+            min-width: 0;
+            padding-inline: 10px;
+            font-size: 12px;
+        }
+
+        .session-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .session-card {
+            display: grid;
+            grid-template-columns: 70px 1fr;
+            gap: 10px;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .session-card h3 {
+            font-size: 23px;
+        }
+
+        .session-card p {
+            margin: 0;
+        }
+
+        .session-card .ui-button {
+            grid-column: 1 / -1;
+        }
+    }
+}
