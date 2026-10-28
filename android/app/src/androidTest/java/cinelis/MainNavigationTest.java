@@ -42,15 +42,21 @@ public class MainNavigationTest {
             NavController controller = activity.navController();
             BottomNavigationView navigation = activity.findViewById(R.id.bottom_navigation);
             assertNotNull(controller.getCurrentDestination());
-            assertEquals(R.id.homeFragment, controller.getCurrentDestination().getId());
 
-            navigation.setSelectedItemId(R.id.ticketsFragment);
+            activity.navigateFromBottomBar(R.id.homeFragment);
+            assertEquals(R.id.homeFragment, controller.getCurrentDestination().getId());
+            assertEquals(R.id.homeFragment, navigation.getSelectedItemId());
+
+            activity.navigateFromBottomBar(R.id.ticketsFragment);
+            activity.getSupportFragmentManager().executePendingTransactions();
             assertEquals(R.id.ticketsFragment, controller.getCurrentDestination().getId());
 
-            navigation.setSelectedItemId(R.id.accountFragment);
+            activity.navigateFromBottomBar(R.id.accountFragment);
+            activity.getSupportFragmentManager().executePendingTransactions();
             assertEquals(R.id.accountFragment, controller.getCurrentDestination().getId());
 
-            navigation.setSelectedItemId(R.id.homeFragment);
+            activity.navigateFromBottomBar(R.id.homeFragment);
+            activity.getSupportFragmentManager().executePendingTransactions();
             assertEquals(R.id.homeFragment, controller.getCurrentDestination().getId());
         });
     }

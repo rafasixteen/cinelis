@@ -25,23 +25,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         applySystemInsets(binding.getRoot());
 
-        NavController navController = navController();
-        binding.bottomNavigation.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.homeFragment || id == R.id.navigation_search) {
-                navController.popBackStack(R.id.homeFragment, false);
-                return true;
-            }
-            if (id == R.id.ticketsFragment || id == R.id.accountFragment) {
-                if (navController.getCurrentDestination() == null
-                        || navController.getCurrentDestination().getId() != id) {
-                    navController.navigate(id);
-                }
-                return true;
-            }
-            return false;
-        });
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+        binding.bottomNavigation.setOnItemSelectedListener(
+                item -> navigateFromBottomBar(item.getItemId()));
+        navController().addOnDestinationChangedListener((controller, destination, arguments) -> {
             int id = destination.getId();
             if (id == R.id.homeFragment || id == R.id.ticketsFragment || id == R.id.accountFragment) {
                 binding.bottomNavigation.getMenu().findItem(id).setChecked(true);
@@ -56,6 +42,22 @@ public class MainActivity extends AppCompatActivity {
             throw new IllegalStateException("Navigation host is unavailable");
         }
         return host.getNavController();
+    }
+
+    boolean navigateFromBottomBar(int id) {
+        NavController navController = navController();
+        if (id == R.id.homeFragment || id == R.id.navigation_search) {
+            navController.popBackStack(R.id.homeFragment, false);
+            return true;
+        }
+        if (id == R.id.ticketsFragment || id == R.id.accountFragment) {
+            if (navController.getCurrentDestination() == null
+                    || navController.getCurrentDestination().getId() != id) {
+                navController.navigate(id);
+            }
+            return true;
+        }
+        return false;
     }
 
     private static void applySystemInsets(@NonNull View root) {
