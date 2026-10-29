@@ -32,6 +32,7 @@ public class AccountFragment extends Fragment {
     private User user;
     private boolean reauthRequested;
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,@Nullable ViewGroup container,@Nullable Bundle state){
+        reauthRequested=false;
         binding=FragmentAccountBinding.inflate(inflater,container,false); orderAdapter=new OrderAdapter();
         binding.ordersList.setLayoutManager(new LinearLayoutManager(requireContext()));binding.ordersList.setAdapter(orderAdapter);
         binding.editProfileButton.setOnClickListener(view -> edit());
@@ -46,6 +47,6 @@ public class AccountFragment extends Fragment {
     private void edit(){if(user==null)return;AccountDialogs.editProfile(requireContext(),user,(name,email)->ApiClient.get().updateCurrentUser(name,email,this,new ApiCallback<User>(){@Override public void onSuccess(User value){user=value;renderUser();}@Override public void onError(ApiError error){new AlertDialog.Builder(requireContext()).setMessage(error.getMessage()).setPositiveButton(android.R.string.ok,null).show();}}));}
     private void logout(){ApiClient.get().logout(this,new ApiCallback<Void>(){@Override public void onSuccess(Void value){reauth();}@Override public void onError(ApiError error){reauth();}});}
     private void confirmDelete(){new AlertDialog.Builder(requireContext()).setTitle(R.string.delete_account).setMessage("Esta ação elimina a conta simulada durante esta execução.").setNegativeButton(android.R.string.cancel,null).setPositiveButton(R.string.delete_account,(dialog,which)->ApiClient.get().deleteCurrentUser(this,new ApiCallback<Void>(){@Override public void onSuccess(Void value){reauth();}@Override public void onError(ApiError error){}})).show();}
-    private void reauth(){if(!isAdded()||reauthRequested)return;reauthRequested=true;NavController controller=NavHostFragment.findNavController(this);new AppNavigator(controller).showAuth(R.id.accountFragment,null);}
+    private void reauth(){if(!isAdded()||reauthRequested)return;reauthRequested=true;ApiClient.get().clearAuthentication();NavController controller=NavHostFragment.findNavController(this);new AppNavigator(controller).showAuth(R.id.accountFragment,null);}
     @Override public void onDestroyView(){ApiClient.get().cancel(this);binding=null;super.onDestroyView();}
 }

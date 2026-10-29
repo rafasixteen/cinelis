@@ -19,10 +19,12 @@ import java.util.Map;
 
 public class MockApiRouterTest {
     private MockApiRouter router;
+    private MockApiStore store;
 
     @Before
     public void setUp() {
-        router = new MockApiRouter(new MockApiStore());
+        store = new MockApiStore();
+        router = new MockApiRouter(store);
     }
 
     @Test
@@ -53,6 +55,23 @@ public class MockApiRouterTest {
         assertEquals("João Ferreira", object(updated).getString("name"));
         assertEquals(204, request(Request.Method.DELETE, "/auth/me", null, token).getStatusCode());
         assertEquals(401, request(Request.Method.GET, "/auth/me", null, token).getStatusCode());
+    }
+
+    @Test
+    public void registrationsKeepUniqueUserIdsAfterDeletion() throws Exception {
+        MockApiResponse first = request(Request.Method.POST, "/auth/register",
+                json("{\"name\":\"User A\",\"email\":\"a@example.com\",\"password\":\"password123\"}"), null);
+        MockApiResponse second = request(Request.Method.POST, "/auth/register",
+                json("{\"name\":\"User B\",\"email\":\"b@example.com\",\"password\":\"password123\"}"), null);
+        String secondId = object(second).getString("id");
+        String firstToken = login("a@example.com", "password123");
+        assertEquals(204, request(Request.Method.DELETE, "/auth/me", null, firstToken).getStatusCode());
+
+        MockApiResponse third = request(Request.Method.POST, "/auth/register",
+                json("{\"name\":\"User C\",\"email\":\"c@example.com\",\"password\":\"password123\"}"), null);
+        assertEquals(201, first.getStatusCode());
+        assertEquals(201, third.getStatusCode());
+        assertFalse(secondId.equals(object(third).getString("id")));
     }
 
     @Test
@@ -104,8 +123,16 @@ public class MockApiRouterTest {
         byte[] holdBody = json("{\"seatIds\":[\"" + seatId + "\"]}");
         assertEquals(201, request(Request.Method.POST,
                 "/sessions/" + sessionId + "/holds", holdBody, token).getStatusCode());
-        assertEquals(409, request(Request.Method.POST,
+        assertEquals(201, request(Request.Method.POST,
                 "/sessions/" + sessionId + "/holds", holdBody, token).getStatusCode());
+
+        request(Request.Method.POST, "/auth/register",
+                json("{\"name\":\"Outro Cliente\",\"email\":\"outro@example.com\",\"password\":\"password123\"}"), null);
+        String otherToken = login("outro@example.com", "password123");
+        assertEquals(409, request(Request.Method.POST,
+                "/sessions/" + sessionId + "/holds", holdBody, otherToken).getStatusCode());
+        assertEquals(409, request(Request.Method.POST, "/orders",
+                json("{\"sessionId\":\"" + sessionId + "\",\"seatIds\":[\"" + seatId + "\"]}"), otherToken).getStatusCode());
 
         MockApiResponse order = request(Request.Method.POST, "/orders",
                 json("{\"sessionId\":\"" + sessionId + "\",\"seatIds\":[\"" + seatId + "\"]}"), token);
@@ -116,10 +143,53 @@ public class MockApiRouterTest {
     }
 
     @Test
+    public void duplicateSeatIdsAreRejectedForHoldsAndOrders() throws Exception {
+        JSONObject movies = object(request(Request.Method.GET, "/movies", null, null));
+        String movieId = movies.getJSONArray("items").getJSONObject(0).getString("id");
+        String sessionId = array(request(Request.Method.GET,
+                "/movies/" + movieId + "/sessions", null, null)).getJSONObject(0).getString("id");
+        JSONArray seats = object(request(Request.Method.GET,
+                "/sessions/" + sessionId + "/seats", null, null)).getJSONArray("seats");
+        String seatId = firstSeatWithStatus(seats, "available");
+        String token = login("ana@exemplo.pt", "password123");
+        byte[] duplicates = json("{\"seatIds\":[\"" + seatId + "\",\"" + seatId + "\"]}");
+        assertEquals(422, request(Request.Method.POST,
+                "/sessions/" + sessionId + "/holds", duplicates, token).getStatusCode());
+        assertEquals(201, request(Request.Method.POST, "/sessions/" + sessionId + "/holds",
+                json("{\"seatIds\":[\"" + seatId + "\"]}"), token).getStatusCode());
+        assertEquals(422, request(Request.Method.POST, "/orders",
+                json("{\"sessionId\":\"" + sessionId + "\",\"seatIds\":[\"" + seatId
+                        + "\",\"" + seatId + "\"]}"), token).getStatusCode());
+    }
+
+    @Test
+    public void expiredHoldReturnsSeatToAvailability() throws Exception {
+        JSONObject movies = object(request(Request.Method.GET, "/movies", null, null));
+        String movieId = movies.getJSONArray("items").getJSONObject(0).getString("id");
+        String sessionId = array(request(Request.Method.GET,
+                "/movies/" + movieId + "/sessions", null, null)).getJSONObject(0).getString("id");
+        JSONArray seats = object(request(Request.Method.GET,
+                "/sessions/" + sessionId + "/seats", null, null)).getJSONArray("seats");
+        String seatId = firstSeatWithStatus(seats, "available");
+        String token = login("ana@exemplo.pt", "password123");
+        assertEquals(201, request(Request.Method.POST, "/sessions/" + sessionId + "/holds",
+                json("{\"seatIds\":[\"" + seatId + "\"]}"), token).getStatusCode());
+        MockApiStore.HoldRecord active = store.holdsBySeatId.get(seatId);
+        store.holdsBySeatId.put(seatId,
+                new MockApiStore.HoldRecord(active.userId, active.sessionId, 0L));
+
+        JSONObject refreshed = object(request(Request.Method.GET,
+                "/sessions/" + sessionId + "/seats", null, null));
+        assertEquals("available", statusOf(refreshed.getJSONArray("seats"), seatId));
+        assertEquals(409, request(Request.Method.POST, "/orders",
+                json("{\"sessionId\":\"" + sessionId + "\",\"seatIds\":[\"" + seatId + "\"]}"), token).getStatusCode());
+    }
+
+    @Test
     public void ticketListDetailAndUpcomingFilterAreAvailableToAuthenticatedUser() throws Exception {
         String token = login("ana@exemplo.pt", "password123");
         JSONObject tickets = object(request(Request.Method.GET, "/tickets?upcoming=true", null, token));
-        assertTrue(tickets.getJSONArray("items").length() >= 3);
+        assertTrue(tickets.getJSONArray("items").length() >= 2);
         String ticketId = tickets.getJSONArray("items").getJSONObject(0).getString("id");
         MockApiResponse detail = request(Request.Method.GET, "/tickets/" + ticketId, null, token);
         assertEquals(200, detail.getStatusCode());
@@ -172,6 +242,14 @@ public class MockApiRouterTest {
             }
         }
         assertFalse("Expected a seat with status " + status, true);
+        return null;
+    }
+
+    private static String statusOf(JSONArray seats, String id) throws Exception {
+        for (int index = 0; index < seats.length(); index++) {
+            JSONObject seat = seats.getJSONObject(index);
+            if (id.equals(seat.getString("id"))) return seat.getString("status");
+        }
         return null;
     }
 }

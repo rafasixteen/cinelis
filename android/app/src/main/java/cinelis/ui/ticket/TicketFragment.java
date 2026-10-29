@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -22,13 +23,25 @@ import cinelis.network.ApiError;
 
 public class TicketFragment extends Fragment {
     private FragmentTicketBinding binding;
+    private String ticketId;
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle state) {
         binding = FragmentTicketBinding.inflate(inflater, container, false);
         binding.downloadButton.setOnClickListener(view -> Snackbar.make(view, R.string.download_demo, Snackbar.LENGTH_SHORT).show());
-        String id = getArguments() == null ? null : getArguments().getString(AppNavigator.ARG_TICKET_ID);
-        ApiClient.get().getTicket(id, this, new ApiCallback<Ticket>() {
+        ticketId = getArguments() == null ? null : getArguments().getString(AppNavigator.ARG_TICKET_ID);
+        ApiClient.get().getTicket(ticketId, this, new ApiCallback<Ticket>() {
             @Override public void onSuccess(Ticket ticket) { if (binding != null) show(ticket); }
-            @Override public void onError(ApiError error) { if (binding != null) { binding.loading.setVisibility(View.GONE); binding.ticketError.setText(error.getMessage()); binding.ticketError.setVisibility(View.VISIBLE); } }
+            @Override public void onError(ApiError error) {
+                if (binding == null) return;
+                if (error.getStatusCode() == 401) {
+                    ApiClient.get().clearAuthentication();
+                    new AppNavigator(NavHostFragment.findNavController(TicketFragment.this))
+                            .showAuth(R.id.ticketFragment, null, null, ticketId);
+                    return;
+                }
+                binding.loading.setVisibility(View.GONE);
+                binding.ticketError.setText(error.getMessage());
+                binding.ticketError.setVisibility(View.VISIBLE);
+            }
         });
         return binding.getRoot();
     }

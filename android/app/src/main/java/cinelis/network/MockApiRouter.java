@@ -15,6 +15,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public final class MockApiRouter {
     private final MockApiStore store;
@@ -92,7 +97,7 @@ public final class MockApiRouter {
         if (store.usersByEmail.containsKey(email)) {
             throw new MockApiException(409, "email_exists", "O email já está registado.");
         }
-        MockApiStore.UserRecord user = new MockApiStore.UserRecord(MockApiStore.uuid(1000 + store.usersByEmail.size()),
+        MockApiStore.UserRecord user = new MockApiStore.UserRecord(store.nextUserId(),
                 name, email, password, MockApiStore.CREATED_AT);
         store.usersByEmail.put(email, user);
         return json(201, user.json());
@@ -173,6 +178,7 @@ public final class MockApiRouter {
 
     private MockApiResponse seats(String sessionId) {
         if (!store.sessions.containsKey(sessionId)) notFound("Sessão não encontrada.");
+        releaseExpiredHolds();
         JSONArray seats = new JSONArray();
         JSONArray coordinates = new JSONArray();
         for (JSONObject seat : store.seatsBySession.get(sessionId).values()) {
@@ -188,22 +194,29 @@ public final class MockApiRouter {
     }
 
     private MockApiResponse hold(Map<String, String> headers, String sessionId, JSONObject body) {
-        user(headers);
+        MockApiStore.UserRecord user = user(headers);
         if (!store.sessions.containsKey(sessionId)) notFound("Sessão não encontrada.");
         JSONArray ids = requiredSeatIds(body);
+        rejectDuplicateSeatIds(ids);
+        releaseExpiredHolds();
         List<JSONObject> selected = resolveSeats(sessionId, ids);
         for (JSONObject seat : selected) {
-            if (!"available".equals(seat.optString("status"))) {
+            MockApiStore.HoldRecord existing = store.holdsBySeatId.get(seat.optString("id"));
+            if (!"available".equals(seat.optString("status"))
+                    && (existing == null || !user.id.equals(existing.userId))) {
                 throw new MockApiException(409, "seat_unavailable", "Um ou mais lugares já não estão disponíveis.");
             }
         }
+        long expiresAt = System.currentTimeMillis() + 5 * 60 * 1000L;
         JSONArray held = new JSONArray();
         for (JSONObject seat : selected) {
             MockApiStore.set(seat, "status", "held");
+            store.holdsBySeatId.put(seat.optString("id"),
+                    new MockApiStore.HoldRecord(user.id, sessionId, expiresAt));
             held.put(MockApiStore.seatWithoutStatus(seat));
         }
         return json(201, MockApiStore.object("sessionId", sessionId, "seats", held,
-                "expiresAt", "2026-10-28T23:59:59Z"));
+                "expiresAt", isoInstant(expiresAt)));
     }
 
     private MockApiResponse createOrder(Map<String, String> headers, JSONObject body) {
@@ -212,9 +225,14 @@ public final class MockApiRouter {
         String sessionId = body.optString("sessionId");
         JSONObject session = store.sessions.get(sessionId);
         if (session == null) notFound("Sessão não encontrada.");
-        List<JSONObject> selected = resolveSeats(sessionId, requiredSeatIds(body));
+        JSONArray ids = requiredSeatIds(body);
+        rejectDuplicateSeatIds(ids);
+        releaseExpiredHolds();
+        List<JSONObject> selected = resolveSeats(sessionId, ids);
         for (JSONObject seat : selected) {
-            if (!"held".equals(seat.optString("status"))) {
+            MockApiStore.HoldRecord hold = store.holdsBySeatId.get(seat.optString("id"));
+            if (!"held".equals(seat.optString("status")) || hold == null
+                    || !user.id.equals(hold.userId) || !sessionId.equals(hold.sessionId)) {
                 throw new MockApiException(409, "hold_expired", "A reserva expirou ou o lugar deixou de estar disponível.");
             }
         }
@@ -223,6 +241,7 @@ public final class MockApiRouter {
         int sequence = 1;
         for (JSONObject seat : selected) {
             MockApiStore.set(seat, "status", "sold");
+            store.holdsBySeatId.remove(seat.optString("id"));
             String ticketId = store.nextTicketId();
             JSONObject ticket = store.ticket(ticketId, orderId, session, seat,
                     "CIN-" + orderId.substring(0, 8) + "-" + sequence++);
@@ -241,7 +260,9 @@ public final class MockApiRouter {
     private MockApiResponse listOrders(Map<String, String> headers, Map<String, String> query) {
         MockApiStore.UserRecord user = user(headers);
         JSONArray items = new JSONArray();
-        for (Map.Entry<String, JSONObject> entry : store.orders.entrySet()) {
+        List<Map.Entry<String, JSONObject>> orders = new ArrayList<>(store.orders.entrySet());
+        Collections.reverse(orders);
+        for (Map.Entry<String, JSONObject> entry : orders) {
             if (user.id.equals(store.orderOwners.get(entry.getKey()))) items.put(MockApiStore.copy(entry.getValue()));
         }
         return ok(paged(items, query));
@@ -292,6 +313,40 @@ public final class MockApiRouter {
             validation(MockApiStore.object("seatIds", MockApiStore.array("Selecione pelo menos um lugar.")));
         }
         return ids;
+    }
+
+    private void rejectDuplicateSeatIds(JSONArray ids) {
+        Set<String> unique = new HashSet<>();
+        for (int index = 0; index < ids.length(); index++) {
+            if (!unique.add(ids.optString(index))) {
+                validation(MockApiStore.object("seatIds",
+                        MockApiStore.array("Não repita o mesmo lugar.")));
+            }
+        }
+    }
+
+    private void releaseExpiredHolds() {
+        long now = System.currentTimeMillis();
+        List<String> expiredIds = new ArrayList<>();
+        for (Map.Entry<String, MockApiStore.HoldRecord> entry : store.holdsBySeatId.entrySet()) {
+            if (entry.getValue().expiresAtMillis <= now) expiredIds.add(entry.getKey());
+        }
+        for (String seatId : expiredIds) {
+            store.holdsBySeatId.remove(seatId);
+            for (LinkedHashMap<String, JSONObject> seats : store.seatsBySession.values()) {
+                JSONObject seat = seats.get(seatId);
+                if (seat != null && "held".equals(seat.optString("status"))) {
+                    MockApiStore.set(seat, "status", "available");
+                    break;
+                }
+            }
+        }
+    }
+
+    private static String isoInstant(long timeMillis) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ROOT);
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return formatter.format(new Date(timeMillis));
     }
 
     private MockApiStore.UserRecord user(Map<String, String> headers) {

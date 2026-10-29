@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.IdRes;
 import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 
 import java.util.ArrayList;
 
@@ -33,9 +34,16 @@ public final class AppNavigator {
     }
 
     public void showAuth(@IdRes int returnDestination, String sessionId) {
+        showAuth(returnDestination, sessionId, null, null);
+    }
+
+    public void showAuth(@IdRes int returnDestination, String sessionId,
+                         ArrayList<String> seatIds, String ticketId) {
         Bundle args = new Bundle();
         args.putInt(ARG_RETURN_DESTINATION, returnDestination);
         args.putString(ARG_SESSION_ID, sessionId);
+        args.putStringArray(ARG_SEAT_IDS, toArray(seatIds));
+        args.putString(ARG_TICKET_ID, ticketId);
         navController.navigate(R.id.authFragment, args);
     }
 
@@ -48,7 +56,7 @@ public final class AppNavigator {
     public void showCheckout(String sessionId, ArrayList<String> seatIds) {
         Bundle args = new Bundle();
         args.putString(ARG_SESSION_ID, sessionId);
-        args.putStringArrayList(ARG_SEAT_IDS, seatIds);
+        args.putStringArray(ARG_SEAT_IDS, toArray(seatIds));
         navController.navigate(R.id.checkoutFragment, args);
     }
 
@@ -56,6 +64,15 @@ public final class AppNavigator {
         Bundle args = new Bundle();
         args.putString(ARG_TICKET_ID, ticketId);
         navController.navigate(R.id.ticketFragment, args);
+    }
+
+    public void showTicketAfterPurchase(String ticketId) {
+        Bundle args = new Bundle();
+        args.putString(ARG_TICKET_ID, ticketId);
+        NavOptions options = new NavOptions.Builder()
+                .setPopUpTo(R.id.seatSelectionFragment, true)
+                .build();
+        navController.navigate(R.id.ticketFragment, args, options);
     }
 
     public void showTickets() {
@@ -67,8 +84,14 @@ public final class AppNavigator {
     }
 
     private void navigateTopLevel(@IdRes int destination) {
+        if (navController.getCurrentDestination() != null
+                && navController.getCurrentDestination().getId() == destination) return;
         if (!navController.popBackStack(destination, false)) {
             navController.navigate(destination);
         }
+    }
+
+    private static String[] toArray(ArrayList<String> values) {
+        return values == null ? null : values.toArray(new String[0]);
     }
 }

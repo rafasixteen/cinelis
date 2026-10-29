@@ -21,8 +21,18 @@ public final class SeatSelectionState {
 
     public boolean toggle(String seatId) {
         Seat seat = seats.get(seatId);
-        if (seat == null || !"available".equals(seat.getStatus())) return false;
-        if (!selected.remove(seatId)) selected.add(seatId);
+        if (seat == null) return false;
+        if (selected.remove(seatId)) return true;
+        if (!"available".equals(seat.getStatus())) return false;
+        selected.add(seatId);
+        return true;
+    }
+
+    public boolean restore(String seatId) {
+        Seat seat = seats.get(seatId);
+        if (seat == null || !("available".equals(seat.getStatus())
+                || "held".equals(seat.getStatus()))) return false;
+        selected.add(seatId);
         return true;
     }
 

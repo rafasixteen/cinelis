@@ -27,4 +27,14 @@ public class SeatSelectionStateTest {
         assertEquals(Arrays.asList("a3"), state.selectedSeatIds());
         assertEquals(7.5, state.total(), 0.001);
     }
+
+    @Test public void ownHeldSeatCanBeRestoredAndDeselectedAfterCheckoutBack() {
+        SeatSelectionState state = new SeatSelectionState(Arrays.asList(
+                new Seat("a1", "A", 1, "held"),
+                new Seat("a2", "A", 2, "available")), 7.5);
+        assertTrue(state.restore("a1"));
+        assertEquals(Arrays.asList("A1"), state.selectedLabels());
+        assertTrue(state.toggle("a1"));
+        assertTrue(state.selectedSeatIds().isEmpty());
+    }
 }

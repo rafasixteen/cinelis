@@ -76,7 +76,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void filter(String query) {
-        if (binding == null || catalogue.isEmpty()) return;
+        if (binding == null) return;
+        if (catalogue.isEmpty()) {
+            currentAdapter.submit(new ArrayList<>());
+            upcomingAdapter.submit(new ArrayList<>());
+            state.showEmpty();
+            return;
+        }
         String normalized = query.trim().toLowerCase(Locale.ROOT);
         List<Movie> result = new ArrayList<>();
         for (Movie movie : catalogue) {

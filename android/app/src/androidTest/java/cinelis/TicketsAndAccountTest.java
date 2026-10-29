@@ -12,15 +12,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import cinelis.network.ApiClient;
+
 @RunWith(AndroidJUnit4.class)
 public class TicketsAndAccountTest {
     @Rule public ActivityScenarioRule<MainActivity> activityRule = new ActivityScenarioRule<>(MainActivity.class);
 
-    @Test public void accountAndTicketsDestinationsExposePortugueseHeadings() {
+    @Test public void ticketsDestinationRequiresAuthentication() {
         activityRule.getScenario().onActivity(activity -> {
+            ApiClient.get().clearAuthentication();
             activity.navigateFromBottomBar(R.id.ticketsFragment);
             activity.getSupportFragmentManager().executePendingTransactions();
         });
-        onView(withText("Os meus bilhetes")).check(matches(isDisplayed()));
+        onView(withText("Bem-vindo de volta.")).check(matches(isDisplayed()));
     }
 }

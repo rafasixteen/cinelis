@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,8 +37,9 @@ public class CheckoutFragment extends Fragment {
         binding = FragmentCheckoutBinding.inflate(inflater, container, false);
         Bundle args = getArguments();
         sessionId = args == null ? null : args.getString(AppNavigator.ARG_SESSION_ID);
-        seatIds = args == null ? new ArrayList<>() : args.getStringArrayList(AppNavigator.ARG_SEAT_IDS);
-        if (seatIds == null) seatIds = new ArrayList<>();
+        String[] providedSeatIds = args == null ? null : args.getStringArray(AppNavigator.ARG_SEAT_IDS);
+        seatIds = providedSeatIds == null ? new ArrayList<>()
+                : new ArrayList<>(Arrays.asList(providedSeatIds));
         binding.payButton.setOnClickListener(view -> pay());
         loadSummary();
         return binding.getRoot();
@@ -53,7 +55,7 @@ public class CheckoutFragment extends Fragment {
                 binding.checkoutTotal.setText(String.format(Locale.forLanguageTag("pt-PT"), "%.2f €", value.getPrice() * seatIds.size()));
                 loadSeatLabels();
             }
-            @Override public void onError(ApiError error) { showError(error.getMessage()); }
+            @Override public void onError(ApiError error) { handleLoadError(error); }
         });
     }
 
@@ -65,7 +67,7 @@ public class CheckoutFragment extends Fragment {
                 for (Seat seat : seats) if (seatIds.contains(seat.getId())) labels.add(seat.getLabel());
                 binding.checkoutSeats.setText("Lugares " + String.join(", ", labels));
             }
-            @Override public void onError(ApiError error) { showError(error.getMessage()); }
+            @Override public void onError(ApiError error) { handleLoadError(error); }
         });
     }
 
@@ -82,10 +84,16 @@ public class CheckoutFragment extends Fragment {
             @Override public void onSuccess(Order order) {
                 if (binding == null || order.getTickets().isEmpty()) return;
                 new AppNavigator(NavHostFragment.findNavController(CheckoutFragment.this))
-                        .showTicket(order.getTickets().get(0).getId());
+                        .showTicketAfterPurchase(order.getTickets().get(0).getId());
             }
             @Override public void onError(ApiError error) {
                 if (binding == null) return;
+                if (error.getStatusCode() == 401) {
+                    ApiClient.get().clearAuthentication();
+                    new AppNavigator(NavHostFragment.findNavController(CheckoutFragment.this))
+                            .showAuth(R.id.checkoutFragment, sessionId, seatIds, null);
+                    return;
+                }
                 binding.loading.setVisibility(View.GONE);
                 binding.payButton.setEnabled(true);
                 showError(error.getMessage());
@@ -97,6 +105,16 @@ public class CheckoutFragment extends Fragment {
         if (binding == null) return;
         binding.checkoutError.setText(message);
         binding.checkoutError.setVisibility(View.VISIBLE);
+    }
+
+    private void handleLoadError(ApiError error) {
+        if (error.getStatusCode() == 401 && isAdded()) {
+            ApiClient.get().clearAuthentication();
+            new AppNavigator(NavHostFragment.findNavController(this))
+                    .showAuth(R.id.checkoutFragment, sessionId, seatIds, null);
+        } else {
+            showError(error.getMessage());
+        }
     }
 
     @Override public void onDestroyView() { ApiClient.get().cancel(this); binding = null; super.onDestroyView(); }

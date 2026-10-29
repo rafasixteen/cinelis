@@ -15,34 +15,30 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import cinelis.network.ApiClient;
+
 @RunWith(AndroidJUnit4.class)
 public class MainNavigationTest {
-    @Rule
-    public ActivityScenarioRule<MainActivity> activityRule =
+    @Rule public ActivityScenarioRule<MainActivity> activityRule =
             new ActivityScenarioRule<>(MainActivity.class);
 
-    @Test
-    public void navigationGraphContainsEightProductDestinations() {
+    @Test public void navigationGraphContainsEightProductDestinations() {
         activityRule.getScenario().onActivity(activity -> {
-            NavHostFragment host = (NavHostFragment) activity
-                    .getSupportFragmentManager()
+            NavHostFragment host = (NavHostFragment) activity.getSupportFragmentManager()
                     .findFragmentById(R.id.nav_host_fragment);
             NavController controller = host.getNavController();
             int destinationCount = 0;
-            for (NavDestination ignored : controller.getGraph()) {
-                destinationCount++;
-            }
+            for (NavDestination ignored : controller.getGraph()) destinationCount++;
             assertEquals(8, destinationCount);
         });
     }
 
-    @Test
-    public void bottomNavigationReachesHomeTicketsAndAccount() {
+    @Test public void bottomNavigationReachesHomeAndTicketsShell() {
         activityRule.getScenario().onActivity(activity -> {
+            ApiClient.get().clearAuthentication();
             NavController controller = activity.navController();
             BottomNavigationView navigation = activity.findViewById(R.id.bottom_navigation);
             assertNotNull(controller.getCurrentDestination());
-
             activity.navigateFromBottomBar(R.id.homeFragment);
             assertEquals(R.id.homeFragment, controller.getCurrentDestination().getId());
             assertEquals(R.id.homeFragment, navigation.getSelectedItemId());
@@ -50,14 +46,6 @@ public class MainNavigationTest {
             activity.navigateFromBottomBar(R.id.ticketsFragment);
             activity.getSupportFragmentManager().executePendingTransactions();
             assertEquals(R.id.ticketsFragment, controller.getCurrentDestination().getId());
-
-            activity.navigateFromBottomBar(R.id.accountFragment);
-            activity.getSupportFragmentManager().executePendingTransactions();
-            assertEquals(R.id.accountFragment, controller.getCurrentDestination().getId());
-
-            activity.navigateFromBottomBar(R.id.homeFragment);
-            activity.getSupportFragmentManager().executePendingTransactions();
-            assertEquals(R.id.homeFragment, controller.getCurrentDestination().getId());
         });
     }
 }

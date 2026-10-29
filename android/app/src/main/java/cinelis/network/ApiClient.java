@@ -48,6 +48,8 @@ public final class ApiClient {
 
     public boolean isAuthenticated() { return bearerToken != null; }
 
+    public void clearAuthentication() { bearerToken = null; }
+
     public void login(String email, String password, Object tag, ApiCallback<User> callback) {
         JSONObject body = MockApiStore.object("email", email, "password", password);
         object(Request.Method.POST, "/auth/login", body, tag, json -> {

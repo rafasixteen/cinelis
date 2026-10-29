@@ -25,17 +25,29 @@ import cinelis.network.ApiClient;
 import cinelis.network.ApiError;
 
 public class SeatSelectionFragment extends Fragment {
+    private static final String STATE_SELECTED_SEAT_IDS = "selectedSeatIds";
     private FragmentSeatSelectionBinding binding;
     private SeatGridAdapter adapter;
     private SeatSelectionState selection;
     private String sessionId;
     private ArrayList<String> restoredSeatIds = new ArrayList<>();
+    private boolean submitting;
 
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentSeatSelectionBinding.inflate(inflater, container, false);
-        if (savedInstanceState != null) restoredSeatIds = savedInstanceState.getStringArrayList("selectedSeatIds");
+        submitting = false;
+        if (getArguments() != null) {
+            ArrayList<String> argumentSeatIds = getArguments()
+                    .getStringArrayList(STATE_SELECTED_SEAT_IDS);
+            if (argumentSeatIds != null) restoredSeatIds = argumentSeatIds;
+        }
+        if (savedInstanceState != null) {
+            ArrayList<String> savedSeatIds = savedInstanceState
+                    .getStringArrayList(STATE_SELECTED_SEAT_IDS);
+            if (savedSeatIds != null) restoredSeatIds = savedSeatIds;
+        }
         if (restoredSeatIds == null) restoredSeatIds = new ArrayList<>();
         adapter = new SeatGridAdapter(this::toggleSeat);
         binding.seatGrid.setLayoutManager(new GridLayoutManager(requireContext(), 8));
@@ -64,7 +76,7 @@ public class SeatSelectionFragment extends Fragment {
             @Override public void onSuccess(List<Seat> seats) {
                 if (binding == null) return;
                 selection = new SeatSelectionState(seats, price);
-                for (String id : restoredSeatIds) selection.toggle(id);
+                for (String id : restoredSeatIds) selection.restore(id);
                 adapter.submit(seats, selection);
                 binding.loading.setVisibility(View.GONE);
                 updateSummary();
@@ -74,7 +86,7 @@ public class SeatSelectionFragment extends Fragment {
     }
 
     private void toggleSeat(Seat seat) {
-        if (selection != null && selection.toggle(seat.getId())) {
+        if (!submitting && selection != null && selection.toggle(seat.getId())) {
             adapter.refresh();
             updateSummary();
         }
@@ -84,7 +96,7 @@ public class SeatSelectionFragment extends Fragment {
         List<String> labels = selection.selectedLabels();
         binding.selectedLabels.setText(labels.isEmpty() ? "—" : String.join(", ", labels));
         binding.total.setText(String.format(Locale.forLanguageTag("pt-PT"), "%.2f €", selection.total()));
-        binding.continueButton.setEnabled(!labels.isEmpty());
+        binding.continueButton.setEnabled(!submitting && !labels.isEmpty());
         binding.selectionError.setVisibility(View.GONE);
     }
 
@@ -93,18 +105,34 @@ public class SeatSelectionFragment extends Fragment {
             showError(getString(R.string.no_seats_selected));
             return;
         }
+        final ArrayList<String> submittedSeatIds = new ArrayList<>(selection.selectedSeatIds());
+        submitting = true;
+        adapter.setInteractionEnabled(false);
         binding.continueButton.setEnabled(false);
         binding.loading.setVisibility(View.VISIBLE);
-        ApiClient.get().createSeatHold(sessionId, selection.selectedSeatIds(), this, new ApiCallback<List<Seat>>() {
+        ApiClient.get().createSeatHold(sessionId, submittedSeatIds, this, new ApiCallback<List<Seat>>() {
             @Override public void onSuccess(List<Seat> value) {
                 if (binding == null) return;
+                restoredSeatIds = new ArrayList<>(submittedSeatIds);
+                if (getArguments() != null) {
+                    getArguments().putStringArrayList(STATE_SELECTED_SEAT_IDS,
+                            new ArrayList<>(submittedSeatIds));
+                }
                 new AppNavigator(NavHostFragment.findNavController(SeatSelectionFragment.this))
-                        .showCheckout(sessionId, selection.selectedSeatIds());
+                        .showCheckout(sessionId, submittedSeatIds);
             }
             @Override public void onError(ApiError error) {
                 if (binding == null) return;
+                submitting = false;
+                adapter.setInteractionEnabled(true);
                 binding.loading.setVisibility(View.GONE);
-                binding.continueButton.setEnabled(false);
+                updateSummary();
+                if (error.getStatusCode() == 401) {
+                    ApiClient.get().clearAuthentication();
+                    new AppNavigator(NavHostFragment.findNavController(SeatSelectionFragment.this))
+                            .showAuth(R.id.seatSelectionFragment, sessionId);
+                    return;
+                }
                 showError(error.getStatusCode() == 409 ? "Um dos lugares já não está disponível." : error.getMessage());
             }
         });
@@ -121,7 +149,9 @@ public class SeatSelectionFragment extends Fragment {
 
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (selection != null) outState.putStringArrayList("selectedSeatIds", selection.selectedSeatIds());
+        if (selection != null) {
+            outState.putStringArrayList(STATE_SELECTED_SEAT_IDS, selection.selectedSeatIds());
+        }
     }
 
     @Override public void onDestroyView() { ApiClient.get().cancel(this); binding = null; super.onDestroyView(); }

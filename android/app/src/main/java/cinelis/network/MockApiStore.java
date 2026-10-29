@@ -23,7 +23,9 @@ public final class MockApiStore {
     final Map<String, JSONObject> tickets = new LinkedHashMap<>();
     final Map<String, String> orderOwners = new LinkedHashMap<>();
     final Map<String, String> ticketOwners = new LinkedHashMap<>();
+    final Map<String, HoldRecord> holdsBySeatId = new LinkedHashMap<>();
     private int tokenSequence = 1;
+    private int userSequence = 1000;
     private int orderSequence = 100;
     private int ticketSequence = 100;
 
@@ -43,6 +45,7 @@ public final class MockApiStore {
 
     String nextOrderId() { return uuid(++orderSequence); }
     String nextTicketId() { return uuid(++ticketSequence); }
+    String nextUserId() { return uuid(++userSequence); }
 
     UserRecord findUserById(String id) {
         for (UserRecord user : usersByEmail.values()) if (user.id.equals(id)) return user;
@@ -119,6 +122,9 @@ public final class MockApiStore {
             String orderId = uuid(80 + index);
             String ticketId = uuid(90 + index);
             JSONObject ticket = ticket(ticketId, orderId, session, seat, "CIN-DEMO-" + (index + 1));
+            if (index == 0) {
+                set(ticket.optJSONObject("session"), "startsAt", "2026-10-01T20:30:00Z");
+            }
             JSONObject order = object("id", orderId, "total", 7.5,
                     "createdAt", "2026-10-0" + (index + 1) + "T12:00:00Z", "tickets", array(ticket));
             orders.put(orderId, order);
@@ -203,6 +209,18 @@ public final class MockApiStore {
         JSONObject json() {
             return object("id", id, "name", name, "email", email, "role", "customer",
                     "createdAt", createdAt);
+        }
+    }
+
+    static final class HoldRecord {
+        final String userId;
+        final String sessionId;
+        final long expiresAtMillis;
+
+        HoldRecord(String userId, String sessionId, long expiresAtMillis) {
+            this.userId = userId;
+            this.sessionId = sessionId;
+            this.expiresAtMillis = expiresAtMillis;
         }
     }
 }

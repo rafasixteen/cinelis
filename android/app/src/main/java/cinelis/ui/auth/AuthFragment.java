@@ -20,6 +20,9 @@ import cinelis.network.ApiCallback;
 import cinelis.network.ApiClient;
 import cinelis.network.ApiError;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class AuthFragment extends Fragment {
     public static final String ARG_RETURN_DESTINATION = AppNavigator.ARG_RETURN_DESTINATION;
     private FragmentAuthBinding binding;
@@ -68,12 +71,32 @@ public class AuthFragment extends Fragment {
                 if (binding == null) return;
                 NavController controller = NavHostFragment.findNavController(AuthFragment.this);
                 String sessionId = getArguments() == null ? null : getArguments().getString(AppNavigator.ARG_SESSION_ID);
+                String ticketId = getArguments() == null ? null : getArguments().getString(AppNavigator.ARG_TICKET_ID);
+                String[] providedSeatIds = getArguments() == null ? null
+                        : getArguments().getStringArray(AppNavigator.ARG_SEAT_IDS);
+                ArrayList<String> seatIds = providedSeatIds == null ? new ArrayList<>()
+                        : new ArrayList<>(Arrays.asList(providedSeatIds));
                 controller.popBackStack();
                 AppNavigator navigator = new AppNavigator(controller);
                 int destination = getArguments() == null ? 0 : getArguments().getInt(ARG_RETURN_DESTINATION, 0);
-                if (sessionId != null) navigator.showSeats(sessionId);
-                else if (destination == R.id.ticketsFragment) navigator.showTickets();
-                else navigator.showAccount();
+                if (destination == R.id.checkoutFragment && sessionId != null) {
+                    controller.popBackStack(R.id.checkoutFragment, true);
+                    navigator.showCheckout(sessionId, seatIds);
+                } else if (destination == R.id.seatSelectionFragment && sessionId != null) {
+                    if (controller.getCurrentDestination() == null
+                            || controller.getCurrentDestination().getId() != R.id.seatSelectionFragment) {
+                        navigator.showSeats(sessionId);
+                    }
+                } else if (destination == R.id.ticketFragment && ticketId != null) {
+                    controller.popBackStack(R.id.ticketFragment, true);
+                    navigator.showTicket(ticketId);
+                } else if (destination == R.id.ticketsFragment) {
+                    controller.popBackStack(R.id.ticketsFragment, true);
+                    navigator.showTickets();
+                } else {
+                    controller.popBackStack(R.id.accountFragment, true);
+                    navigator.showAccount();
+                }
             }
             @Override public void onError(ApiError error) { finishError(error); }
         });
