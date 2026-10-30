@@ -17,16 +17,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/authFragment"
-        android:name="cinelis.ui.auth.AuthFragment"
-        android:label="@string/auth_title">
-        <argument android:name="returnDestination" android:defaultValue="0" app:argType="integer" />
-        <argument android:name="sessionId" app:argType="string" app:nullable="true" />
-        <argument android:name="seatIds" app:argType="string[]" app:nullable="true" />
-        <argument android:name="ticketId" app:argType="string" app:nullable="true" />
-    </fragment>
-
-    <fragment
         android:id="@+id/seatSelectionFragment"
         android:name="cinelis.ui.seats.SeatSelectionFragment"
         android:label="@string/seats_title">

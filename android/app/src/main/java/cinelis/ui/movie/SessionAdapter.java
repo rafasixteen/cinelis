@@ -31,7 +31,7 @@ public final class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.Ho
         String startsAt = session.getStartsAt();
         holder.time.setText(startsAt.length() >= 16 ? startsAt.substring(11, 16) : startsAt);
         holder.room.setText(session.getRoomName());
-        holder.price.setText(String.format(Locale.forLanguageTag("pt-PT"), "%.2f €", session.getPrice()));
+        holder.price.setText(String.format(Locale.forLanguageTag("pt-PT"), "· %.2f €", session.getPrice()));
         holder.itemView.setOnClickListener(view -> listener.onSessionSelected(session));
     }
     @Override public int getItemCount() { return sessions.size(); }

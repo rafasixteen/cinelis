@@ -16,9 +16,8 @@ public class CineLisApplication extends Application {
         super.onCreate();
         PreferencesManager preferences = new PreferencesManager(this);
         AppCompatDelegate.setDefaultNightMode(preferences.getThemeMode());
-        ApiClient.initialize(
-                MockRequestQueueFactory.create(new MockApiRouter(new MockApiStore())),
-                preferences
-        );
+        MockApiStore store = new MockApiStore();
+        ApiClient.initialize(MockRequestQueueFactory.create(new MockApiRouter(store)),
+                preferences, store.createDemoSession());
     }
 }

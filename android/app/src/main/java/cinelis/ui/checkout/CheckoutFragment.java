@@ -53,6 +53,10 @@ public class CheckoutFragment extends Fragment {
                 binding.checkoutMovie.setText(value.getMovie() == null ? "CineLis" : value.getMovie().getTitle());
                 binding.checkoutSession.setText(value.getRoomName() + " · " + value.getStartsAt().substring(0, 10) + " · " + value.getStartsAt().substring(11, 16));
                 binding.checkoutTotal.setText(String.format(Locale.forLanguageTag("pt-PT"), "%.2f €", value.getPrice() * seatIds.size()));
+                binding.checkoutQuantity.setText(String.format(Locale.forLanguageTag("pt-PT"),
+                        "%d bilhete(s) × %.2f €", seatIds.size(), value.getPrice()));
+                binding.payButton.setText(String.format(Locale.forLanguageTag("pt-PT"),
+                        "Pagar %.2f €", value.getPrice() * seatIds.size()));
                 loadSeatLabels();
             }
             @Override public void onError(ApiError error) { handleLoadError(error); }
@@ -90,7 +94,7 @@ public class CheckoutFragment extends Fragment {
                 if (binding == null) return;
                 if (error.getStatusCode() == 401) {
                     ApiClient.get().clearAuthentication();
-                    new AppNavigator(NavHostFragment.findNavController(CheckoutFragment.this))
+                    new AppNavigator(CheckoutFragment.this)
                             .showAuth(R.id.checkoutFragment, sessionId, seatIds, null);
                     return;
                 }
@@ -110,7 +114,7 @@ public class CheckoutFragment extends Fragment {
     private void handleLoadError(ApiError error) {
         if (error.getStatusCode() == 401 && isAdded()) {
             ApiClient.get().clearAuthentication();
-            new AppNavigator(NavHostFragment.findNavController(this))
+            new AppNavigator(this)
                     .showAuth(R.id.checkoutFragment, sessionId, seatIds, null);
         } else {
             showError(error.getMessage());

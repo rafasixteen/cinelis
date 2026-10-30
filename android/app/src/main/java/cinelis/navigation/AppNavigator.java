@@ -3,12 +3,16 @@ package cinelis.navigation;
 import android.os.Bundle;
 
 import androidx.annotation.IdRes;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
+import androidx.navigation.fragment.NavHostFragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import cinelis.R;
+import cinelis.MainActivity;
 
 public final class AppNavigator {
     public static final String ARG_MOVIE_ID = "movieId";
@@ -18,9 +22,16 @@ public final class AppNavigator {
     public static final String ARG_RETURN_DESTINATION = "returnDestination";
 
     private final NavController navController;
+    private final MainActivity host;
 
     public AppNavigator(NavController navController) {
         this.navController = navController;
+        this.host = null;
+    }
+
+    public AppNavigator(Fragment fragment) {
+        this.navController = NavHostFragment.findNavController(fragment);
+        this.host = (MainActivity) fragment.requireActivity();
     }
 
     public void showHome() {
@@ -44,7 +55,34 @@ public final class AppNavigator {
         args.putString(ARG_SESSION_ID, sessionId);
         args.putStringArray(ARG_SEAT_IDS, toArray(seatIds));
         args.putString(ARG_TICKET_ID, ticketId);
-        navController.navigate(R.id.authFragment, args);
+        if (host == null) throw new IllegalStateException("Authentication requires an activity host");
+        host.launchAuthentication(args);
+    }
+
+    public void resumeAfterAuthentication(Bundle args) {
+        if (args == null) { showHome(); return; }
+        int destination = args.getInt(ARG_RETURN_DESTINATION, R.id.accountFragment);
+        String sessionId = args.getString(ARG_SESSION_ID);
+        String ticketId = args.getString(ARG_TICKET_ID);
+        String[] ids = args.getStringArray(ARG_SEAT_IDS);
+        if (destination == R.id.seatSelectionFragment && sessionId != null) {
+            if (navController.getCurrentDestination() == null
+                    || navController.getCurrentDestination().getId() != destination) {
+                showSeats(sessionId);
+            }
+        } else if (destination == R.id.checkoutFragment && sessionId != null) {
+            navController.popBackStack(destination, true);
+            showCheckout(sessionId, ids == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(ids)));
+        } else if (destination == R.id.ticketFragment && ticketId != null) {
+            navController.popBackStack(destination, true);
+            showTicket(ticketId);
+        } else if (destination == R.id.ticketsFragment) {
+            navController.popBackStack(destination, true);
+            showTickets();
+        } else {
+            navController.popBackStack(R.id.accountFragment, true);
+            showAccount();
+        }
     }
 
     public void showSeats(String sessionId) {

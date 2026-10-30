@@ -40,7 +40,7 @@ public class TicketsFragment extends Fragment {
         binding.upcomingTab.setOnClickListener(view -> load(true));
         binding.previousTab.setOnClickListener(view -> load(false));
         if (!ApiClient.get().isAuthenticated()) {
-            new AppNavigator(NavHostFragment.findNavController(this))
+            new AppNavigator(this)
                     .showAuth(R.id.ticketsFragment, null);
         } else {
             load(upcoming);
@@ -50,6 +50,8 @@ public class TicketsFragment extends Fragment {
 
     private void load(boolean showUpcoming) {
         upcoming = showUpcoming;
+        binding.upcomingTab.setSelected(showUpcoming);
+        binding.previousTab.setSelected(!showUpcoming);
         binding.loading.setVisibility(View.VISIBLE);
         binding.emptyMessage.setVisibility(View.GONE);
         ApiClient.get().listTickets(showUpcoming, this, new ApiCallback<List<Ticket>>() {
@@ -65,7 +67,7 @@ public class TicketsFragment extends Fragment {
                 if (binding == null) return;
                 if (error.getStatusCode() == 401) {
                     ApiClient.get().clearAuthentication();
-                    new AppNavigator(NavHostFragment.findNavController(TicketsFragment.this))
+                    new AppNavigator(TicketsFragment.this)
                             .showAuth(R.id.ticketsFragment, null);
                     return;
                 }

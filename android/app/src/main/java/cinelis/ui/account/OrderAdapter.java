@@ -19,7 +19,15 @@ public final class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.Holder
     private final List<Order> orders = new ArrayList<>();
     public void submit(List<Order> values) { orders.clear(); orders.addAll(values); notifyDataSetChanged(); }
     @NonNull @Override public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) { return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order, parent, false)); }
-    @Override public void onBindViewHolder(@NonNull Holder holder, int position) { Order order=orders.get(position); holder.title.setText("Compra #" + order.getId().substring(0,8)); holder.meta.setText(order.getCreatedAt().substring(0,10) + " · " + order.getTickets().size() + " bilhete(s) · " + String.format(Locale.forLanguageTag("pt-PT"), "%.2f €", order.getTotal())); }
+    @Override public void onBindViewHolder(@NonNull Holder holder, int position) {
+        Order order = orders.get(position);
+        String title = order.getTickets().isEmpty() || order.getTickets().get(0).getSession().getMovie() == null
+                ? "Compra" : order.getTickets().get(0).getSession().getMovie().getTitle();
+        holder.title.setText(title);
+        holder.itemView.setContentDescription("Compra #" + order.getId().substring(0, 8));
+        holder.meta.setText(order.getCreatedAt().substring(0,10) + " · " + order.getTickets().size() + " bilhete(s)");
+        holder.total.setText(String.format(Locale.forLanguageTag("pt-PT"), "%.2f €", order.getTotal()));
+    }
     @Override public int getItemCount() { return orders.size(); }
-    static final class Holder extends RecyclerView.ViewHolder { final TextView title,meta; Holder(View v){super(v);title=v.findViewById(R.id.order_title);meta=v.findViewById(R.id.order_meta);} }
+    static final class Holder extends RecyclerView.ViewHolder { final TextView title,meta,total; Holder(View v){super(v);title=v.findViewById(R.id.order_title);meta=v.findViewById(R.id.order_meta);total=v.findViewById(R.id.order_total);} }
 }

@@ -12,9 +12,13 @@
     <dimen name="radius_button">6dp</dimen>
     <dimen name="radius_card">8dp</dimen>
     <dimen name="touch_target">48dp</dimen>
-    <dimen name="page_title_size">31sp</dimen>
-    <dimen name="section_title_size">25sp</dimen>
+    <dimen name="page_title_size">25sp</dimen>
+    <dimen name="section_title_size">20sp</dimen>
     <dimen name="card_title_size">20sp</dimen>
-    <dimen name="body_size">16sp</dimen>
-    <dimen name="label_size">13sp</dimen>
+    <dimen name="body_size">12.8sp</dimen>
+    <dimen name="label_size">12.8sp</dimen>
+    <dimen name="caption_size">10.24sp</dimen>
+    <dimen name="control_height">44dp</dimen>
+    <dimen name="header_height">64dp</dimen>
+    <dimen name="navigation_height">72dp</dimen>
 </resources>

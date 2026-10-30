@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="success_surface">#D0EBDD</color>
     <color name="background">#F6F5F4</color>
     <color name="foreground">#161512</color>
     <color name="card">#EDEBE9</color>

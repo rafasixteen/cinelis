@@ -22,14 +22,14 @@ public class MainNavigationTest {
     @Rule public ActivityScenarioRule<MainActivity> activityRule =
             new ActivityScenarioRule<>(MainActivity.class);
 
-    @Test public void navigationGraphContainsEightProductDestinations() {
+    @Test public void mainActivityHostsSevenFragmentDestinations() {
         activityRule.getScenario().onActivity(activity -> {
             NavHostFragment host = (NavHostFragment) activity.getSupportFragmentManager()
                     .findFragmentById(R.id.nav_host_fragment);
             NavController controller = host.getNavController();
             int destinationCount = 0;
             for (NavDestination ignored : controller.getGraph()) destinationCount++;
-            assertEquals(8, destinationCount);
+            assertEquals(7, destinationCount);
         });
     }
 

@@ -1,19 +1,87 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Widget.CineLis.PrimaryButton" parent="Widget.Material3.Button">
-        <item name="android:minHeight">@dimen/touch_target</item>
-        <item name="android:background">@drawable/bg_button_primary</item>
+    <style name="Widget.CineLis.Text" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">@dimen/body_size</item>
+        <item name="android:textColor">@color/foreground</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+    <style name="Widget.CineLis.SecondaryButton" parent="Widget.Material3.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/touch_target</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">@dimen/label_size</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="cornerRadius">@dimen/radius_button</item>
+        <item name="backgroundTint">@color/button_secondary_background</item>
+        <item name="android:textColor">@color/foreground</item>
+        <item name="strokeColor">@color/border</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="rippleColor">@color/border</item>
+    </style>
+    <style name="Widget.CineLis.PrimaryButton" parent="Widget.CineLis.SecondaryButton">
+        <item name="backgroundTint">@color/button_primary_background</item>
         <item name="android:textColor">@color/primary_foreground</item>
-        <item name="android:textStyle">bold</item>
+        <item name="strokeWidth">0dp</item>
     </style>
-    <style name="Widget.CineLis.SecondaryButton" parent="Widget.Material3.Button.OutlinedButton">
-        <item name="android:minHeight">@dimen/touch_target</item>
-        <item name="android:background">@drawable/bg_button_secondary</item>
-        <item name="android:textColor">@color/foreground</item>
+    <style name="Widget.CineLis.Tab" parent="Widget.CineLis.SecondaryButton">
+        <item name="android:layout_height">@dimen/control_height</item>
+        <item name="backgroundTint">@color/tab_background</item>
+        <item name="android:textColor">@color/tab_text</item>
     </style>
-    <style name="Widget.CineLis.Input" parent="Widget.Material3.TextInputEditText.FilledBox">
-        <item name="android:minHeight">@dimen/touch_target</item>
+    <style name="Widget.CineLis.DateButton" parent="Widget.CineLis.Tab">
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">48dp</item>
+    </style>
+    <style name="Widget.CineLis.Input" parent="Widget.AppCompat.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/control_height</item>
+        <item name="android:minHeight">0dp</item>
         <item name="android:background">@drawable/bg_input</item>
+        <item name="backgroundTint">@null</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">@dimen/label_size</item>
         <item name="android:textColor">@color/foreground</item>
+        <item name="android:textColorHint">@color/muted_foreground</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:singleLine">true</item>
+    </style>
+    <style name="Widget.CineLis.Section" parent="Widget.CineLis.Text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/section_title_size</item>
+    </style>
+    <style name="Widget.CineLis.Label" parent="Widget.CineLis.Text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="Widget.CineLis.Divider" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/border</item>
+    </style>
+    <style name="Widget.CineLis.NavigationText" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">@dimen/caption_size</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:letterSpacing">0</item>
     </style>
 </resources>

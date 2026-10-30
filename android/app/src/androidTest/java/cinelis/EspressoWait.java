@@ -5,9 +5,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.app.Activity;
 
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
+import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
+import androidx.test.runner.lifecycle.Stage;
 
 import org.hamcrest.Matcher;
 
@@ -22,7 +25,14 @@ final class EspressoWait {
             @Override public void perform(UiController controller, View root) {
                 long deadline = System.currentTimeMillis() + 5_000L;
                 do {
-                    if (find(root, matcher)) return;
+                    // A login result can finish AuthActivity while this action is waiting.
+                    // Resolve the active decor again instead of polling its detached old root.
+                    if (root.isAttachedToWindow() && root.hasWindowFocus() && find(root, matcher)) return;
+                    for (Activity activity : ActivityLifecycleMonitorRegistry.getInstance()
+                            .getActivitiesInStage(Stage.RESUMED)) {
+                        View decor = activity.getWindow().getDecorView();
+                        if (decor.hasWindowFocus() && find(decor, matcher)) return;
+                    }
                     controller.loopMainThreadForAtLeast(50L);
                 } while (System.currentTimeMillis() < deadline);
                 throw new AssertionError("Timed out waiting for: " + matcher);

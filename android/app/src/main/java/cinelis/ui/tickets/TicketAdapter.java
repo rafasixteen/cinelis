@@ -30,6 +30,7 @@ public final class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.Hold
         holder.meta.setText(startsAt.substring(0, 10) + " · " + startsAt.substring(11, 16) + " · " + session.getRoomName());
         holder.seat.setText("Lugar " + ticket.getSeat().getLabel());
         holder.itemView.setOnClickListener(view -> listener.onTicketSelected(ticket));
+        holder.itemView.findViewById(R.id.view_ticket).setOnClickListener(view -> listener.onTicketSelected(ticket));
     }
     @Override public int getItemCount() { return tickets.size(); }
     static final class Holder extends RecyclerView.ViewHolder { final TextView title, meta, seat; Holder(View v) { super(v); title=v.findViewById(R.id.ticket_title); meta=v.findViewById(R.id.ticket_meta); seat=v.findViewById(R.id.ticket_seat); } }

@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -59,9 +58,10 @@ public class MovieDetailFragment extends Fragment {
                 if (binding == null) return;
                 binding.movieTitle.setText(movie.getTitle());
                 String genre = movie.getGenres().isEmpty() ? "" : movie.getGenres().get(0);
-                binding.movieMeta.setText(movie.getDurationMinutes() + " min · " + genre + " · " + movie.getAgeRating());
+                binding.movieMeta.setText(movie.getDurationMinutes() + " min · " + genre);
+                binding.movieRating.setText(movie.getAgeRating());
                 binding.movieSynopsis.setText(movie.getSynopsis());
-                binding.detailPoster.setImageResource(MovieAdapter.poster(movie.getTitle()));
+                binding.detailPoster.setMovie(movie);
                 loadSessions(selectedDate);
             }
             @Override public void onError(ApiError error) {
@@ -72,6 +72,9 @@ public class MovieDetailFragment extends Fragment {
 
     private void loadSessions(String date) {
         selectedDate = date;
+        binding.dateToday.setSelected("2026-10-28".equals(date));
+        binding.dateTomorrow.setSelected("2026-10-29".equals(date));
+        binding.dateLater.setSelected("2026-10-30".equals(date));
         ApiClient.get().listMovieSessions(movieId, date, this, new ApiCallback<List<CinemaSession>>() {
             @Override public void onSuccess(List<CinemaSession> sessions) {
                 if (binding == null) return;
@@ -85,7 +88,7 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void selectSession(CinemaSession session) {
-        AppNavigator navigator = new AppNavigator(NavHostFragment.findNavController(this));
+        AppNavigator navigator = new AppNavigator(this);
         if (ApiClient.get().isAuthenticated()) navigator.showSeats(session.getId());
         else navigator.showAuth(R.id.seatSelectionFragment, session.getId());
     }

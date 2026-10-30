@@ -32,6 +32,7 @@ public class SeatSelectionFragment extends Fragment {
     private String sessionId;
     private ArrayList<String> restoredSeatIds = new ArrayList<>();
     private boolean submitting;
+    private float zoom = 1f;
 
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -50,8 +51,12 @@ public class SeatSelectionFragment extends Fragment {
         }
         if (restoredSeatIds == null) restoredSeatIds = new ArrayList<>();
         adapter = new SeatGridAdapter(this::toggleSeat);
+        if (savedInstanceState != null) zoom = savedInstanceState.getFloat("zoom", 1f);
         binding.seatGrid.setLayoutManager(new GridLayoutManager(requireContext(), 8));
         binding.seatGrid.setAdapter(adapter);
+        binding.zoomIn.setOnClickListener(view -> setZoom(Math.min(2f, zoom + 0.25f)));
+        binding.zoomOut.setOnClickListener(view -> setZoom(Math.max(1f, zoom - 0.25f)));
+        setZoom(zoom);
         binding.continueButton.setOnClickListener(view -> createHold());
         sessionId = getArguments() == null ? null : getArguments().getString(AppNavigator.ARG_SESSION_ID);
         load();
@@ -129,13 +134,27 @@ public class SeatSelectionFragment extends Fragment {
                 updateSummary();
                 if (error.getStatusCode() == 401) {
                     ApiClient.get().clearAuthentication();
-                    new AppNavigator(NavHostFragment.findNavController(SeatSelectionFragment.this))
+                    new AppNavigator(SeatSelectionFragment.this)
                             .showAuth(R.id.seatSelectionFragment, sessionId);
                     return;
                 }
                 showError(error.getStatusCode() == 409 ? "Um dos lugares já não está disponível." : error.getMessage());
             }
         });
+    }
+
+    private void setZoom(float value) {
+        zoom = value;
+        float density = getResources().getDisplayMetrics().density;
+        binding.seatGrid.getLayoutParams().width = Math.round(304 * zoom * density);
+        binding.seatGrid.requestLayout();
+        for (int i = 0; i < binding.rowLabels.getChildCount(); i++) {
+            binding.rowLabels.getChildAt(i).getLayoutParams().height = Math.round(38 * zoom * density);
+        }
+        binding.rowLabels.requestLayout();
+        adapter.setZoom(zoom);
+        binding.zoomOut.setEnabled(zoom > 1f);
+        binding.zoomIn.setEnabled(zoom < 2f);
     }
 
     private void showError(String message) {
@@ -149,6 +168,7 @@ public class SeatSelectionFragment extends Fragment {
 
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putFloat("zoom", zoom);
         if (selection != null) {
             outState.putStringArrayList(STATE_SELECTED_SEAT_IDS, selection.selectedSeatIds());
         }

@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -34,7 +33,7 @@ public class TicketFragment extends Fragment {
                 if (binding == null) return;
                 if (error.getStatusCode() == 401) {
                     ApiClient.get().clearAuthentication();
-                    new AppNavigator(NavHostFragment.findNavController(TicketFragment.this))
+                    new AppNavigator(TicketFragment.this)
                             .showAuth(R.id.ticketFragment, null, null, ticketId);
                     return;
                 }

@@ -208,6 +208,26 @@ public class MockApiRouterTest {
         assertEquals(200, login.getStatusCode());
     }
 
+    @Test
+    public void demoPurchasesCoverDifferentFilmsAndMatchSessionDetails() throws Exception {
+        String token = store.createDemoSession();
+        JSONObject profile = object(request(Request.Method.GET, "/auth/me", null, token));
+        assertEquals("Ana Martins", profile.getString("name"));
+        JSONArray tickets = object(request(Request.Method.GET, "/tickets", null, token)).getJSONArray("items");
+        java.util.Set<String> films = new java.util.HashSet<>();
+        for (int index = 0; index < tickets.length(); index++) {
+            JSONObject ticket = tickets.getJSONObject(index);
+            JSONObject summary = ticket.getJSONObject("session");
+            films.add(summary.getJSONObject("movie").getString("id"));
+            JSONObject session = object(request(Request.Method.GET, "/sessions/" + summary.getString("id"), null, null));
+            assertEquals(session.getString("startsAt"), summary.getString("startsAt"));
+            JSONObject order = object(request(Request.Method.GET, "/orders/" + ticket.getString("orderId"), null, token));
+            assertEquals(ticket.getString("id"), order.getJSONArray("tickets").getJSONObject(0).getString("id"));
+            assertEquals(order.getString("createdAt"), ticket.getString("createdAt"));
+        }
+        assertEquals(3, films.size());
+    }
+
     private String login(String email, String password) throws Exception {
         MockApiResponse response = request(Request.Method.POST, "/auth/login",
                 json("{\"email\":\"" + email + "\",\"password\":\"" + password + "\"}"), null);

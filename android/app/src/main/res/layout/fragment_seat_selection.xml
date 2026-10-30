@@ -1,22 +1,45 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/background">
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="@dimen/space_20">
-        <TextView style="@style/Widget.CineLis.Wordmark" android:text="@string/wordmark" />
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_24" android:orientation="horizontal">
-            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/step_seats" android:textColor="@color/primary" android:textStyle="bold" />
-            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/step_payment" android:textColor="@color/muted_foreground" />
-            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="end" android:text="@string/step_ticket" android:textColor="@color/muted_foreground" />
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingStart="20dp" android:paddingEnd="20dp" android:paddingTop="24dp" android:paddingBottom="24dp">
+        <TextView style="@style/TextAppearance.CineLis.PageTitle" android:text="@string/seats_title" />
+        <TextView android:id="@+id/session_summary" style="@style/TextAppearance.CineLis.BodyMuted" android:layout_marginTop="10dp" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="24dp" android:layout_marginTop="16dp" android:orientation="horizontal" android:gravity="center_vertical">
+            <TextView android:layout_width="104dp" android:layout_height="match_parent" android:background="@drawable/bg_badge" android:gravity="center" android:text="@string/step_seats" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:text="@string/remaining_steps" android:textColor="@color/muted_foreground" />
         </LinearLayout>
-        <TextView style="@style/TextAppearance.CineLis.PageTitle" android:layout_marginTop="@dimen/space_32" android:text="@string/seats_title" />
-        <TextView android:id="@+id/session_summary" style="@style/TextAppearance.CineLis.BodyMuted" android:layout_marginTop="@dimen/space_8" />
-        <TextView android:layout_width="match_parent" android:layout_height="40dp" android:layout_marginTop="@dimen/space_32" android:background="@drawable/bg_screen" android:gravity="center" android:text="@string/screen" android:textColor="@color/foreground" android:textStyle="bold" />
-        <androidx.recyclerview.widget.RecyclerView android:id="@+id/seat_grid" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_20" android:nestedScrollingEnabled="false" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_16" android:gravity="center" android:text="@string/seat_legend" android:textColor="@color/muted_foreground" />
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_24" android:text="@string/selected_seats" android:textColor="@color/foreground" android:textStyle="bold" />
-        <TextView android:id="@+id/selected_labels" style="@style/TextAppearance.CineLis.BodyMuted" android:layout_marginTop="@dimen/space_4" android:text="—" />
-        <TextView android:id="@+id/selection_error" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_8" android:textColor="@color/danger" android:visibility="gone" />
-        <TextView android:id="@+id/total" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_16" android:gravity="end" android:text="0,00 €" android:textColor="@color/foreground" android:textSize="24sp" android:textStyle="bold" />
-        <Button android:id="@+id/continue_button" android:layout_width="match_parent" android:layout_height="@dimen/touch_target" android:layout_marginTop="@dimen/space_16" android:background="@drawable/bg_button_primary" android:enabled="false" android:text="@string/continue_to_payment" android:textColor="@color/primary_foreground" />
-        <ProgressBar android:id="@+id/loading" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:layout_marginTop="@dimen/space_16" />
+        <View android:layout_width="match_parent" android:layout_height="5dp" android:layout_marginStart="40dp" android:layout_marginEnd="40dp" android:layout_marginTop="32dp" android:background="@drawable/bg_screen" />
+        <TextView style="@style/TextAppearance.CineLis.BodyMuted" android:layout_marginTop="10dp" android:gravity="center" android:text="@string/screen" android:textSize="@dimen/caption_size" />
+        <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:fillViewport="true">
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_horizontal">
+                <LinearLayout android:id="@+id/row_labels" android:layout_width="16dp" android:layout_height="wrap_content" android:orientation="vertical">
+                    <TextView android:layout_width="match_parent" android:layout_height="38dp" android:gravity="center" android:text="A" android:textSize="@dimen/caption_size" />
+                    <TextView android:layout_width="match_parent" android:layout_height="38dp" android:gravity="center" android:text="B" android:textSize="@dimen/caption_size" />
+                    <TextView android:layout_width="match_parent" android:layout_height="38dp" android:gravity="center" android:text="C" android:textSize="@dimen/caption_size" />
+                    <TextView android:layout_width="match_parent" android:layout_height="38dp" android:gravity="center" android:text="D" android:textSize="@dimen/caption_size" />
+                    <TextView android:layout_width="match_parent" android:layout_height="38dp" android:gravity="center" android:text="E" android:textSize="@dimen/caption_size" />
+                </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView android:id="@+id/seat_grid" android:layout_width="304dp" android:layout_height="wrap_content" android:nestedScrollingEnabled="false" />
+            </LinearLayout>
+        </HorizontalScrollView>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="24dp" android:layout_marginTop="16dp" android:orientation="horizontal" android:gravity="center_vertical">
+            <TextView android:layout_width="20dp" android:layout_height="20dp" android:background="@drawable/bg_seat_available" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" android:text="@string/seat_free" android:textSize="@dimen/caption_size" android:textColor="@color/muted_foreground" />
+            <TextView android:layout_width="20dp" android:layout_height="20dp" android:background="@drawable/bg_seat_occupied" android:gravity="center" android:text="×" android:textColor="@color/background" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" android:text="@string/seat_occupied" android:textSize="@dimen/caption_size" android:textColor="@color/muted_foreground" />
+            <TextView android:layout_width="20dp" android:layout_height="20dp" android:background="@drawable/bg_seat_selected" android:gravity="center" android:text="✓" android:textColor="@color/primary_foreground" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" android:text="@string/seat_selected" android:textSize="@dimen/caption_size" android:textColor="@color/muted_foreground" />
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="44dp" android:layout_marginTop="16dp" android:orientation="horizontal" android:gravity="center_vertical">
+            <TextView style="@style/TextAppearance.CineLis.BodyMuted" android:layout_width="0dp" android:layout_weight="1" android:text="@string/zoom_seats" />
+            <Button android:id="@+id/zoom_out" style="@style/Widget.CineLis.SecondaryButton" android:layout_width="44dp" android:layout_height="44dp" android:text="−" android:contentDescription="@string/zoom_out" />
+            <Button android:id="@+id/zoom_in" style="@style/Widget.CineLis.SecondaryButton" android:layout_width="44dp" android:layout_height="44dp" android:layout_marginStart="12dp" android:text="+" android:contentDescription="@string/zoom_in" />
+        </LinearLayout>
+        <View style="@style/Widget.CineLis.Divider" android:layout_marginTop="24dp" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:orientation="horizontal" android:gravity="center_vertical">
+            <TextView android:id="@+id/selected_labels" style="@style/Widget.CineLis.Label" android:layout_width="0dp" android:layout_weight="1" android:text="—" android:textSize="16sp" />
+            <TextView android:id="@+id/total" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0,00 €" android:textSize="20sp" />
+        </LinearLayout>
+        <TextView android:id="@+id/selection_error" style="@style/Widget.CineLis.Label" android:layout_marginTop="8dp" android:textColor="@color/danger" android:visibility="gone" />
+        <Button android:id="@+id/continue_button" style="@style/Widget.CineLis.PrimaryButton" android:layout_marginTop="24dp" android:enabled="false" android:text="@string/continue_to_payment" />
+        <ProgressBar android:id="@+id/loading" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" />
     </LinearLayout>
 </ScrollView>

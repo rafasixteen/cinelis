@@ -37,6 +37,14 @@ public class CatalogAndAuthFlowTest {
         onView(withText("Escolha uma sessão")).check(matches(isDisplayed()));
         onView(allOf(withText("18:00"), isDisplayed())).perform(click());
         EspressoWait.until(withText("Bem-vindo de volta."));
+        androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
+            android.app.Activity resumed = androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
+                    .getInstance().getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED)
+                    .iterator().next();
+            org.junit.Assert.assertEquals("AuthActivity", resumed.getClass().getSimpleName());
+            resumed.recreate();
+        });
+        EspressoWait.until(withId(R.id.email_input));
         onView(withId(R.id.email_input)).perform(replaceText("ana@exemplo.pt"), closeSoftKeyboard());
         onView(withId(R.id.password_input)).perform(replaceText("password123"), closeSoftKeyboard());
         onView(withId(R.id.auth_submit)).perform(click());

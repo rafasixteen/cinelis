@@ -5,6 +5,7 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 
@@ -30,10 +31,12 @@ public class PurchaseFlowTest {
                     "00000020-0000-4000-8000-000000000020");
             activity.getSupportFragmentManager().executePendingTransactions();
         });
-        EspressoWait.until(withText("A2"));
+        EspressoWait.until(withContentDescription("Lugar A2, livre"));
         onView(withText("Escolha os seus lugares")).check(matches(isDisplayed()));
         onView(withText("ECRÃ")).check(matches(isDisplayed()));
-        onView(withText("A2")).perform(click());
+        onView(withId(R.id.zoom_in)).perform(click());
+        onView(withId(R.id.zoom_out)).perform(click());
+        onView(withContentDescription("Lugar A2, livre")).perform(click());
         activityRule.getScenario().recreate();
         EspressoWait.until(withText("A2"));
         onView(withId(R.id.selected_labels)).check(matches(withText("A2")));

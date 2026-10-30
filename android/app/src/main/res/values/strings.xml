@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="search_hint">Título, género…</string>
+    <string name="view_all">Ver todos</string>
+    <string name="view_sessions">Ver sessões</string>
+    <string name="view_ticket">Ver bilhete</string>
+    <string name="today">Hoje</string>
+    <string name="tomorrow">Amanhã</string>
+    <string name="recover_password">Recuperar palavra-passe</string>
+    <string name="recover_demo">A recuperação de palavra-passe estará disponível com o serviço da API.</string>
+    <string name="no_account_yet">Ainda não tem conta?</string>
+    <string name="already_have_account">Já tem conta?</string>
+    <string name="payment_step">2 de 3 · Pagamento</string>
+    <string name="total_label">Total</string>
+    <string name="purchase_completed">✓ Compra concluída</string>
+    <string name="illustrative_code">Código ilustrativo · sem validade</string>
+    <string name="account_settings">Definições da conta</string>
+    <string name="remaining_steps">2 Pagamento     3 Bilhete</string>
+    <string name="seat_free">Livre</string>
+    <string name="seat_occupied">Ocupado</string>
+    <string name="seat_selected">Selecionado</string>
+    <string name="zoom_seats">Amplie para escolher.</string>
+    <string name="zoom_in">Ampliar mapa de lugares</string>
+    <string name="zoom_out">Reduzir mapa de lugares</string>
+    <string name="demo_login">Usar conta de demonstração</string>
     <string name="app_name">CineLis</string>
     <string name="wordmark">C I N E L I S</string>
     <string name="nav_home">Início</string>
@@ -22,7 +45,11 @@
     <string name="home_intro">Descubra histórias portuguesas no grande ecrã.</string>
     <string name="search_movies">Pesquisar filmes</string>
     <string name="now_showing">Em exibição</string>
-    <string name="coming_soon">Brevemente</string>
+    <string name="coming_soon">Em breve</string>
+    <string name="choose_day">Escolha o dia</string>
+    <string name="no_sessions_day">Não existem sessões para este dia.</string>
+    <string name="sessions_today">Sessões disponíveis</string>
+    <string name="open_movie_details">Ver detalhes do filme →</string>
     <string name="empty_movies">Não encontrámos filmes para esta pesquisa.</string>
     <string name="clear_search">Limpar pesquisa</string>
     <string name="retry">Tentar novamente</string>
@@ -51,7 +78,7 @@
     <string name="payment_method">Método de pagamento</string>
     <string name="mb_way">MB WAY</string>
     <string name="phone_number">Número de telemóvel</string>
-    <string name="payment_notice">Este pagamento é apenas uma simulação para explorar o fluxo da aplicação.</string>
+    <string name="payment_notice">Os bilhetes ficam disponíveis após a confirmação.</string>
     <string name="pay_now">Pagar e emitir bilhete</string>
     <string name="invalid_phone">Indique um número de telemóvel português válido.</string>
     <string name="ticket_ready">O seu bilhete está pronto.</string>

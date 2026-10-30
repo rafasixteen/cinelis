@@ -1,6 +1,24 @@
 # CineLis Android prototype
 
-This folder contains the native Android UI prototype for CineLis. It is a Java project built from an Empty Views Activity and uses one `MainActivity` with Navigation fragments for the eight mobile mockup destinations.
+This folder contains the native Android UI prototype for CineLis, using Java and XML Views. `MainActivity` hosts seven Navigation fragments; `AuthActivity` handles login and registration separately and returns its result to the requested screen.
+
+## Activities and fragments (AMSI brief, page 2)
+
+The brief requires at least **6 Activity and/or Fragment components**, recommends a maximum of **10**, and requires some functionality in fragments. This app has **2 activities + 7 product fragments = 9** (eight product screens plus the main shell):
+
+| Component | Responsibility |
+| --- | --- |
+| `MainActivity` | Main shell, bottom navigation, authentication result handling |
+| `AuthActivity` | Login and registration; user-entered name, email and password |
+| `HomeFragment` | Dynamic catalogue and editable movie search |
+| `MovieDetailFragment` | Movie details and dynamic session list (catalogue master/detail) |
+| `SeatSelectionFragment` | Dynamic seat map and seat selection |
+| `CheckoutFragment` | Purchase summary and user-entered phone number |
+| `TicketFragment` | Purchased ticket details (tickets master/detail) |
+| `TicketsFragment` | Upcoming and past tickets |
+| `AccountFragment` | Profile, order history, profile editing and configuration dialogs |
+
+Authentication and checkout provide two data-entry screens. Catalogue, sessions, seats, tickets and account history are populated asynchronously through Volley. Registration/profile routes simulate all four CRUD operations; server settings and theme use SharedPreferences. This covers the current UI prototype scope; the brief's production API and SQLite requirements remain deferred.
 
 ## Open in Android Studio
 
@@ -29,12 +47,27 @@ JAVA_HOME=/opt/android-studio/jbr ./gradlew connectedDebugAndroidTest
 
 ## Demo flow
 
-Use the seeded customer account:
+The prototype opens **already signed in as Ana Martins**, so Account, purchase history and Tickets are populated immediately. The seed includes three purchases across three films: two upcoming tickets and one past ticket, with matching order/session/detail responses.
+
+To test authentication, sign out from Account. Use **Usar conta de demonstração** on the login screen, or enter:
 
 - Email: `ana@exemplo.pt`
 - Password: `password123`
 
-The prototype supports catalogue search, movie/session details, login and registration, a five-by-eight seat map, temporary holds, simulated checkout, ticket detail/list, account history, profile editing, theme selection, server URL settings, logout, and simulated account deletion.
+The prototype supports catalogue search, movie/session details, login and registration, a five-by-eight seat map, temporary holds, simulated checkout, ticket detail/list, account history, profile editing, theme selection, server URL settings, logout, and simulated account deletion. Home presents a daily programme: choose **Hoje**, **Amanhã**, or **30 out.**, then tap an inline session time to go directly to seat selection; tapping the movie summary still opens its details.
+
+## Visual system
+
+The native Views use the light/dark colors from `common/assets/css/layouts/base.css` and the spacing, type scale and component placement in `cinelis-mobile-mockups.excalidraw` / `cinelis-ui-tokens.excalidraw`:
+
+- the actual web CineLis logos and bundled Inter font (license in [`FONT-LICENSE.txt`](FONT-LICENSE.txt));
+- shared 64 dp header, 72 dp navigation bar, 20 dp page gutters, 25 sp page titles and 4/6/8 dp corner radii;
+- flat primary/secondary buttons, selected date/ticket tabs, compact catalogue cards, side-by-side movie details, seat-map legends/zoom and an illustrated ticket QR;
+- light/dark resources, with scrollable content to accommodate native system bars and smaller displays.
+
+Account's **⋮** button reveals profile editing, theme/server configuration and account deletion. These prototype tools stay outside the mockup's main profile/purchase-history layout. Search remains accessible when no movies match.
+
+`VisualFidelityTest` captures the eight mockup screens in both themes and checks key placement/selection states and navigation-label clipping. Android test screenshots are written to the runner's `additionalTestOutputDir`, or the app's external `files/visual` directory when running instrumentation directly. They are review artifacts, not pixel-diff golden tests.
 
 ## In-app Volley mock
 
@@ -46,7 +79,9 @@ The app deliberately makes no real HTTP requests. Standard Volley requests are p
 - order creation/list/detail;
 - ticket list/detail.
 
-Mock users, tokens, holds, orders, tickets, and account mutations live only in process memory. Force-stopping/restarting the process recreates the seed data. Auth tokens are never written to preferences.
+Mock users, tokens, holds, orders, tickets, and account mutations live only in process memory. Force-stopping/restarting the process recreates the seed data and demo session. Signing out stays signed out during that process; creating a new account produces an empty account, while the demo shortcut returns to Ana's populated account. Auth tokens are never written to preferences.
+
+Like the web previews, the catalogue uses fixed presentation dates (28–30 October 2026); the upcoming/past split is relative to 28 October 2026, not the device clock. These fixtures stay browsable when the prototype is demonstrated later.
 
 Only these user preferences persist:
 

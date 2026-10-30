@@ -11,6 +11,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.CineLis">
+        <activity android:name="cinelis.AuthActivity" android:exported="false" />
         <activity
             android:name="cinelis.MainActivity"
             android:exported="true">

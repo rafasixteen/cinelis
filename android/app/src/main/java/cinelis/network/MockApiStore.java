@@ -37,6 +37,11 @@ public final class MockApiStore {
         seedOrdersAndTickets();
     }
 
+    /** The UI prototype opens with the seeded customer already signed in. */
+    public String createDemoSession() {
+        return issueToken(ANA_USER_ID);
+    }
+
     String issueToken(String userId) {
         String token = "cinelis-mock-token-" + tokenSequence++ + "-" + userId;
         tokenUsers.put(token, userId);
@@ -80,10 +85,16 @@ public final class MockApiStore {
 
     private void seedSessionsAndSeats() {
         String[] dates = {"2026-10-28", "2026-10-29", "2026-10-30"};
-        String[] times = {"18:00", "20:30", "21:30"};
+        String[][] timesByDate = {
+                {"18:00", "20:30", "21:30"},
+                {"17:30", "20:30", "22:00"},
+                {"16:30", "19:00", "21:45"}
+        };
         int sessionNumber = 20;
         for (JSONObject movie : movies.values()) {
-            for (String date : dates) {
+            for (int dateIndex = 0; dateIndex < dates.length; dateIndex++) {
+                String date = dates[dateIndex];
+                String[] times = timesByDate[dateIndex];
                 for (int timeIndex = 0; timeIndex < times.length; timeIndex++) {
                     String id = uuid(sessionNumber++);
                     String roomId = uuid(timeIndex == 2 ? 12 : 11);
@@ -116,17 +127,25 @@ public final class MockApiStore {
     private void seedOrdersAndTickets() {
         List<JSONObject> sessionsList = new ArrayList<>(sessions.values());
         for (int index = 0; index < 3; index++) {
-            JSONObject session = sessionsList.get(index * 3 + 1);
+            JSONObject session = sessionsList.get(index * 9 + 4);
+            if (index == 0) {
+                // Keep historical tickets and their session endpoint consistent without
+                // replacing a session offered in the current catalogue.
+                session = copy(session);
+                set(session, "id", uuid(19));
+                set(session, "startsAt", "2026-10-01T20:30:00Z");
+                sessions.put(session.optString("id"), session);
+                seedSeats(session.optString("id"), 1900);
+            }
             JSONObject seat = new ArrayList<>(seatsBySession.get(session.optString("id")).values()).get(index);
             set(seat, "status", "sold");
             String orderId = uuid(80 + index);
             String ticketId = uuid(90 + index);
             JSONObject ticket = ticket(ticketId, orderId, session, seat, "CIN-DEMO-" + (index + 1));
-            if (index == 0) {
-                set(ticket.optJSONObject("session"), "startsAt", "2026-10-01T20:30:00Z");
-            }
+            String purchasedAt = "2026-10-0" + (index + 1) + "T12:00:00Z";
+            set(ticket, "createdAt", purchasedAt);
             JSONObject order = object("id", orderId, "total", 7.5,
-                    "createdAt", "2026-10-0" + (index + 1) + "T12:00:00Z", "tickets", array(ticket));
+                    "createdAt", purchasedAt, "tickets", array(ticket));
             orders.put(orderId, order);
             tickets.put(ticketId, ticket);
             orderOwners.put(orderId, ANA_USER_ID);

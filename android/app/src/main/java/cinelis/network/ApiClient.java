@@ -41,6 +41,12 @@ public final class ApiClient {
         instance = new ApiClient(queue, preferences);
     }
 
+    public static synchronized void initialize(RequestQueue queue, PreferencesManager preferences,
+                                               String initialToken) {
+        initialize(queue, preferences);
+        instance.bearerToken = initialToken;
+    }
+
     public static synchronized ApiClient get() {
         if (instance == null) throw new IllegalStateException("ApiClient has not been initialized");
         return instance;
