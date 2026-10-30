@@ -9,7 +9,8 @@ tasks:
     migrate:create:
         desc: Create a database migration (pass its name after --)
         preconditions:
-            - sh: test -n "{{.CLI_ARGS}}"
+            - sh: >-
+                  php -r "exit(trim('{{.CLI_ARGS}}') === '' ? 1 : 0);"
               msg: 'Usage: task migrate:create -- migration_name'
         cmds:
             - php yii migrate/create {{.CLI_ARGS}}

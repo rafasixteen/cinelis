@@ -1,407 +1,129 @@
 # Cinelis
 
-Cinelis is a cinema management system composed of several applications sharing the same domain and infrastructure.
+Cinelis is a cinema management system built from several PHP applications,
+shared domain code, a native Android prototype, and Docker-based infrastructure.
 
-## Project structure
+## Repository
 
-```text
-cine-lis/
-├── api/
-├── android/
-├── backoffice/
-├── console/
-├── frontoffice/
-├── docs/
-├── common/
-├── infra/
-├── composer.json
-├── composer.lock
-├── mise.toml
-├── Taskfile.yml
-└── yii
-```
+- [`api`](api/README.md) — HTTP API
+- [`backoffice`](backoffice/README.md) — internal administration
+- [`frontoffice`](frontoffice/README.md) — public cinema website
+- [`console`](console/README.md) — Yii migrations and CLI commands
+- [`android`](android/README.md) — Android UI prototype
+- [`common`](common/README.md) — shared PHP code
+- [`infra`](infra/README.md) — Docker Compose, PostgreSQL, and Caddy
+- `docs/` — local API documentation assets
 
-### Applications
-
-- [`api`](api/README.md) — HTTP API used by external clients.
-- [`android`](android/README.md) — native Java mobile UI prototype with an in-app Volley mock service.
-- [`backoffice`](backoffice/README.md) — internal web application for cinema management.
-- [`frontoffice`](frontoffice/README.md) — public-facing cinema website.
-- [`console`](console/README.md) — Yii console application for migrations, maintenance tasks, seeders, and CLI commands.
-
-### Developer tools
-
-- [`tools/android`](tools/android/README.md) — cross-platform Go TUI for watching, releasing, inspecting, and provisioning the native Android app.
-
-### Shared code
-
-[`common`](common/README.md) contains PHP code shared between the PHP applications.
-
-This includes:
-
-- application configuration
-- domain models
-- application services
-- repositories
-- infrastructure integrations
-- shared utilities
-
-Application-specific HTTP concerns, views, forms, and presentation logic should remain inside the corresponding app.
-
-### Infrastructure
-
-[`infra`](infra/README.md) contains the local infrastructure required by the applications, such as PostgreSQL.
-
-Infrastructure and PHP applications run through Docker Compose during
-development. Each PHP-FPM container contains only its application code and
-the shared `common/` code, with those source directories mounted read-only for
-live changes. Caddy provides the single local entrypoint.
-
-See [`infra/README.md`](infra/README.md) for details.
-
----
+PHP applications run in Docker containers. Source changes are mounted for
+development; Caddy is the local HTTP entrypoint.
 
 ## Requirements
 
-Project tooling is managed with [mise](https://mise.jdx.dev/).
+- [mise](https://mise.jdx.dev/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- Git
 
-Install mise, then from the repository root run:
+### Windows
 
-```bash
+Install the prerequisites from PowerShell:
+
+```powershell
+winget install --id jdx.mise --exact
+winget install --id Docker.DockerDesktop --exact
+winget install --id Git.Git --exact
+```
+
+Open a new PowerShell window and run this once to activate mise in the current
+and future terminals:
+
+```powershell
+if (-not (Test-Path $PROFILE)) { New-Item -ItemType File -Path $PROFILE -Force | Out-Null }; if (-not (Select-String -LiteralPath $PROFILE -Pattern 'mise activate pwsh' -Quiet -ErrorAction SilentlyContinue)) { Add-Content -LiteralPath $PROFILE -Value '$env:MISE_PWSH_CHPWD_WARNING = "0"; (& mise activate pwsh) | Out-String | Invoke-Expression' }; . $PROFILE
+```
+
+## Setup
+
+From the repository root:
+
+```sh
 mise install
-```
-
-This installs the required project tools and versions.
-
-The project currently uses:
-
-- PHP
-- Composer
-- Node.js
-- Tailwind CSS CLI
-- Task
-- dekit
-- Docker
-
-Docker itself must be installed separately.
-
----
-
-## Environment
-
-Create the local environment file:
-
-```bash
-php -r "copy('.env.example', '.env');"
-```
-
-The `.env` file contains local configuration such as:
-
-```dotenv
-APP_ENV=development
-
-CADDY_DOMAIN=cinelis.localhost
-CADDY_HTTP_PORT=80
-CADDY_API_UPSTREAM=api:9000
-CADDY_BACKOFFICE_UPSTREAM=backoffice:9000
-CADDY_FRONTOFFICE_UPSTREAM=frontoffice:9000
-
-DB_HOST=localhost
-DB_PORT=5432
-DB_CONTAINER_HOST=postgres
-DB_CONTAINER_PORT=5432
-DB_NAME=cinelis
-DB_USER=postgres
-DB_PASSWORD=postgres
-```
-
-Secrets and developer-specific values belong in `.env`.
-
-Do not commit `.env`.
-
----
-
-## Install dependencies
-
-PHP dependencies are installed inside the Docker images during
-`task infra:up`. The host-side console commands also require the repository
-Composer dependencies:
-
-```bash
 composer install
 ```
 
----
+Create `.env` from the example:
 
-## Start infrastructure
+```sh
+cp .env.example .env
+```
 
-Start the complete development workflow, including PostgreSQL, PHP-FPM,
-Caddy, and the dekit process manager:
+On Windows PowerShell, use `Copy-Item .env.example .env` instead.
 
-```bash
+Verify the toolchain:
+
+```powershell
+mise doctor
+task --version
+dekit --version
+php --version
+composer --version
+```
+
+## Development
+
+Start the full stack:
+
+```powershell
 task dev
 ```
 
-Use `task dev:attach` to reattach to the dekit TUI and `task dev:stop` to stop
-the TUI and infrastructure together.
+Common commands:
 
-The development stack uses Docker's Compose Watch integration. PHP source
-changes are live-mounted; changes to Composer dependencies or the PHP-FPM
-Dockerfile automatically rebuild the affected PHP-FPM services. Docker's
-build cache keeps `task dev` fast when those build inputs are unchanged.
+- Reattach to the dekit TUI:
 
-To start only the Docker infrastructure:
+    ```powershell
+    task dev:attach
+    ```
 
-```bash
-task infra:up
-```
+- Stop the TUI and infrastructure:
 
-Check its status:
+    ```powershell
+    task dev:stop
+    ```
 
-```bash
-task infra:ps
-```
+- Start or inspect infrastructure:
 
-Follow logs:
+    ```powershell
+    task infra:up
+    task infra:ps
+    task infra:logs
+    task infra:down
+    ```
 
-```bash
-task infra:logs
-```
+- Run migrations:
 
-Stop it:
+    ```powershell
+    task migrate
+    task migrate:create -- name
+    ```
 
-```bash
-task infra:down
-```
+Local URLs:
 
-Use `task infra:up` when you need the database and Caddy without the dekit
-watchers.
+- <http://cinelis.localhost/> — frontoffice
+- <http://cinelis.localhost/admin/> — backoffice
+- <http://cinelis.localhost/api/> — API
 
----
+## Conventions
 
-## Database migrations
+Use Yii2 conventions and keep shared business logic under `common/`. Keep
+application-specific HTTP code in its application directory. Do not edit
+generated assets under `web/`.
 
-Create a migration:
+Before committing, run the relevant checks and make sure the stack starts:
 
-```bash
-task migrate:create -- create_movies_table
-```
-
-Apply pending migrations:
-
-```bash
-task migrate
-```
-
-Migrations live in:
-
-```text
-console/migrations/
-```
-
-The PHP applications share the same PostgreSQL database.
-
----
-
-## Running applications
-
-`task dev` opens the dekit TUI with separate, labeled processes for the API,
-frontoffice, backoffice PHP-FPM logs, and both Tailwind watchers. Use the TUI
-to inspect output and start, stop, or restart individual processes. Reattach
-with:
-
-```bash
-task dev:attach
-```
-
-Stop all development processes with:
-
-```bash
-task dev:stop
-```
-
-With infrastructure running, use the local proxy at:
-
-```text
-http://cinelis.localhost/       # frontoffice
-http://cinelis.localhost/admin/ # backoffice
-http://cinelis.localhost/api/   # API
-```
-
-The proxy runs in the Caddy container and is the only HTTP entrypoint. The PHP
-applications are reachable only through the internal Compose network.
-
-List available dekit processes with:
-
-```bash
-dekit ls
-```
-
-Restart an individual process from the command line, for example:
-
-```bash
-dekit restart api
-```
-
-You can see all available commands with:
-
-```bash
-task --list
-```
-
-## Serve documentation locally
-
-```bash
-task docs:serve
-```
-
----
-
-## Development conventions
-
-### PHP applications
-
-The PHP applications use Yii2.
-
-Keep controllers focused on HTTP concerns:
-
-```text
-request
-  ↓
-controller
-  ↓
-application/domain logic
-  ↓
-repository
-  ↓
-database
-```
-
-Do not place shared business logic directly in frontoffice, backoffice, or API controllers.
-
-Shared business logic belongs under:
-
-```text
-common/
-```
-
-### Views
-
-Yii views use the conventional structure:
-
-```text
-views/
-├── components/
-├── layouts/
-└── <controller>/
-```
-
-For example:
-
-```text
-frontoffice/views/
-├── components/
-│   ├── header.php
-│   └── footer.php
-├── layouts/
-│   └── main.php
-└── home/
-    └── index.php
-```
-
-### CSS
-
-Source CSS lives under:
-
-```text
-assets/css/
-```
-
-Generated browser assets live under:
-
-```text
-web/css/
-```
-
-Do not manually edit generated CSS files.
-
-CSS is organized into:
-
-```text
-assets/css/
-├── globals.css
-├── components/
-└── views/
-```
-
-Use:
-
-- `@layer base` for global element styles and theme variables
-- `@layer components` for application components and view styles
-- raw CSS for layout and detailed styling
-- `@apply` primarily for semantic theme utilities such as colors and borders
-
-Example:
-
-```css
-@layer components {
-	.movie-card {
-		@apply border border-border bg-card;
-
-		display: grid;
-		gap: 1rem;
-	}
-}
-```
-
-### Naming
-
-PHP classes use PascalCase:
-
-```text
-HomeController.php
-MovieRepository.php
-CreateOrder.php
-```
-
-Views and partials use lowercase or kebab-case:
-
-```text
-index.php
-header.php
-movie-card.php
-```
-
-CSS classes may be locally scoped using nesting:
-
-```css
-.home {
-	.hero {
-		.title {
-			...
-		}
-	}
-}
-```
-
----
-
-## Before committing
-
-Make sure:
-
-```bash
+```powershell
+task format:check
 task infra:up
 task migrate
 ```
 
-work on your branch and that the applications you modified start successfully.
-
-Do not commit:
-
-- `.env`
-- `vendor/`
-- runtime files
-- generated Yii assets
-- generated Tailwind CSS
-- local IDE configuration
+Do not commit `.env`, `vendor/`, runtime files, generated assets, or local IDE
+configuration.
