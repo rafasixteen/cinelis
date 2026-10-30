@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="success_surface">#294537</color>
+    <color name="background">#161512</color>
+    <color name="foreground">#F1F0EE</color>
+    <color name="card">#22201C</color>
+    <color name="primary">#5EEAD4</color>
+    <color name="primary_foreground">#161512</color>
+    <color name="secondary">#2D2A25</color>
+    <color name="muted">#1C1A17</color>
+    <color name="muted_foreground">#B6B0A5</color>
+    <color name="border">#433F37</color>
+    <color name="success">#4CF090</color>
+    <color name="warning">#F0994C</color>
+    <color name="danger">#F0594C</color>
+</resources>

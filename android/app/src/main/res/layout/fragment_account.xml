@@ -1,0 +1,26 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingStart="20dp" android:paddingEnd="20dp" android:paddingTop="24dp" android:paddingBottom="24dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="40dp" android:orientation="horizontal" android:gravity="center_vertical">
+            <TextView style="@style/TextAppearance.CineLis.PageTitle" android:layout_width="0dp" android:layout_weight="1" android:text="@string/account_title" />
+            <Button android:id="@+id/account_settings_button" style="@style/Widget.CineLis.SecondaryButton" android:layout_width="44dp" android:layout_height="40dp" android:text="⋮" android:textSize="20sp" android:contentDescription="@string/account_settings" />
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="104dp" android:layout_marginTop="20dp" android:background="@drawable/bg_card" android:gravity="center_vertical" android:orientation="horizontal" android:paddingStart="16dp" android:paddingEnd="16dp">
+            <TextView android:id="@+id/avatar" android:layout_width="52dp" android:layout_height="52dp" android:background="@drawable/bg_avatar" android:gravity="center" android:textColor="@color/primary_foreground" android:textSize="16sp" />
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:orientation="vertical">
+                <TextView android:id="@+id/account_name" style="@style/Widget.CineLis.Section" />
+                <TextView android:id="@+id/account_email" style="@style/TextAppearance.CineLis.BodyMuted" android:layout_marginTop="12dp" />
+            </LinearLayout>
+        </LinearLayout>
+        <TextView style="@style/Widget.CineLis.Section" android:layout_marginTop="32dp" android:text="@string/purchase_history" />
+        <androidx.recyclerview.widget.RecyclerView android:id="@+id/orders_list" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:nestedScrollingEnabled="false" />
+        <ProgressBar android:id="@+id/loading" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" />
+        <Space android:layout_width="1dp" android:layout_height="0dp" android:layout_weight="1" />
+        <Button android:id="@+id/logout_button" style="@style/Widget.CineLis.SecondaryButton" android:layout_marginTop="28dp" android:text="@string/logout" />
+        <LinearLayout android:id="@+id/account_tools" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:orientation="vertical" android:visibility="gone">
+            <Button android:id="@+id/edit_profile_button" style="@style/Widget.CineLis.SecondaryButton" android:text="@string/edit_profile" />
+            <Button android:id="@+id/theme_button" style="@style/Widget.CineLis.SecondaryButton" android:layout_marginTop="8dp" android:text="@string/appearance" />
+            <Button android:id="@+id/server_button" style="@style/Widget.CineLis.SecondaryButton" android:layout_marginTop="8dp" android:text="@string/server_settings" />
+            <Button android:id="@+id/delete_button" style="@style/Widget.CineLis.SecondaryButton" android:layout_marginTop="8dp" android:text="@string/delete_account" android:textColor="@color/danger" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

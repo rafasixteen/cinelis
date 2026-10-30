@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.CineLis.Base" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:textViewStyle">@style/Widget.CineLis.Text</item>
+        <item name="buttonStyle">@style/Widget.CineLis.SecondaryButton</item>
+        <item name="materialButtonStyle">@style/Widget.CineLis.SecondaryButton</item>
+        <item name="editTextStyle">@style/Widget.CineLis.Input</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:colorAccent">@color/primary</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/primary_foreground</item>
+        <item name="colorSurface">@color/background</item>
+        <item name="colorOnSurface">@color/foreground</item>
+        <item name="colorOutline">@color/border</item>
+    </style>
+
+    <style name="Theme.CineLis" parent="Theme.CineLis.Base" />
+
+    <style name="TextAppearance.CineLis.PageTitle" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/foreground</item>
+        <item name="android:textSize">@dimen/page_title_size</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="TextAppearance.CineLis.BodyMuted" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/muted_foreground</item>
+        <item name="android:textSize">@dimen/body_size</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="Widget.CineLis.Wordmark" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.16</item>
+    </style>
+</resources>

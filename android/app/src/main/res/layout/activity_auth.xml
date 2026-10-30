@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:background="@color/background">
+    <include layout="@layout/include_header" />
+    <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:fillViewport="true">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingStart="20dp" android:paddingEnd="20dp" android:paddingTop="48dp" android:paddingBottom="24dp">
+            <TextView android:id="@+id/auth_heading" style="@style/TextAppearance.CineLis.PageTitle" android:text="@string/auth_title" />
+            <TextView style="@style/TextAppearance.CineLis.BodyMuted" android:layout_marginTop="10dp" android:text="@string/auth_shell_description" />
+            <LinearLayout android:id="@+id/name_field" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:orientation="vertical" android:visibility="gone">
+                <TextView style="@style/Widget.CineLis.Label" android:text="@string/name" android:labelFor="@id/name_input" />
+                <EditText android:id="@+id/name_input" style="@style/Widget.CineLis.Input" android:layout_marginTop="8dp" android:inputType="textPersonName" android:autofillHints="name" />
+            </LinearLayout>
+            <TextView style="@style/Widget.CineLis.Label" android:layout_marginTop="40dp" android:text="@string/email" android:labelFor="@id/email_input" />
+            <EditText android:id="@+id/email_input" style="@style/Widget.CineLis.Input" android:layout_marginTop="8dp" android:hint="ana@exemplo.pt" android:inputType="textEmailAddress" android:autofillHints="emailAddress" />
+            <TextView style="@style/Widget.CineLis.Label" android:layout_marginTop="28dp" android:text="@string/password" android:labelFor="@id/password_input" />
+            <EditText android:id="@+id/password_input" style="@style/Widget.CineLis.Input" android:layout_marginTop="8dp" android:hint="••••••••" android:inputType="textPassword" android:autofillHints="password" />
+            <TextView android:id="@+id/recover_password" style="@style/Widget.CineLis.Label" android:layout_height="48dp" android:gravity="end|center_vertical" android:text="@string/recover_password" android:textColor="@color/muted_foreground" android:clickable="true" android:focusable="true" />
+            <TextView android:id="@+id/auth_error" style="@style/Widget.CineLis.Label" android:textColor="@color/danger" android:visibility="gone" />
+            <Button android:id="@+id/auth_submit" style="@style/Widget.CineLis.PrimaryButton" android:layout_marginTop="12dp" android:text="@string/sign_in" />
+            <View style="@style/Widget.CineLis.Divider" android:layout_marginTop="40dp" />
+            <TextView android:id="@+id/auth_toggle_heading" style="@style/Widget.CineLis.Label" android:layout_marginTop="24dp" android:text="@string/no_account_yet" android:textSize="16sp" />
+            <Button android:id="@+id/auth_toggle" style="@style/Widget.CineLis.SecondaryButton" android:layout_marginTop="16dp" android:text="@string/create_account" />
+            <Button android:id="@+id/demo_login" style="@style/Widget.CineLis.SecondaryButton" android:layout_marginTop="16dp" android:text="@string/demo_login" />
+        </LinearLayout>
+    </ScrollView>
+    <View style="@style/Widget.CineLis.Divider" />
+    <include android:id="@+id/bottom_navigation" layout="@layout/include_bottom_navigation" />
+</LinearLayout>

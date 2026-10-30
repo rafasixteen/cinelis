@@ -1,0 +1,8 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/app_root" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/background" android:orientation="vertical">
+    <include layout="@layout/include_header" />
+    <androidx.fragment.app.FragmentContainerView android:id="@+id/nav_host_fragment" android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" app:defaultNavHost="true" app:navGraph="@navigation/main_nav_graph" />
+    <View style="@style/Widget.CineLis.Divider" />
+    <include android:id="@+id/bottom_navigation" layout="@layout/include_bottom_navigation" />
+</LinearLayout>
