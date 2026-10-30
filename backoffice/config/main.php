@@ -11,6 +11,12 @@ return [
 		'@npm' => dirname(__DIR__, 2).'/vendor/npm-asset',
 	],
 	'controllerNamespace' => 'backoffice\controllers',
+	'bootstrap' => YII_ENV_DEV ? ['gii'] : [],
+	'modules' => YII_ENV_DEV ? [
+		'gii' => [
+			'class' => 'yii\gii\Module',
+		],
+	] : [],
 	'defaultRoute' => 'home/index',
 	'layout' => 'main',
 	'components' => [
