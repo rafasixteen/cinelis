@@ -33,11 +33,11 @@ winget install --id Docker.DockerDesktop --exact
 winget install --id Git.Git --exact
 ```
 
-Open a new PowerShell window, go to the repository root, and run this once to
-add mise's shims to the current and future terminals:
+Open a new PowerShell window and run this once to activate mise in the current
+and future terminals:
 
 ```powershell
-$miseShims = Join-Path $env:LOCALAPPDATA 'mise\shims'; $userPath = [Environment]::GetEnvironmentVariable('Path', 'User'); if ([string]::IsNullOrWhiteSpace($userPath)) { $userPath = '' }; if (($userPath -split ';') -notcontains $miseShims) { [Environment]::SetEnvironmentVariable('Path', (($userPath.TrimEnd(';') + ';' + $miseShims).Trim(';')), 'User') }; $env:Path = "$miseShims;$env:Path"
+if (-not (Test-Path $PROFILE)) { New-Item -ItemType File -Path $PROFILE -Force | Out-Null }; if (-not (Select-String -LiteralPath $PROFILE -Pattern 'mise activate pwsh' -Quiet -ErrorAction SilentlyContinue)) { Add-Content -LiteralPath $PROFILE -Value '$env:MISE_PWSH_CHPWD_WARNING = "0"; (& mise activate pwsh) | Out-String | Invoke-Expression' }; . $PROFILE
 ```
 
 ## Setup
@@ -49,7 +49,13 @@ mise install
 composer install
 ```
 
-On Windows, create `.env` with `Copy-Item .env.example .env`.
+Create `.env` from the example:
+
+```sh
+cp .env.example .env
+```
+
+On Windows PowerShell, use `Copy-Item .env.example .env` instead.
 
 Verify the toolchain:
 
