@@ -1,5 +1,5 @@
-[tool_alias]
-php = "github:adwinying/php"
+[plugins]
+"vfox:php" = "https://github.com/verzly/mise-php#a1ec784187025a3ae21965553b06e56bdab2cb5a"
 
 [tools]
 php = "8.4"

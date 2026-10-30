@@ -30,7 +30,7 @@ tasks:
     format:
         desc: Format PHP and frontend source files
         cmds:
-            - vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php
+            - php vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php
             - >-
                 prettier --write --ignore-unknown --config=.prettierrc
                 --ignore-path=.prettierignore
@@ -39,7 +39,7 @@ tasks:
     format:check:
         desc: Check PHP and frontend formatting without changing files
         cmds:
-            - vendor/bin/php-cs-fixer check --config=.php-cs-fixer.dist.php
+            - php vendor/bin/php-cs-fixer check --config=.php-cs-fixer.dist.php
             - >-
                 prettier --check --ignore-unknown --config=.prettierrc
                 --ignore-path=.prettierignore
