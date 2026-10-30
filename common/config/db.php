@@ -6,11 +6,11 @@ return [
 	'class' => Connection::class,
 	'dsn' => sprintf(
 		'pgsql:host=%s;port=%s;dbname=%s',
-		$_ENV['DB_HOST'],
-		$_ENV['DB_PORT'],
-		$_ENV['DB_NAME'],
+		getenv('DB_HOST'),
+		getenv('DB_PORT'),
+		getenv('DB_NAME'),
 	),
-	'username' => $_ENV['DB_USER'],
-	'password' => $_ENV['DB_PASSWORD'],
+	'username' => getenv('DB_USER'),
+	'password' => getenv('DB_PASSWORD'),
 	'charset' => 'utf8',
 ];
