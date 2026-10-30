@@ -29,6 +29,10 @@ cine-lis/
 - [`frontoffice`](frontoffice/README.md) — public-facing cinema website.
 - [`console`](console/README.md) — Yii console application for migrations, maintenance tasks, seeders, and CLI commands.
 
+### Developer tools
+
+- [`tools/android`](tools/android/README.md) — cross-platform Go TUI for watching, releasing, inspecting, and provisioning the native Android app.
+
 ### Shared code
 
 [`common`](common/README.md) contains PHP code shared between the PHP applications.

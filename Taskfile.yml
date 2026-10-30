@@ -1,6 +1,9 @@
 version: '3'
 
 includes:
+    android:
+        taskfile: ./android/Taskfile.yml
+        dir: ./android
     api:
         taskfile: ./api/Taskfile.yml
         dir: ./api

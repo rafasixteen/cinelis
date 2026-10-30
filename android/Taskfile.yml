@@ -1,0 +1,13 @@
+version: '3'
+
+tasks:
+    default:
+        desc: Open the CineLis Android developer menu
+        cmds:
+            - task: tui
+
+    tui:
+        desc: Open the CineLis Android developer menu
+        dir: ../tools/android/tui
+        cmds:
+            - go run .
