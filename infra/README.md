@@ -49,7 +49,8 @@ docker compose \
 
 Development adds:
 
-- Read-only bind mounts for `common/` and each application directory.
+- Read-only bind mounts for API/frontoffice source; the backoffice development
+  mount keeps `common/` writable so Gii can generate shared models.
 - Composer development dependencies.
 - A fixed local PostgreSQL mapping on `127.0.0.1:5432` for external tools.
 - Caddy access on `127.0.0.1:${CADDY_HTTP_PORT}`.

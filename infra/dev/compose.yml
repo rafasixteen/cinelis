@@ -36,6 +36,7 @@ services:
             YII_ENV: dev
             CINELIS_APP_LABEL: Backoffice
             CINELIS_APP_ORIGIN: http://${CADDY_DOMAIN:-cinelis.localhost}/admin/
+            CINELIS_PREPARE_GII_PERMISSIONS: '1'
         build:
             args:
                 COMPOSER_DEV_DEPENDENCIES: 'true'
