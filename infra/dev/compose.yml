@@ -40,7 +40,9 @@ services:
             args:
                 COMPOSER_DEV_DEPENDENCIES: 'true'
         volumes:
-            - ../common:/var/www/cinelis/common:ro
+            # Gii runs in this container and generates shared ActiveRecord
+            # classes under common/models.
+            - ../common:/var/www/cinelis/common
             - ../assets:/var/www/cinelis/assets:ro
             - ../backoffice:/var/www/cinelis/backoffice:ro
         develop:
