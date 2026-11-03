@@ -3,7 +3,7 @@
 
 [tools]
 php = "8.4"
-
+go = "latest"
 task = "latest"
 dekit = "0.10.2"
 node = "24"
