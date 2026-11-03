@@ -239,7 +239,7 @@ func (app *App) executablePath(name string) (string, error) {
 			return candidate, nil
 		}
 	}
-	return "", fmt.Errorf("%s is not installed; open Install tools", name)
+	return "", fmt.Errorf("%s is not installed; run mise install or mise run android:setup", name)
 }
 
 type procInspector struct{}

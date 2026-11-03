@@ -25,18 +25,6 @@ func (HuhPrompter) Select(title string, options []Option) (string, error) {
 	return value, nil
 }
 
-func (HuhPrompter) Confirm(title, description string) (bool, error) {
-	confirmed := false
-	err := huh.NewConfirm().
-		Title(title).
-		Description(description).
-		Affirmative("Continue").
-		Negative("Cancel").
-		Value(&confirmed).
-		Run()
-	return confirmed, err
-}
-
 func IsPromptCancellation(err error) bool {
 	return errors.Is(err, huh.ErrUserAborted)
 }
@@ -47,7 +35,7 @@ func mainOptions() []Option {
 		{"Build release", "Create release APK and Android App Bundle", string(ActionRelease)},
 		{"Open scrcpy", "Mirror and control a selected device", string(ActionScrcpy)},
 		{"Open logcat", "Stream logs from a selected device", string(ActionLogcat)},
-		{"Install tools", "Inspect and install Android development dependencies", string(ActionTools)},
+		{"Check tools", "Inspect Android development dependencies and mise setup guidance", string(ActionTools)},
 		{"Exit", "", string(ActionExit)},
 	}
 }

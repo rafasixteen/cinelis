@@ -33,7 +33,6 @@ type Option struct {
 
 type Prompter interface {
 	Select(title string, options []Option) (string, error)
-	Confirm(title, description string) (bool, error)
 }
 
 type CommandRunner interface {

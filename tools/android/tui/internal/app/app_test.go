@@ -32,29 +32,42 @@ func TestMainBuildActionsIssueExpectedGradleTasks(t *testing.T) {
 	}
 }
 
-func TestToolInstallRequiresConfirmationAndReprobesAfterSuccess(t *testing.T) {
+func TestToolsMenuDirectsMissingToolsToMiseWithoutRunningCommands(t *testing.T) {
 	runner := newFakeRunner()
-	probeCalls := 0
-	application := testApp(runner, &fakePrompter{confirms: []bool{false, true}})
-	application.Probe = func() []tools.Status {
-		probeCalls++
-		return statusesForApp(false)
-	}
-	status := statusesForApp(false)[0]
-	if err := application.installTool(context.Background(), status); err != nil {
+	prompter := &fakePrompter{selections: []string{string(tools.ToolGo), toolsBack}}
+	application := testApp(runner, prompter)
+	application.Probe = func() []tools.Status { return statusesForApp(false) }
+
+	if err := application.toolsMenu(context.Background()); err != nil {
 		t.Fatal(err)
 	}
 	if len(runner.runs) != 0 {
-		t.Fatalf("ran installer without confirmation: %#v", runner.runs)
+		t.Fatalf("diagnostics menu ran installer commands: %#v", runner.runs)
 	}
-	if err := application.installTool(context.Background(), status); err != nil {
+	output := application.Out.(*bytes.Buffer).String()
+	if !strings.Contains(output, "mise install") {
+		t.Fatalf("missing mise install guidance: %s", output)
+	}
+}
+
+func TestToolsMenuDirectsMissingSDKToolsToTaskWrapper(t *testing.T) {
+	runner := newFakeRunner()
+	prompter := &fakePrompter{selections: []string{string(tools.ToolADB), toolsBack}}
+	application := testApp(runner, prompter)
+	statuses := statusesForApp(true)
+	for index := range statuses {
+		if statuses[index].Tool.ID == tools.ToolADB {
+			statuses[index].Ready = false
+		}
+	}
+	application.Probe = func() []tools.Status { return statuses }
+
+	if err := application.toolsMenu(context.Background()); err != nil {
 		t.Fatal(err)
 	}
-	if len(runner.runs) != 1 {
-		t.Fatalf("installer runs = %d", len(runner.runs))
-	}
-	if probeCalls != 1 {
-		t.Fatalf("probe calls = %d, want 1 after successful install", probeCalls)
+	output := application.Out.(*bytes.Buffer).String()
+	if !strings.Contains(output, "task android:setup") {
+		t.Fatalf("missing task wrapper guidance: %s", output)
 	}
 }
 
@@ -111,7 +124,6 @@ func statusesForApp(goReady bool) []tools.Status {
 
 type fakePrompter struct {
 	selections []string
-	confirms   []bool
 }
 
 func (prompt *fakePrompter) Select(_ string, _ []Option) (string, error) {
@@ -120,15 +132,6 @@ func (prompt *fakePrompter) Select(_ string, _ []Option) (string, error) {
 	}
 	value := prompt.selections[0]
 	prompt.selections = prompt.selections[1:]
-	return value, nil
-}
-
-func (prompt *fakePrompter) Confirm(_ string, _ string) (bool, error) {
-	if len(prompt.confirms) == 0 {
-		return true, nil
-	}
-	value := prompt.confirms[0]
-	prompt.confirms = prompt.confirms[1:]
 	return value, nil
 }
 
