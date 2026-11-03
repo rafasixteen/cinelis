@@ -6,6 +6,11 @@ tasks:
         cmds:
             - task: tui
 
+    setup:
+        desc: Install the Android SDK packages required by CineLis
+        cmds:
+            - mise run android:setup
+
     tui:
         desc: Open the CineLis Android developer menu
         dir: ../tools/android/tui

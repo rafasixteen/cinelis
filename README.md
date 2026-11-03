@@ -49,6 +49,15 @@ mise install
 composer install
 ```
 
+For the Android developer TUI, provision its SDK packages after the general
+setup:
+
+```powershell
+task android:setup
+```
+
+The command leaves Android SDK license acceptance interactive.
+
 Create `.env` from the example:
 
 ```sh

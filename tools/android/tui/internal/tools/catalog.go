@@ -17,19 +17,18 @@ type Tool struct {
 	ID          ToolID
 	Name        string
 	Description string
-	Installable bool
 }
 
 func Catalog() []Tool {
 	return []Tool{
-		{ToolGo, "Go", "Builds and tests the Android developer TUI.", true},
-		{ToolJava, "Java 17–25 JDK", "Runs Gradle, sdkmanager, and Android build tools with a supported JDK.", true},
-		{ToolSDKManager, "Android SDK command-line tools", "Provides sdkmanager and Android SDK package management.", true},
-		{ToolADB, "ADB / platform-tools", "Discovers, installs, launches, and diagnoses Android devices.", true},
-		{ToolPlatform37, "Android platform 37", "Supplies the compile SDK required by CineLis.", true},
-		{ToolBuildTools37, "Android build-tools 37.0.0", "Packages and signs the Android application.", true},
-		{ToolGradleWrapper, "Gradle wrapper", "Builds the repository with its pinned Gradle version.", false},
-		{ToolScrcpy, "scrcpy", "Mirrors and controls the selected Android device.", true},
+		{ToolGo, "Go", "Builds and tests the Android developer TUI."},
+		{ToolJava, "Java 17–25 JDK", "Runs Gradle, sdkmanager, and Android build tools with a supported JDK."},
+		{ToolSDKManager, "Android SDK command-line tools", "Provides sdkmanager and Android SDK package management."},
+		{ToolADB, "ADB / platform-tools", "Discovers, installs, launches, and diagnoses Android devices."},
+		{ToolPlatform37, "Android platform 37", "Supplies the compile SDK required by CineLis."},
+		{ToolBuildTools37, "Android build-tools 37.0.0", "Packages and signs the Android application."},
+		{ToolGradleWrapper, "Gradle wrapper", "Builds the repository with its pinned Gradle version."},
+		{ToolScrcpy, "scrcpy", "Mirrors and controls the selected Android device."},
 	}
 }
 

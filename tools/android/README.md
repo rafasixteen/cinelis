@@ -6,30 +6,46 @@ common workflows:
 - watch Android sources and reload the selected device;
 - build release APK/AAB artifacts;
 - open `scrcpy` or stream `logcat`;
-- inspect and install local Android development tools.
+- inspect local Android development tools and show mise setup guidance.
 
 The TUI is written in Go and supports Linux and Windows. It always passes the
 selected ADB serial to device-specific commands, so multiple connected devices
 remain unambiguous.
+
+## Setup
+
+From the repository root, install the declared mise tools and Android SDK
+packages:
+
+```bash
+mise install
+task android:setup
+```
+
+The setup task installs platform-tools, Android platform 37, and
+build-tools 37.0.0. Android SDK license acceptance remains interactive.
+
+The project declares Go, Java 17, Android command-line tools, and scrcpy in
+`mise.toml`. The Gradle wrapper remains owned by the repository.
 
 ## Run
 
 From the repository root:
 
 ```bash
-cd tools/android/tui
-go run .
+mise exec -- go run ./tools/android/tui
 ```
 
 On Windows PowerShell:
 
 ```powershell
-Set-Location tools/android/tui
-go run .
+mise exec -- go run .\tools\android\tui
 ```
 
-The executable discovers the repository root from its current directory, so it
-can also be run from a subdirectory after building it.
+Alternatively, activate mise in the shell and run `go run .` from
+`tools/android/tui`. The executable discovers the repository root from its
+current directory, so it can also be run from a subdirectory after building
+it.
 
 ## Build
 
@@ -37,7 +53,7 @@ Linux:
 
 ```bash
 cd tools/android/tui
-go build -o cinelis-android .
+mise exec -- go build -o cinelis-android .
 ./cinelis-android
 ```
 
@@ -45,11 +61,11 @@ Windows PowerShell:
 
 ```powershell
 Set-Location tools/android/tui
-go build -o cinelis-android.exe .
+mise exec -- go build -o cinelis-android.exe .
 .\cinelis-android.exe
 ```
 
-## Install tools menu
+## Check tools menu
 
 The menu shows a green check or red cross, a short explanation, and detected
 version information for:
@@ -63,36 +79,16 @@ version information for:
 - the repository Gradle wrapper;
 - `scrcpy`.
 
-Select a missing item to install only that dependency, or select **Install all
-missing tools** to process supported dependencies in order.
+The menu shows a green check or red cross, a short explanation, and detected
+version information for the declared tools and Android SDK packages. Selecting
+a missing item prints the relevant mise command; the TUI never installs tools
+or changes the SDK itself.
 
-On Linux, package installation supports `pacman`, `apt-get`, `dnf`, and
-`zypper`. On Windows it supports `winget`, Chocolatey, and Scoop. Unsupported
-package/tool combinations stop with manual guidance instead of guessing a
-package name.
-
-Android command-line tools are downloaded from Google's pinned archive,
-bounded by a size limit, verified with SHA-256, extracted through path-safe ZIP
-handling, and staged before replacing an existing installation. Existing
-command-line tools are kept in a timestamped backup.
-
-The TUI prefers the current Android CLI (`android sdk install`) when it is
-available and falls back to legacy `sdkmanager` commands for older SDK tool
-installations. Gradle builds use an installed JDK from 17 through 25 with
-`jlink`; this keeps the Android Gradle Plugin compatible without changing the
-shell's `JAVA_HOME` or `PATH`.
-
-The installer deliberately:
-
-- shows package-manager commands before running them;
-- asks for confirmation before installation;
-- leaves Android SDK license acceptance interactive;
-- does not edit shell profiles or `PATH`;
-- does not accept licenses automatically;
-- does not silently elevate privileges.
-
-If a newly installed executable is not visible to the running process, restart
-the terminal after completing the installer.
+Run `mise install` for Go, Java, Android command-line tools, and scrcpy. Run
+`task android:setup` for platform-tools, Android platform 37, and
+build-tools 37.0.0; the Taskfile delegates to mise. If the TUI is launched directly instead of through
+`mise exec` or an activated mise shell, mise-managed executables may not be on
+`PATH`.
 
 ## Tests
 

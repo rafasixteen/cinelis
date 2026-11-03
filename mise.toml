@@ -4,6 +4,9 @@
 [tools]
 php = "8.4"
 go = "latest"
+java = "17"
+android-sdk = "23.0"
+"aqua:Genymobile/scrcpy" = "5.0.1"
 task = "latest"
 dekit = "0.10.2"
 node = "24"

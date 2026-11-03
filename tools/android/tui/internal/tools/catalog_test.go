@@ -2,7 +2,7 @@ package tools
 
 import "testing"
 
-func TestCatalogListsEveryDependencyInInstallOrderWithDescriptions(t *testing.T) {
+func TestCatalogListsEveryDependencyWithDescriptions(t *testing.T) {
 	want := []ToolID{ToolGo, ToolJava, ToolSDKManager, ToolADB, ToolPlatform37, ToolBuildTools37, ToolGradleWrapper, ToolScrcpy}
 	got := Catalog()
 	if len(got) != len(want) {
@@ -15,8 +15,5 @@ func TestCatalogListsEveryDependencyInInstallOrderWithDescriptions(t *testing.T)
 		if got[index].Description == "" {
 			t.Fatalf("Catalog[%d] has no description", index)
 		}
-	}
-	if got[6].Installable {
-		t.Fatal("Gradle wrapper must be diagnostic-only")
 	}
 }
