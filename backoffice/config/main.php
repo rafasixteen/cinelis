@@ -16,6 +16,13 @@ return [
 		'gii' => [
 			'allowedIPs' => ['127.0.0.1', '::1', '172.16.0.0/12'],
 			'class' => 'yii\gii\Module',
+			'generators' => [
+				'model' => [
+					'class' => 'yii\gii\generators\model\Generator',
+					'ns' => 'common\\models',
+					'queryNs' => 'common\\models',
+				],
+			],
 		],
 	] : [],
 	'defaultRoute' => 'home/index',
