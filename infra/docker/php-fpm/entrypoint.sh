@@ -16,6 +16,8 @@ if [ "${CINELIS_PREPARE_GII_PERMISSIONS:-0}" = '1' ]; then
 		if ! mkdir -p "$directory" 2>/dev/null || ! chmod 0777 "$directory" 2>/dev/null; then
 			printf 'Warning: could not make %s writable for Gii.\n' "$directory" >&2
 		fi
+
+		printf 'make %s writable for Gii.\n' "$directory" >&2
 	done
 fi
 
