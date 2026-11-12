@@ -29,7 +29,7 @@ foreach ($setupFile in $setupFiles) {
         throw "Missing Android mise setup task: $setupFile"
     }
     $task = Get-Content $setupFile -Raw
-    foreach ($package in @('platform-tools', 'platforms;android-37', 'build-tools;37.0.0')) {
+    foreach ($package in @('platform-tools', 'platforms/android-37.0', 'build-tools/37.0.0')) {
         Assert-Contains $task $package "$setupFile must install $package."
     }
     Assert-Contains $task '--licenses' "$setupFile must leave license acceptance interactive."

@@ -9,8 +9,8 @@ fi
 
 sdkmanager "--sdk_root=$sdk_root" \
   'platform-tools' \
-  'platforms;android-37' \
-  'build-tools;37.0.0'
+  'platforms/android-37.0' \
+  'build-tools/37.0.0'
 
 echo 'Android SDK licenses are interactive; answer them in the prompt.'
 sdkmanager "--sdk_root=$sdk_root" '--licenses'

@@ -22,7 +22,7 @@ Authentication and checkout provide two data-entry screens. Catalogue, sessions,
 
 ## Open in Android Studio
 
-Open the `android/` directory as the project. The project uses Java 17, Gradle 9.3.1, Android Gradle Plugin 9.1.1, `compileSdk`/`targetSdk` 37, and `minSdk` 24.
+Open the `android/` directory as the project. The project uses Java 17, Gradle 9.6.0, Android Gradle Plugin 9.4.1, `compileSdk`/`targetSdk` 37, and `minSdk` 24.
 
 From the command line:
 
