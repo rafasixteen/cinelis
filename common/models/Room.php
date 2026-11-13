@@ -5,22 +5,23 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "genres".
+ * This is the model class for table "rooms".
  *
  * @property string $id
  * @property string $name
+ * @property string|null $layout
  *
- * @property MovieGenres[] $movieGenres
- * @property Movies[] $movies
+ * @property Seat[] $seats
+ * @property Session[] $sessions
  */
-class Genres extends \yii\db\ActiveRecord
+class Room extends \yii\db\ActiveRecord
 {
 	/**
 	 * {@inheritdoc}
 	 */
 	public static function tableName()
 	{
-		return 'genres';
+		return 'rooms';
 	}
 
 	/**
@@ -29,9 +30,10 @@ class Genres extends \yii\db\ActiveRecord
 	public function rules()
 	{
 		return [
+			[['layout'], 'default', 'value' => null],
 			[['id', 'name'], 'required'],
 			[['id', 'name'], 'string'],
-			[['name'], 'unique'],
+			[['layout'], 'safe'],
 			[['id'], 'unique'],
 		];
 	}
@@ -44,26 +46,27 @@ class Genres extends \yii\db\ActiveRecord
 		return [
 			'id' => 'ID',
 			'name' => 'Name',
+			'layout' => 'Layout',
 		];
 	}
 
 	/**
-	 * Gets query for [[MovieGenres]].
+	 * Gets query for [[Seat]].
 	 *
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getMovieGenres()
+	public function getSeats()
 	{
-		return $this->hasMany(MovieGenres::class, ['genre_id' => 'id']);
+		return $this->hasMany(Seat::class, ['room_id' => 'id']);
 	}
 
 	/**
-	 * Gets query for [[Movies]].
+	 * Gets query for [[Session]].
 	 *
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getMovies()
+	public function getSessions()
 	{
-		return $this->hasMany(Movies::class, ['id' => 'movie_id'])->viaTable('movie_genres', ['genre_id' => 'id']);
+		return $this->hasMany(Session::class, ['room_id' => 'id']);
 	}
 }

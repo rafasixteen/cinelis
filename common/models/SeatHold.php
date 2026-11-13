@@ -12,11 +12,11 @@ use Yii;
  * @property string $user_id
  * @property string $expires_at
  *
- * @property Seats $seat
- * @property Sessions $session
+ * @property Seat $seat
+ * @property Session $session
  * @property User $user
  */
-class SeatHolds extends \yii\db\ActiveRecord
+class SeatHold extends \yii\db\ActiveRecord
 {
 	/**
 	 * {@inheritdoc}
@@ -36,8 +36,8 @@ class SeatHolds extends \yii\db\ActiveRecord
 			[['session_id', 'seat_id', 'user_id'], 'string'],
 			[['expires_at'], 'safe'],
 			[['session_id', 'seat_id'], 'unique', 'targetAttribute' => ['session_id', 'seat_id']],
-			[['seat_id'], 'exist', 'skipOnError' => true, 'targetClass' => Seats::class, 'targetAttribute' => ['seat_id' => 'id']],
-			[['session_id'], 'exist', 'skipOnError' => true, 'targetClass' => Sessions::class, 'targetAttribute' => ['session_id' => 'id']],
+			[['seat_id'], 'exist', 'skipOnError' => true, 'targetClass' => Seat::class, 'targetAttribute' => ['seat_id' => 'id']],
+			[['session_id'], 'exist', 'skipOnError' => true, 'targetClass' => Session::class, 'targetAttribute' => ['session_id' => 'id']],
 			[['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
 		];
 	}
@@ -62,7 +62,7 @@ class SeatHolds extends \yii\db\ActiveRecord
 	 */
 	public function getSeat()
 	{
-		return $this->hasOne(Seats::class, ['id' => 'seat_id']);
+		return $this->hasOne(Seat::class, ['id' => 'seat_id']);
 	}
 
 	/**
@@ -72,7 +72,7 @@ class SeatHolds extends \yii\db\ActiveRecord
 	 */
 	public function getSession()
 	{
-		return $this->hasOne(Sessions::class, ['id' => 'session_id']);
+		return $this->hasOne(Session::class, ['id' => 'session_id']);
 	}
 
 	/**

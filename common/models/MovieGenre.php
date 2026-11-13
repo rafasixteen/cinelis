@@ -10,10 +10,10 @@ use Yii;
  * @property string $movie_id
  * @property string $genre_id
  *
- * @property Genres $genre
- * @property Movies $movie
+ * @property Genre $genre
+ * @property Movie $movie
  */
-class MovieGenres extends \yii\db\ActiveRecord
+class MovieGenre extends \yii\db\ActiveRecord
 {
 	/**
 	 * {@inheritdoc}
@@ -32,8 +32,8 @@ class MovieGenres extends \yii\db\ActiveRecord
 			[['movie_id', 'genre_id'], 'required'],
 			[['movie_id', 'genre_id'], 'string'],
 			[['movie_id', 'genre_id'], 'unique', 'targetAttribute' => ['movie_id', 'genre_id']],
-			[['genre_id'], 'exist', 'skipOnError' => true, 'targetClass' => Genres::class, 'targetAttribute' => ['genre_id' => 'id']],
-			[['movie_id'], 'exist', 'skipOnError' => true, 'targetClass' => Movies::class, 'targetAttribute' => ['movie_id' => 'id']],
+			[['genre_id'], 'exist', 'skipOnError' => true, 'targetClass' => Genre::class, 'targetAttribute' => ['genre_id' => 'id']],
+			[['movie_id'], 'exist', 'skipOnError' => true, 'targetClass' => Movie::class, 'targetAttribute' => ['movie_id' => 'id']],
 		];
 	}
 
@@ -55,7 +55,7 @@ class MovieGenres extends \yii\db\ActiveRecord
 	 */
 	public function getGenre()
 	{
-		return $this->hasOne(Genres::class, ['id' => 'genre_id']);
+		return $this->hasOne(Genre::class, ['id' => 'genre_id']);
 	}
 
 	/**
@@ -65,6 +65,6 @@ class MovieGenres extends \yii\db\ActiveRecord
 	 */
 	public function getMovie()
 	{
-		return $this->hasOne(Movies::class, ['id' => 'movie_id']);
+		return $this->hasOne(Movie::class, ['id' => 'movie_id']);
 	}
 }

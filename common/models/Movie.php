@@ -16,11 +16,11 @@ use Yii;
  * @property string|null $poster_url
  * @property string|null $trailer_url
  *
- * @property Genres[] $genres
- * @property MovieGenres[] $movieGenres
- * @property Sessions[] $sessions
+ * @property Genre[] $genres
+ * @property MovieGenre[] $movieGenres
+ * @property Session[] $sessions
  */
-class Movies extends \yii\db\ActiveRecord
+class Movie extends \yii\db\ActiveRecord
 {
 	/**
 	 * {@inheritdoc}
@@ -64,32 +64,32 @@ class Movies extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * Gets query for [[Genres]].
+	 * Gets query for [[Genre]].
 	 *
 	 * @return \yii\db\ActiveQuery
 	 */
 	public function getGenres()
 	{
-		return $this->hasMany(Genres::class, ['id' => 'genre_id'])->viaTable('movie_genres', ['movie_id' => 'id']);
+		return $this->hasMany(Genre::class, ['id' => 'genre_id'])->viaTable('movie_genres', ['movie_id' => 'id']);
 	}
 
 	/**
-	 * Gets query for [[MovieGenres]].
+	 * Gets query for [[MovieGenre]].
 	 *
 	 * @return \yii\db\ActiveQuery
 	 */
 	public function getMovieGenres()
 	{
-		return $this->hasMany(MovieGenres::class, ['movie_id' => 'id']);
+		return $this->hasMany(MovieGenre::class, ['movie_id' => 'id']);
 	}
 
 	/**
-	 * Gets query for [[Sessions]].
+	 * Gets query for [[Session]].
 	 *
 	 * @return \yii\db\ActiveQuery
 	 */
 	public function getSessions()
 	{
-		return $this->hasMany(Sessions::class, ['movie_id' => 'id']);
+		return $this->hasMany(Session::class, ['movie_id' => 'id']);
 	}
 }

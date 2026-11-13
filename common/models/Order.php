@@ -12,10 +12,10 @@ use Yii;
  * @property float $total
  * @property string $created_at
  *
- * @property Tickets[] $tickets
+ * @property Ticket[] $tickets
  * @property User $user
  */
-class Orders extends \yii\db\ActiveRecord
+class Order extends \yii\db\ActiveRecord
 {
 	/**
 	 * {@inheritdoc}
@@ -54,13 +54,13 @@ class Orders extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * Gets query for [[Tickets]].
+	 * Gets query for [[Ticket]].
 	 *
 	 * @return \yii\db\ActiveQuery
 	 */
 	public function getTickets()
 	{
-		return $this->hasMany(Tickets::class, ['order_id' => 'id']);
+		return $this->hasMany(Ticket::class, ['order_id' => 'id']);
 	}
 
 	/**
