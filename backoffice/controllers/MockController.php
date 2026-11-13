@@ -4,6 +4,7 @@ namespace backoffice\controllers;
 
 use Yii;
 use yii\data\ArrayDataProvider;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 
@@ -12,10 +13,35 @@ abstract class MockController extends Controller
 	public function behaviors(): array
 	{
 		return [
+			'access' => [
+				'class' => AccessControl::class,
+				'rules' => [
+					[
+						'actions' => ['login'],
+						'allow' => true,
+						'roles' => ['?'],
+					],
+					[
+						'actions' => ['logout'],
+						'allow' => true,
+						'roles' => ['@'],
+					],
+					[
+						'allow' => true,
+						'roles' => ['backoffice.access'],
+					],
+				],
+			],
 			'verbs' => [
 				'class' => VerbFilter::class,
 				'actions' => [
 					'*' => ['GET', 'HEAD'],
+					'login' => ['GET', 'POST'],
+					'logout' => ['POST'],
+					'create' => ['GET', 'POST'],
+					'update' => ['GET', 'POST'],
+					'delete' => ['POST'],
+					'restore' => ['POST'],
 				],
 			],
 		];

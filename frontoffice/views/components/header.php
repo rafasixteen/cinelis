@@ -8,6 +8,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 
 $controller = Yii::$app->controller->id;
+$identity = Yii::$app->user->identity;
 ?>
 
 <header class="site-header">
@@ -59,8 +60,8 @@ $controller = Yii::$app->controller->id;
 			<span class="language" lang="pt">PT</span>
 			<?= Button::widget([
 				'tag' => 'a',
-				'label' => 'A minha conta',
-				'url' => ['/account/index'],
+				'label' => $identity === null ? 'Iniciar sessão' : 'A minha conta',
+				'url' => [$identity === null ? '/account/login' : '/account/index'],
 				'variant' => 'secondary',
 				'options' => ['class' => 'account-link'],
 			]) ?>

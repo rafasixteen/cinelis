@@ -8,7 +8,7 @@ class m261006_113000_create_orders_table extends Migration
 	{
 		$this->createTable('orders', [
 			'id' => 'UUID PRIMARY KEY DEFAULT uuidv7()',
-			'user_id' => 'UUID NOT NULL REFERENCES users(id)',
+			'user_id' => 'UUID NOT NULL REFERENCES [[user]]([[id]])',
 			'total' => 'NUMERIC(10,2) NOT NULL',
 			'created_at' => 'TIMESTAMP NOT NULL',
 		]);

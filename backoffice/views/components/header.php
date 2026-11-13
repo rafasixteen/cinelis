@@ -1,9 +1,24 @@
 <?php
 
+use common\rbac\RbacInstaller;
 use common\widgets\Icon;
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
+
+$identity = Yii::$app->user->identity;
+$username = $identity?->username ?? '';
+$roles = $identity === null ? [] : Yii::$app->authManager->getRolesByUser((string) $identity->getId());
+$role = array_key_first($roles) ?? RbacInstaller::ROLE_VISITOR;
+$roleLabels = [
+	RbacInstaller::ROLE_VISITOR => 'Visitante',
+	RbacInstaller::ROLE_CUSTOMER => 'Cliente',
+	RbacInstaller::ROLE_EMPLOYEE => 'Funcionário',
+	RbacInstaller::ROLE_ADMIN => 'Administrador',
+];
+$initials = $identity === null ? '' : mb_strtoupper(
+	mb_substr($username, 0, 2),
+);
 ?>
 
 <header class="topbar">
@@ -26,12 +41,13 @@ use yii\helpers\Html;
 				],
 			) ?>
 		</button>
+		<?php if ($identity !== null): ?>
 		<details class="profile-menu">
-			<summary class="profile" aria-label="Menu de Ana Silva">
-				<span class="avatar" aria-hidden="true">AS</span>
+			<summary class="profile" aria-label="Menu de <?= Html::encode($username) ?>">
+				<span class="avatar" aria-hidden="true"><?= Html::encode($initials) ?></span>
 				<span class="profile-copy">
-					<strong>Ana Silva</strong>
-					<span>Admin</span>
+					<strong><?= Html::encode($username) ?></strong>
+					<span><?= Html::encode($roleLabels[$role] ?? $role) ?></span>
 				</span>
 				<?= Icon::widget([
 					'name' => 'chevron-down',
@@ -39,22 +55,22 @@ use yii\helpers\Html;
 				]) ?>
 			</summary>
 			<div class="profile-dropdown">
-				<strong>Ana Silva</strong>
-				<small>ana@cinelis.pt</small>
+				<strong><?= Html::encode($username) ?></strong>
+				<small><?= Html::encode($identity->email) ?></small>
 				<?= Html::a(
 					'O meu perfil',
 					[
-						'/users/edit',
-						'id' => 1,
+						'/users/update',
+						'id' => $identity->id,
 					],
 				) ?>
-
-				<?= Html::a(
-					'Login interno',
-					['/auth/login'],
-				) ?>
-				<button type="button" data-demo-action>Terminar sessão</button>
+				<?= Html::beginForm(['/auth/logout'], 'post') ?>
+					<?= Html::submitButton('Terminar sessão') ?>
+				<?= Html::endForm() ?>
 			</div>
 		</details>
+		<?php else: ?>
+			<?= Html::a('Iniciar sessão', ['/auth/login'], ['class' => 'text-link']) ?>
+		<?php endif ?>
 	</div>
 </header>
