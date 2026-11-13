@@ -15,64 +15,81 @@ use Yii;
  * @property string|null $age_rating
  * @property string|null $poster_url
  * @property string|null $trailer_url
- * @property string $genres
  *
+ * @property Genres[] $genres
+ * @property MovieGenres[] $movieGenres
  * @property Sessions[] $sessions
  */
 class Movies extends \yii\db\ActiveRecord
 {
+	/**
+	 * {@inheritdoc}
+	 */
+	public static function tableName()
+	{
+		return 'movies';
+	}
 
+	/**
+	 * {@inheritdoc}
+	 */
+	public function rules()
+	{
+		return [
+			[['synopsis', 'release_date', 'age_rating', 'poster_url', 'trailer_url'], 'default', 'value' => null],
+			[['id', 'title', 'duration_minutes'], 'required'],
+			[['id', 'title', 'synopsis', 'age_rating', 'poster_url', 'trailer_url'], 'string'],
+			[['duration_minutes'], 'default', 'value' => null],
+			[['duration_minutes'], 'integer'],
+			[['release_date'], 'safe'],
+			[['id'], 'unique'],
+		];
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-        return 'movies';
-    }
+	/**
+	 * {@inheritdoc}
+	 */
+	public function attributeLabels()
+	{
+		return [
+			'id' => 'ID',
+			'title' => 'Title',
+			'synopsis' => 'Synopsis',
+			'duration_minutes' => 'Duration Minutes',
+			'release_date' => 'Release Date',
+			'age_rating' => 'Age Rating',
+			'poster_url' => 'Poster Url',
+			'trailer_url' => 'Trailer Url',
+		];
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [['synopsis', 'release_date', 'age_rating', 'poster_url', 'trailer_url'], 'default', 'value' => null],
-            [['id', 'title', 'duration_minutes'], 'required'],
-            [['id', 'title', 'synopsis', 'age_rating', 'poster_url', 'trailer_url', 'genres'], 'string'],
-            [['duration_minutes'], 'default', 'value' => null],
-            [['duration_minutes'], 'integer'],
-            [['release_date'], 'safe'],
-            [['id'], 'unique'],
-        ];
-    }
+	/**
+	 * Gets query for [[Genres]].
+	 *
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getGenres()
+	{
+		return $this->hasMany(Genres::class, ['id' => 'genre_id'])->viaTable('movie_genres', ['movie_id' => 'id']);
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'title' => 'Title',
-            'synopsis' => 'Synopsis',
-            'duration_minutes' => 'Duration Minutes',
-            'release_date' => 'Release Date',
-            'age_rating' => 'Age Rating',
-            'poster_url' => 'Poster Url',
-            'trailer_url' => 'Trailer Url',
-            'genres' => 'Genres',
-        ];
-    }
+	/**
+	 * Gets query for [[MovieGenres]].
+	 *
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getMovieGenres()
+	{
+		return $this->hasMany(MovieGenres::class, ['movie_id' => 'id']);
+	}
 
-    /**
-     * Gets query for [[Sessions]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSessions()
-    {
-        return $this->hasMany(Sessions::class, ['movie_id' => 'id']);
-    }
-
+	/**
+	 * Gets query for [[Sessions]].
+	 *
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getSessions()
+	{
+		return $this->hasMany(Sessions::class, ['movie_id' => 'id']);
+	}
 }
