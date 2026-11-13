@@ -114,6 +114,17 @@ Common commands:
     task migrate:create -- name
     ```
 
+- Initialize authentication and RBAC after migrations:
+
+    ```powershell
+    php yii rbac/init
+    php yii rbac/create-admin admin@cinelis.pt 'change-this-password' 'Administrador CineLis'
+    ```
+
+Anonymous front-office users receive the visitor default role. Front-office
+registration creates a customer; employee and admin roles can access the
+back-office, while user management is restricted to admin.
+
 Local URLs:
 
 - <http://cinelis.localhost/> — frontoffice
