@@ -9,7 +9,7 @@ class m261006_112000_create_seat_holds_table extends Migration
 		$this->createTable('seat_holds', [
 			'session_id' => 'UUID NOT NULL REFERENCES sessions(id)',
 			'seat_id' => 'UUID NOT NULL REFERENCES seats(id)',
-			'user_id' => 'UUID NOT NULL REFERENCES users(id)',
+			'user_id' => 'UUID NOT NULL REFERENCES [[user]]([[id]])',
 			'expires_at' => 'TIMESTAMP NOT NULL',
 			'PRIMARY KEY (session_id, seat_id)',
 		]);

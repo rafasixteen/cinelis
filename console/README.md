@@ -48,6 +48,16 @@ Apply migrations:
 task migrate
 ```
 
+Initialize authentication and RBAC after migrations:
+
+```bash
+php yii rbac/init
+php yii rbac/create-admin admin@cinelis.pt 'change-this-password' 'Administrador CineLis'
+```
+
+The RBAC setup provides the anonymous visitor, registered customer,
+back-office employee, and privileged admin roles.
+
 Migration files belong in:
 
 ```text

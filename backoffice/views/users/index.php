@@ -1,11 +1,11 @@
 <?php
 
-use common\widgets\Badge;
+use common\rbac\RbacInstaller;
 use common\widgets\Button;
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var yii\data\ArrayDataProvider $provider */
+/** @var yii\data\ActiveDataProvider $provider */
 /** @var string $q */
 ?>
 
@@ -55,29 +55,48 @@ use yii\helpers\Html;
 		'provider' => $provider,
 		'caption' => 'Utilizadores internos',
 		'columns' => [
-			['label' => 'Nome', 'value' => 'name'],
-			['label' => 'Email', 'value' => 'email'],
+			[
+				'label' => 'Nome',
+				'value' => static fn (common\models\User $record): string => $record->username,
+			],
+			[
+				'label' => 'Email',
+				'value' => static fn (common\models\User $record): string => $record->email,
+			],
 			[
 				'label' => 'Perfil',
 				'raw' => true,
-				'value' => static fn (array $record): string => Badge::widget([
-					'label' => $record['role'],
-				]),
+				'value' => static fn (common\models\User $record): string => Html::encode(
+					RbacInstaller::getRoleLabel(
+						RbacInstaller::getUserRole(Yii::$app->authManager, $record->getId()),
+					),
+				),
+			],
+			[
+				'label' => 'Estado',
+				'value' => static fn (common\models\User $record): string => (
+					$record->status === common\models\User::STATUS_DELETED ? 'Eliminado' : 'Ativo'
+				),
 			],
 			[
 				'label' => 'Ações',
 				'raw' => true,
-				'value' => static fn (array $record): string => Html::a(
-					'Editar',
-					[
-						'/users/edit',
-						'id' => $record['id'],
-					],
-					[
-						'class' => 'text-link',
-						'aria-label' => 'Editar '.$record['name'],
-					],
-				),
+				'value' => static function (common\models\User $record): string {
+					$links = [
+						Html::a('Ver', ['/users/view', 'id' => $record->id], ['class' => 'text-link']),
+						Html::a('Editar', ['/users/update', 'id' => $record->id], ['class' => 'text-link']),
+					];
+
+					$action = $record->status === common\models\User::STATUS_DELETED ? 'restore' : 'delete';
+					$label = $record->status === common\models\User::STATUS_DELETED ? 'Restaurar' : 'Eliminar';
+					$links[] = Html::beginForm(
+						['/users/'.$action, 'id' => $record->id],
+						'post',
+						['style' => 'display:inline'],
+					).Html::submitButton($label, ['class' => 'text-link']).Html::endForm();
+
+					return implode(' ', $links);
+				},
 			],
 		],
 	]) ?>

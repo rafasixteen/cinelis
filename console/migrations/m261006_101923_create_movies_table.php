@@ -15,7 +15,6 @@ class m261006_101923_create_movies_table extends Migration
 			'age_rating' => 'TEXT',
 			'poster_url' => 'TEXT',
 			'trailer_url' => 'TEXT',
-			'genres' => "TEXT[] NOT NULL DEFAULT '{}'::TEXT[]",
 		]);
 	}
 

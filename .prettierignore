@@ -2,6 +2,7 @@ backoffice/web/
 frontoffice/web/
 vendor/
 node_modules/
+android/**
 tmp/
 temp/
 composer.lock

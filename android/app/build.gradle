@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace 'cinelis'
+    namespace = 'cinelis'
     compileSdk 37
 
     defaultConfig {
@@ -29,7 +29,7 @@ android {
     }
 
     buildFeatures {
-        viewBinding true
+        viewBinding = true
     }
 
     testOptions {

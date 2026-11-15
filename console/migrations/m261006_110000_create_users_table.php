@@ -6,28 +6,29 @@ class m261006_110000_create_users_table extends Migration
 {
 	public function safeUp()
 	{
-		$this->execute("CREATE TYPE user_role AS ENUM ('customer', 'employee', 'admin')");
+		$tableOptions = null;
 
-		$this->createTable('users', [
+		if ($this->db->driverName === 'mysql') {
+			$tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
+		}
+
+		$this->createTable('{{%user}}', [
 			'id' => 'UUID PRIMARY KEY DEFAULT uuidv7()',
-			'name' => 'TEXT NOT NULL',
-			'email' => 'TEXT NOT NULL',
-			'password_hash' => 'TEXT NOT NULL',
-			'role' => "user_role NOT NULL DEFAULT 'customer'",
-			'created_at' => 'TIMESTAMP NOT NULL',
-		]);
+			'username' => $this->string()->notNull()->unique(),
+			'auth_key' => $this->string(32)->notNull(),
+			'password_hash' => $this->string()->notNull(),
+			'password_reset_token' => $this->string()->unique(),
+			'email' => $this->string()->notNull()->unique(),
+			'verification_token' => $this->string()->defaultValue(null),
 
-		$this->createIndex(
-			'uq_users_email',
-			'users',
-			'email',
-			true,
-		);
+			'status' => $this->smallInteger()->notNull()->defaultValue(10),
+			'created_at' => $this->integer()->notNull(),
+			'updated_at' => $this->integer()->notNull(),
+		], $tableOptions);
 	}
 
 	public function safeDown()
 	{
-		$this->dropTable('users');
-		$this->execute('DROP TYPE user_role');
+		$this->dropTable('{{%user}}');
 	}
 }
