@@ -1,69 +1,63 @@
 <?php
 
-use backoffice\data\Operations;
+use common\models\Movie;
+use common\models\Room;
+use common\models\Session;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var array $record */
+/** @var Session $model */
+/** @var list<Movie> $movies */
+/** @var list<Room> $rooms */
 /** @var bool $isNew */
+
+$model->starts_at = $model->starts_at
+	? date('Y-m-d\TH:i', strtotime((string) $model->starts_at))
+	: '';
+$movieItems = ArrayHelper::map($movies, 'id', 'title');
+$roomItems = [];
+foreach ($rooms as $room) {
+	$roomItems[(string) $room->id] = $room->name.' · '.$room->getSeats()->count().' lugares';
+}
 ?>
 
 <main id="main-content" class="page">
 	<?= $this->render('../components/page-heading', [
 		'title' => $isNew ? 'Criar sessão' : 'Editar sessão',
 		'section' => 'Sessões',
-		'description' => 'Defina o filme, a sala e o horário.',
+		'description' => $isNew ? 'Defina o filme, a sala e o horário.' : ($model->movie?->title ?? 'Sessão'),
 	]) ?>
-	<form method="post" data-demo-form novalidate>
-		<div class="panel form-grid">
-			<?= $this->render('../components/field', [
-				'name' => 'movie',
-				'label' => 'Filme',
-				'value' => $record['movieId'],
-				'items' => array_column(Operations::movies(), 'title', 'id'),
-			]) ?>
 
-			<?= $this->render('../components/field', [
-				'name' => 'room',
-				'label' => 'Sala',
-				'value' => $record['roomId'],
-				'items' => array_column(
-					array_map(
-						static fn (array $room): array => [
-							'id' => $room['id'],
-							'name' => $room['name'].' · '.$room['capacity'].' lugares',
-						],
-						Operations::rooms(),
-					),
-					'name',
-					'id',
-				),
-			]) ?>
-
-			<?= $this->render('../components/field', [
-				'name' => 'datetime',
-				'label' => 'Data / hora',
-				'type' => 'datetime-local',
-				'value' => $record['date'].'T'.$record['time'],
-			]) ?>
-
-			<?= $this->render('../components/field', [
-				'name' => 'price',
-				'label' => 'Preço por bilhete (€)',
-				'type' => 'number',
-				'value' => number_format($record['price'], 2, '.', ''),
-				'options' => [
-					'min' => 0,
-					'step' => '0.50',
-				],
-			]) ?>
-			<div class="notice field--full">
-				<h2>Disponibilidade da sala</h2>
-				<p>Pré-visualização do horário. A disponibilidade será validada quando a criação de sessões estiver implementada.</p>
-			</div>
-		</div>
-		<?= $this->render('../components/form-actions', [
-			'cancel' => ['/sessions/index'],
-			'label' => $isNew ? 'Criar sessão' : 'Guardar sessão',
+	<?php $form = ActiveForm::begin([
+		'options' => ['class' => 'edit-form', 'novalidate' => true],
+		'fieldConfig' => [
+			'options' => ['class' => 'field'],
+			'inputOptions' => ['class' => 'input'],
+		],
+	]) ?>
+	<div class="panel form-grid">
+		<?= $form->field($model, 'movie_id')->dropDownList($movieItems, ['prompt' => 'Selecionar filme']) ?>
+		<?= $form->field($model, 'room_id')->dropDownList($roomItems, ['prompt' => 'Selecionar sala']) ?>
+		<?= $form->field($model, 'starts_at')->input('datetime-local', [
+			'data-localized-date' => 'true',
+			'lang' => 'pt-PT',
 		]) ?>
-	</form>
+		<?= $form->field($model, 'price')->input('number', [
+			'min' => 0,
+			'step' => '0.50',
+		]) ?>
+		<?php if (!$isNew): ?>
+			<div class="notice field--full">
+				<h2>Estado atual</h2>
+				<p><?= Html::encode($model->displayStatus()) ?>. Sessões com bilhetes ou reservas ativas não podem mudar de filme, sala ou horário.</p>
+			</div>
+		<?php endif ?>
+	</div>
+	<div class="form-actions">
+		<?= Html::a('Cancelar', ['/sessions/index'], ['class' => 'ui-button ui-button--secondary']) ?>
+		<?= Html::submitButton($isNew ? 'Criar sessão' : 'Guardar alterações', ['class' => 'ui-button ui-button--primary']) ?>
+	</div>
+	<?php ActiveForm::end() ?>
 </main>

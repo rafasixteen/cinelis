@@ -20,7 +20,6 @@ $requiredFiles = [
 	'backoffice/assets/css/components/tables.css',
 	'backoffice/assets/css/views/rooms.css',
 	'backoffice/assets/css/views/orders.css',
-	'backoffice/assets/css/views/settings.css',
 ];
 
 $removedFiles = [

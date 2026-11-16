@@ -28,7 +28,7 @@ $this->params['section'] = 'Utilizadores';
 			<p><?= Html::encode($model->email) ?></p>
 		</div>
 		<div>
-			<strong>Perfil</strong>
+			<strong>Roles</strong>
 			<p><?= Badge::widget(['label' => common\rbac\RbacInstaller::getRoleLabel($role)]) ?></p>
 		</div>
 		<div>

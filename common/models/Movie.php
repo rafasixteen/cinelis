@@ -37,11 +37,11 @@ class Movie extends \yii\db\ActiveRecord
 	{
 		return [
 			[['synopsis', 'release_date', 'age_rating', 'poster_url', 'trailer_url'], 'default', 'value' => null],
-			[['id', 'title', 'duration_minutes'], 'required'],
+			[['title', 'duration_minutes'], 'required'],
 			[['id', 'title', 'synopsis', 'age_rating', 'poster_url', 'trailer_url'], 'string'],
 			[['duration_minutes'], 'default', 'value' => null],
-			[['duration_minutes'], 'integer'],
-			[['release_date'], 'safe'],
+			[['duration_minutes'], 'integer', 'min' => 1],
+			[['release_date'], 'date', 'format' => 'php:Y-m-d'],
 			[['id'], 'unique'],
 		];
 	}

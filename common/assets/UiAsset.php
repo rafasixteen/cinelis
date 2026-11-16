@@ -8,39 +8,27 @@ use yii\web\View;
 final class UiAsset extends AssetBundle
 {
 	public $sourcePath = '@common/assets';
+
 	public $publishOptions = [
+		'forceCopy' => YII_ENV_DEV,
 		'only' => [
 			'css/layouts/fonts.css',
 			'fonts/*',
+			'js/theme.js',
 			'js/ui.js',
 		],
 	];
+
 	public $css = [
 		'css/layouts/fonts.css',
 	];
+
 	public $js = [
-		'js/ui.js',
+		['js/theme.js', 'position' => View::POS_HEAD, 'defer' => false],
+		['js/ui.js', 'appendTimestamp' => true],
 	];
+
 	public $jsOptions = [
 		'defer' => true,
 	];
-
-	public function registerAssetFiles($view): void
-	{
-		parent::registerAssetFiles($view);
-		$view->registerJs(<<<'JS'
-(() => {
-	try {
-		const theme = localStorage.getItem('cinelis-theme');
-		if (theme === 'light' || theme === 'dark') {
-			document.documentElement.dataset.theme = theme;
-		} else {
-			document.documentElement.removeAttribute('data-theme');
-		}
-	} catch (_) {
-		document.documentElement.removeAttribute('data-theme');
-	}
-})();
-JS, View::POS_HEAD, 'cinelis-theme-bootstrap');
-	}
 }

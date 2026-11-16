@@ -34,7 +34,7 @@ class Seat extends \yii\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['id', 'room_id', 'row', 'number'], 'required'],
+			[['room_id', 'row', 'number'], 'required'],
 			[['id', 'room_id', 'row'], 'string'],
 			[['number'], 'default', 'value' => null],
 			[['number'], 'integer'],

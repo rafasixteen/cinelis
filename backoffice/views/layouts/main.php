@@ -3,7 +3,6 @@
 use backoffice\assets\AppAsset;
 use backoffice\assets\BehaviorAsset;
 use common\assets\UiAsset;
-use common\widgets\Toast;
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
@@ -41,8 +40,6 @@ BehaviorAsset::register($this);
 					<?= $content ?>
 				</div>
 	</div>
-			<?= Toast::widget() ?>
-
 			<?php $this->endBody() ?>
 		</body>
 	</html>

@@ -1,56 +1,43 @@
 <?php
 
+use common\models\Room;
+use yii\helpers\Html;
+use yii\helpers\Json;
+use yii\widgets\ActiveForm;
+
 /** @var yii\web\View $this */
+/** @var Room $model */
+/** @var array<string, mixed> $layout */
+
+$this->title = 'Adicionar sala · CineLis Backoffice';
+$this->params['section'] = 'Salas';
 ?>
 
 <main id="main-content" class="page">
 	<?= $this->render('../components/page-heading', [
 		'title' => 'Adicionar sala',
 		'section' => 'Salas',
-		'description' => 'Defina a identificação e a capacidade da sala.',
+		'description' => 'A sala será criada com um layout inicial editável.',
 	]) ?>
-	<form method="post" data-demo-form novalidate>
-		<div class="panel form-grid">
-			<?= $this->render('../components/field', [
-				'name' => 'name',
-				'label' => 'Nome da sala',
-				'options' => ['placeholder' => 'Sala 4'],
-			]) ?>
 
-			<?= $this->render('../components/field', [
-				'name' => 'status',
-				'label' => 'Estado',
-				'items' => [
-					'Ativa' => 'Ativa',
-					'Inativa' => 'Inativa',
-				],
-			]) ?>
-
-			<?= $this->render('../components/field', [
-				'name' => 'rows',
-				'label' => 'Número de filas',
-				'type' => 'number',
-				'value' => 6,
-				'options' => [
-					'min' => 1,
-					'max' => 26,
-				],
-			]) ?>
-
-			<?= $this->render('../components/field', [
-				'name' => 'columns',
-				'label' => 'Lugares por fila',
-				'type' => 'number',
-				'value' => 10,
-				'options' => [
-					'min' => 1,
-					'max' => 30,
-				],
-			]) ?>
-		</div>
-		<?= $this->render('../components/form-actions', [
-			'cancel' => ['/rooms/index'],
-			'label' => 'Criar sala',
+	<?php $form = ActiveForm::begin([
+		'options' => ['class' => 'edit-form', 'novalidate' => true],
+		'fieldConfig' => [
+			'options' => ['class' => 'field'],
+			'inputOptions' => ['class' => 'input'],
+		],
+	]) ?>
+	<div class="panel form-grid">
+		<?= $form->field($model, 'name')->textInput([
+			'autocomplete' => 'off',
+			'placeholder' => 'Sala 4',
 		]) ?>
-	</form>
+		<p class="notice field--full">O layout inicial cria <?= count($layout['cells']) ?> lugares. Depois de guardar, poderá editar o ecrã, entradas, saídas e células individuais.</p>
+		<?= Html::hiddenInput('layout', Json::encode($layout)) ?>
+	</div>
+	<div class="form-actions">
+		<?= Html::a('Cancelar', ['/rooms/index'], ['class' => 'ui-button ui-button--secondary']) ?>
+		<?= Html::submitButton('Criar sala', ['class' => 'ui-button ui-button--primary']) ?>
+	</div>
+	<?php ActiveForm::end() ?>
 </main>

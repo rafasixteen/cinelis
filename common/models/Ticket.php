@@ -37,7 +37,7 @@ class Ticket extends \yii\db\ActiveRecord
 	{
 		return [
 			[['used_at'], 'default', 'value' => null],
-			[['id', 'order_id', 'session_id', 'seat_id', 'price', 'code', 'created_at'], 'required'],
+			[['order_id', 'session_id', 'seat_id', 'price', 'code', 'created_at'], 'required'],
 			[['id', 'order_id', 'session_id', 'seat_id', 'code'], 'string'],
 			[['price'], 'number'],
 			[['created_at', 'used_at'], 'safe'],

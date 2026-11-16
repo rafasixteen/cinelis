@@ -14,13 +14,6 @@
         margin: 0.6rem 0 0;
     }
 
-    .demo-note {
-        margin-top: 1.8rem;
-        color: var(--muted-foreground);
-        font-size: 0.72rem;
-        line-height: 1.6;
-    }
-
     .notice {
         padding: 1.25rem;
         background: var(--secondary);

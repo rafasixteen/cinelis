@@ -10,6 +10,6 @@ class AppAsset extends AssetBundle
 	public $baseUrl = '@web';
 
 	public $css = [
-		'css/globals.css',
+		['css/globals.css', 'appendTimestamp' => true],
 	];
 }

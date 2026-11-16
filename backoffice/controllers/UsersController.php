@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace backoffice\controllers;
 
 use common\models\User;
@@ -7,34 +9,44 @@ use common\rbac\RbacInstaller;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
+use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
-final class UsersController extends MockController
+final class UsersController extends Controller
 {
 	public function behaviors(): array
 	{
-		return array_merge(
-			parent::behaviors(),
-			[
-				'user-management' => [
-					'class' => AccessControl::class,
-					'only' => ['index', 'view', 'create', 'update', 'delete', 'restore'],
-					'rules' => [
-						[
-							'allow' => true,
-							'roles' => ['users.manage'],
-						],
+		return [
+			'access' => [
+				'class' => AccessControl::class,
+				'rules' => [
+					[
+						'allow' => true,
+						'roles' => [RbacInstaller::PERMISSION_USERS_MANAGE],
 					],
 				],
 			],
-		);
+			'verbs' => [
+				'class' => VerbFilter::class,
+				'actions' => [
+					'index' => ['GET'],
+					'view' => ['GET'],
+					'create' => ['GET', 'POST'],
+					'update' => ['GET', 'POST'],
+					'delete' => ['POST'],
+					'restore' => ['POST'],
+				],
+			],
+		];
 	}
 
 	public function actionIndex(): string
 	{
 		$query = User::find();
-		$search = $this->query('q');
+		$search = trim((string) Yii::$app->request->get('q', ''));
 
 		if ($search !== '') {
 			$query->andWhere([
@@ -69,7 +81,7 @@ final class UsersController extends MockController
 		]);
 	}
 
-	public function actionCreate(): string
+	public function actionCreate(): string|Response
 	{
 		$model = new User();
 		$model->status = User::STATUS_ACTIVE;
@@ -92,7 +104,7 @@ final class UsersController extends MockController
 		]);
 	}
 
-	public function actionUpdate(string $id): string
+	public function actionUpdate(string $id): string|Response
 	{
 		$model = $this->findUser($id);
 
@@ -115,7 +127,7 @@ final class UsersController extends MockController
 		]);
 	}
 
-	public function actionDelete(string $id): string
+	public function actionDelete(string $id): Response
 	{
 		$model = $this->findUser($id);
 
@@ -129,7 +141,7 @@ final class UsersController extends MockController
 		return $this->redirect(['index']);
 	}
 
-	public function actionRestore(string $id): string
+	public function actionRestore(string $id): Response
 	{
 		$model = $this->findUser($id);
 		$model->status = User::STATUS_ACTIVE;
@@ -140,6 +152,10 @@ final class UsersController extends MockController
 
 	private function findUser(string $id): User
 	{
+		if (!$this->isUuid($id)) {
+			throw new NotFoundHttpException('Utilizador não encontrado.');
+		}
+
 		$model = User::findOne($id);
 
 		if (!$model instanceof User) {
@@ -152,5 +168,13 @@ final class UsersController extends MockController
 	private function isValidRole(string $role): bool
 	{
 		return array_key_exists($role, RbacInstaller::ROLES);
+	}
+
+	private function isUuid(string $value): bool
+	{
+		return preg_match(
+			'/\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i',
+			$value,
+		) === 1;
 	}
 }
