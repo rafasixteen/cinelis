@@ -13,7 +13,7 @@ use yii\helpers\Html;
 	<?= $this->render('../components/page-heading', [
 		'title' => 'Utilizadores internos',
 		'section' => 'Utilizadores',
-		'description' => 'Acessos à gestão do cinema · Área de administração demonstrativa',
+		'description' => 'Acessos à gestão do cinema.',
 		'action' => [
 			'label' => 'Adicionar utilizador',
 			'url' => ['/users/create'],
@@ -64,7 +64,7 @@ use yii\helpers\Html;
 				'value' => static fn (common\models\User $record): string => $record->email,
 			],
 			[
-				'label' => 'Perfil',
+				'label' => 'Roles',
 				'raw' => true,
 				'value' => static fn (common\models\User $record): string => Html::encode(
 					RbacInstaller::getRoleLabel(
@@ -81,21 +81,34 @@ use yii\helpers\Html;
 			[
 				'label' => 'Ações',
 				'raw' => true,
+				'headerOptions' => ['class' => 'table-actions-header'],
+				'contentOptions' => ['class' => 'table-actions-cell'],
 				'value' => static function (common\models\User $record): string {
-					$links = [
-						Html::a('Ver', ['/users/view', 'id' => $record->id], ['class' => 'text-link']),
-						Html::a('Editar', ['/users/update', 'id' => $record->id], ['class' => 'text-link']),
-					];
+					$actions = '<div class="row-actions">'.Button::widget([
+						'label' => 'Ver',
+						'tag' => 'a',
+						'url' => ['/users/view', 'id' => $record->id],
+						'variant' => 'secondary',
+					]).Button::widget([
+						'label' => 'Editar',
+						'tag' => 'a',
+						'url' => ['/users/update', 'id' => $record->id],
+						'variant' => 'secondary',
+					]);
 
 					$action = $record->status === common\models\User::STATUS_DELETED ? 'restore' : 'delete';
 					$label = $record->status === common\models\User::STATUS_DELETED ? 'Restaurar' : 'Eliminar';
-					$links[] = Html::beginForm(
+					$actions .= Html::beginForm(
 						['/users/'.$action, 'id' => $record->id],
 						'post',
-						['style' => 'display:inline'],
-					).Html::submitButton($label, ['class' => 'text-link']).Html::endForm();
+						['class' => 'row-action-form'],
+					).Button::widget([
+						'label' => $label,
+						'variant' => $record->status === common\models\User::STATUS_DELETED ? 'success' : 'danger',
+						'options' => ['type' => 'submit'],
+					]).Html::endForm();
 
-					return implode(' ', $links);
+					return $actions.'</div>';
 				},
 			],
 		],

@@ -15,6 +15,12 @@ final class RbacInstaller
 	public const PERMISSION_FRONT_OFFICE_REGISTER = 'frontoffice.register';
 	public const PERMISSION_FRONT_OFFICE_ACCOUNT = 'frontoffice.account';
 	public const PERMISSION_BACK_OFFICE_ACCESS = 'backoffice.access';
+	public const PERMISSION_BACK_OFFICE_DASHBOARD_VIEW = 'backoffice.dashboard.view';
+	public const PERMISSION_MOVIES_MANAGE = 'movies.manage';
+	public const PERMISSION_ROOMS_MANAGE = 'rooms.manage';
+	public const PERMISSION_SESSIONS_MANAGE = 'sessions.manage';
+	public const PERMISSION_TICKETS_VIEW = 'tickets.view';
+	public const PERMISSION_ORDERS_VIEW = 'orders.view';
 	public const PERMISSION_USERS_MANAGE = 'users.manage';
 
 	public const PERMISSIONS = [
@@ -22,6 +28,12 @@ final class RbacInstaller
 		self::PERMISSION_FRONT_OFFICE_REGISTER => 'Register a front-office account',
 		self::PERMISSION_FRONT_OFFICE_ACCOUNT => 'Use an authenticated front-office account',
 		self::PERMISSION_BACK_OFFICE_ACCESS => 'Access the back-office',
+		self::PERMISSION_BACK_OFFICE_DASHBOARD_VIEW => 'View the back-office dashboard',
+		self::PERMISSION_MOVIES_MANAGE => 'Manage movies in the back-office',
+		self::PERMISSION_ROOMS_MANAGE => 'Manage rooms and seats in the back-office',
+		self::PERMISSION_SESSIONS_MANAGE => 'Manage cinema sessions in the back-office',
+		self::PERMISSION_TICKETS_VIEW => 'View tickets in the back-office',
+		self::PERMISSION_ORDERS_VIEW => 'View orders in the back-office',
 		self::PERMISSION_USERS_MANAGE => 'Manage users in the back-office',
 	];
 
@@ -56,6 +68,12 @@ final class RbacInstaller
 		self::ROLE_EMPLOYEE => [
 			self::ROLE_VISITOR,
 			self::PERMISSION_BACK_OFFICE_ACCESS,
+			self::PERMISSION_BACK_OFFICE_DASHBOARD_VIEW,
+			self::PERMISSION_MOVIES_MANAGE,
+			self::PERMISSION_ROOMS_MANAGE,
+			self::PERMISSION_SESSIONS_MANAGE,
+			self::PERMISSION_TICKETS_VIEW,
+			self::PERMISSION_ORDERS_VIEW,
 		],
 		self::ROLE_ADMIN => [
 			self::ROLE_EMPLOYEE,
@@ -96,8 +114,6 @@ final class RbacInstaller
 				self::ensureChild($authManager, $parent, $child);
 			}
 		}
-
-		$authManager->setDefaultRoles([self::ROLE_VISITOR]);
 	}
 
 	/**
@@ -134,9 +150,15 @@ final class RbacInstaller
 	 */
 	public static function getUserRole(ManagerInterface $authManager, string|int $userId): string
 	{
-		$roles = $authManager->getRolesByUser((string) $userId);
+		$assignments = $authManager->getAssignments((string) $userId);
 
-		return array_key_first($roles) ?? self::ROLE_VISITOR;
+		foreach (array_keys($assignments) as $assignment) {
+			if ($authManager->getRole($assignment) !== null) {
+				return $assignment;
+			}
+		}
+
+		return self::ROLE_VISITOR;
 	}
 
 	/**

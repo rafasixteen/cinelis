@@ -16,6 +16,11 @@ $options = array_merge([
 	'id' => $id,
 	'class' => 'input',
 ], $options ?? []);
+
+if (in_array($type ?? '', ['date', 'datetime-local'], true)) {
+	$options['data-localized-date'] = 'true';
+	$options['lang'] = 'pt-PT';
+}
 ?>
 
 <div class="field <?= Html::encode($class ?? '') ?>

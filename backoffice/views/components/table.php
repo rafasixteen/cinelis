@@ -20,7 +20,7 @@ $pagination = $provider->getPagination();
 		<thead>
 			<tr>
 				<?php foreach ($columns as $column): ?>
-					<th scope="col"><?= Html::encode($column['label']) ?>
+					<th scope="col" <?= Html::renderTagAttributes($column['headerOptions'] ?? []) ?>><?= Html::encode($column['label']) ?>
 					</th>
 
 				<?php endforeach ?>
@@ -36,7 +36,7 @@ $pagination = $provider->getPagination();
 						? $column['value']($record)
 						: $record[$column['value']];
 					?>
-						<td><?= !empty($column['raw']) ? $value : Html::encode($value) ?>
+						<td <?= Html::renderTagAttributes($column['contentOptions'] ?? []) ?>><?= !empty($column['raw']) ? $value : Html::encode($value) ?>
 						</td>
 
 					<?php endforeach ?>

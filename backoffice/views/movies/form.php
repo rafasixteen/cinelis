@@ -1,101 +1,110 @@
 <?php
 
+use common\models\Genre;
+use common\models\Movie;
+use common\widgets\Combobox;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
 /** @var yii\web\View $this */
-/** @var array $record */
+/** @var Movie $model */
+/** @var list<Genre> $genres */
+/** @var list<string> $genreIds */
 /** @var bool $isNew */
+
+$this->title = ($isNew ? 'Adicionar filme' : 'Editar filme').' · CineLis Backoffice';
+$this->params['section'] = 'Filmes';
+$genreItems = array_combine(
+	array_map(static fn (Genre $genre): string => (string) $genre->id, $genres),
+	array_map(static fn (Genre $genre): string => $genre->name, $genres),
+);
 ?>
 
-<main id="main-content" class="page">
+<main id="main-content" class="page movie-editor-page">
 	<?= $this->render('../components/page-heading', [
 		'title' => $isNew ? 'Adicionar filme' : 'Editar filme',
 		'section' => 'Filmes',
-		'description' => $isNew ? 'Acrescente uma nova história ao catálogo.' : 'Catálogo / '.$record['title'],
+		'description' => $isNew ? 'Acrescente uma nova história ao catálogo.' : $model->title,
 	]) ?>
-	<form method="post" class="edit-form" data-demo-form novalidate>
-		<div class="panel form-grid form-grid--movie">
-			<?= $this->render('../components/field', [
-				'name' => 'title',
-				'label' => 'Título',
-				'value' => $record['title'],
-				'options' => ['autocomplete' => 'off'],
-			]) ?>
 
-			<?= $this->render('../components/field', [
-				'name' => 'duration',
-				'label' => 'Duração (min)',
-				'type' => 'number',
-				'value' => $record['duration'],
-				'options' => ['min' => 1],
-			]) ?>
+	<?php $form = ActiveForm::begin([
+		'options' => ['class' => 'movie-editor-form', 'novalidate' => true],
+		'fieldConfig' => [
+			'options' => ['class' => 'field'],
+			'inputOptions' => ['class' => 'input'],
+		],
+	]) ?>
+		<section class="panel movie-editor">
+			<header class="movie-editor__header">
+				<div>
+					<p class="movie-editor__eyebrow">Catálogo</p>
+					<h2><?= $isNew ? 'Detalhes do filme' : 'Editar detalhes' ?></h2>
+				</div>
+				<span class="movie-editor__mode"><?= $isNew ? 'Novo registo' : 'Em edição' ?></span>
+			</header>
 
-			<?= $this->render('../components/field', [
-				'name' => 'rating',
-				'label' => 'Classificação',
-				'value' => $record['rating'],
-				'items' => [
-					'M/6' => 'M/6',
-					'M/12' => 'M/12',
-					'M/16' => 'M/16',
-					'M/18' => 'M/18',
-				],
-			]) ?>
+			<fieldset class="movie-editor__section">
+				<legend>Informação principal</legend>
+				<div class="movie-editor__grid movie-editor__grid--primary">
+					<?= $form->field($model, 'title')->textInput([
+						'autocomplete' => 'off',
+						'placeholder' => 'Título do filme',
+					]) ?>
+					<?= $form->field($model, 'synopsis')->textarea([
+						'rows' => 5,
+						'class' => 'input',
+						'placeholder' => 'Escreva uma sinopse curta…',
+					]) ?>
+				</div>
+			</fieldset>
 
-			<?= $this->render('../components/field', [
-				'name' => 'synopsis',
-				'label' => 'Sinopse',
-				'type' => 'textarea',
-				'value' => $record['synopsis'],
-				'class' => 'field--full',
-			]) ?>
+			<fieldset class="movie-editor__section">
+				<legend>Classificação</legend>
+				<div class="movie-editor__grid movie-editor__grid--metadata">
+					<?= $form->field($model, 'duration_minutes')->input('number', [
+						'min' => 1,
+						'placeholder' => '120',
+					]) ?>
+					<?= $form->field($model, 'release_date')->input('date', [
+						'data-localized-date' => 'true',
+						'lang' => 'pt-PT',
+					]) ?>
+					<?= $form->field($model, 'age_rating')->dropDownList([
+						'M/6' => 'M/6',
+						'M/12' => 'M/12',
+						'M/16' => 'M/16',
+						'M/18' => 'M/18',
+					], ['prompt' => 'Selecionar classificação']) ?>
+				</div>
+				<div class="field movie-editor__genres">
+					<?= Html::label('Géneros', 'genreIds', ['class' => 'control-label']) ?>
+					<?= Combobox::widget([
+						'name' => 'genreIds',
+						'value' => $genreIds,
+						'items' => $genreItems,
+						'options' => [
+							'id' => 'genreIds',
+							'multiple' => true,
+							'size' => 6,
+							'aria-label' => 'Géneros',
+						],
+					]) ?>
+					<small>Selecione um ou mais géneros.</small>
+				</div>
+			</fieldset>
 
-			<?= $this->render('../components/field', [
-				'name' => 'genre',
-				'label' => 'Género',
-				'value' => $record['genre'],
-				'items' => [
-					'Drama' => 'Drama',
-					'Romance' => 'Romance',
-					'Ficção científica' => 'Ficção científica',
-					'Aventura' => 'Aventura',
-					'Suspense' => 'Suspense',
-				],
-			]) ?>
+			<fieldset class="movie-editor__section">
+				<legend>Media</legend>
+				<div class="movie-editor__grid movie-editor__grid--media">
+					<?= $form->field($model, 'poster_url')->input('url', ['placeholder' => 'https://…']) ?>
+					<?= $form->field($model, 'trailer_url')->input('url', ['placeholder' => 'https://…']) ?>
+				</div>
+			</fieldset>
 
-			<?= $this->render('../components/field', [
-				'name' => 'premiere',
-				'label' => 'Estreia',
-				'type' => 'date',
-				'value' => $record['premiere'],
-			]) ?>
-
-			<?= $this->render('../components/field', [
-				'name' => 'status',
-				'label' => 'Estado',
-				'value' => $record['status'],
-				'items' => [
-					'Em cartaz' => 'Em cartaz',
-					'Em breve' => 'Em breve',
-				],
-			]) ?>
-			<div class="form-grid field--full">
-				<?= $this->render('../components/field', [
-					'name' => 'poster',
-					'label' => 'Poster URL',
-					'type' => 'url',
-					'options' => ['placeholder' => 'https://…'],
-				]) ?>
-
-				<?= $this->render('../components/field', [
-					'name' => 'trailer',
-					'label' => 'Trailer URL',
-					'type' => 'url',
-					'options' => ['placeholder' => 'https://…'],
-				]) ?>
+			<div class="form-actions movie-editor__actions">
+				<?= Html::a('Cancelar', ['/movies/index'], ['class' => 'ui-button ui-button--secondary']) ?>
+				<?= Html::submitButton($isNew ? 'Criar filme' : 'Guardar alterações', ['class' => 'ui-button ui-button--primary']) ?>
 			</div>
-		</div>
-		<?= $this->render('../components/form-actions', [
-			'cancel' => ['/movies/index'],
-			'label' => 'Guardar filme',
-		]) ?>
-	</form>
+		</section>
+	<?php ActiveForm::end() ?>
 </main>

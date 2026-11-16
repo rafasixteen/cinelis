@@ -20,7 +20,6 @@ $groups = [
 		Yii::$app->user->can('users.manage')
 			? ['users', 'users-round', 'Utilizadores', ['/users/index']]
 			: null,
-		['settings', 'settings', 'Definições', ['/settings/index']],
 	])),
 ];
 ?>

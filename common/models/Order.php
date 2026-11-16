@@ -31,7 +31,7 @@ class Order extends \yii\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['id', 'user_id', 'total', 'created_at'], 'required'],
+			[['user_id', 'total', 'created_at'], 'required'],
 			[['id', 'user_id'], 'string'],
 			[['total'], 'number'],
 			[['created_at'], 'safe'],

@@ -1,43 +1,26 @@
 @import 'tailwindcss';
 
 @import '../../../common/assets/css/layouts/base.css';
-
 @import '../../../common/assets/css/components/primitives.css';
 
 @source "../../components";
-
 @source "../../views";
-
 @source "../../layouts";
 
-@import './components/sidebar.css';
-
-@import './components/header.css';
-
-@import './views/home.css';
-
 @import './layouts/page.css';
-
-@import './components/panels.css';
-
-@import './components/forms.css';
-
-@import './components/tables.css';
-
-@import './components/feedback.css';
-
 @import './layouts/accessibility.css';
 
+@import './components/sidebar.css';
+@import './components/header.css';
+@import './components/panels.css';
+@import './components/forms.css';
+@import './components/tables.css';
+@import './components/feedback.css';
 @import './components/shell-overrides.css';
 
+@import './views/home.css';
 @import './views/rooms.css';
-
 @import './views/tickets.css';
-
 @import './views/auth.css';
-
 @import './views/orders.css';
-
-@import './views/settings.css';
-
 @import './layouts/main.css';

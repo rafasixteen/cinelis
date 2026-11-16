@@ -36,6 +36,6 @@ $this->params['section'] = 'Login interno';
 				'options' => ['type' => 'submit'],
 			]) ?>
 		<?php ActiveForm::end() ?>
-		<p class="demo-note">Acesso reservado a funcionários e administradores.</p>
+		<p class="form-hint">Acesso reservado a funcionários e administradores.</p>
 	</section>
 </main>

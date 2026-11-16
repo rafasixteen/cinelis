@@ -1,11 +1,12 @@
 <?php
 
+use common\models\Room;
 use common\widgets\Badge;
 use common\widgets\Button;
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var array $rooms */
+/** @var yii\data\ActiveDataProvider $provider */
 ?>
 
 <main id="main-content" class="page">
@@ -18,33 +19,30 @@ use yii\helpers\Html;
 		],
 	]) ?>
 	<div class="rooms">
-		<?php foreach ($rooms as $room): ?>
+		<?php foreach ($provider->getModels() as $room): ?>
+			<?php /** @var Room $room */ ?>
 			<article class="panel room">
-				<span class="room-number"><?= sprintf('%02d', $room['id']) ?>
-				</span>
+				<span class="room-number" aria-hidden="true">⌂</span>
 				<div>
-					<h2><?= Html::encode($room['name']) ?>
-					</h2>
-					<p><?= $room['capacity'] ?>
-lugares</p>
+					<h2><?= Html::encode($room->name) ?></h2>
+					<p><?= count($room->seats) ?> lugares</p>
 				</div>
-				<?= Badge::widget([
-					'label' => $room['status'],
-					'variant' => 'success',
-				]) ?>
-
+				<?= Badge::widget(['label' => 'Ativa', 'variant' => 'success']) ?>
 				<?= Button::widget([
 					'label' => 'Editar layout',
 					'tag' => 'a',
-					'url' => [
-						'/rooms/layout',
-						'id' => $room['id'],
-					],
+					'url' => ['/rooms/layout', 'id' => $room->id],
 					'variant' => 'secondary',
-					'options' => ['aria-label' => 'Editar layout da '.$room['name']],
+					'options' => ['aria-label' => 'Editar layout da '.$room->name],
 				]) ?>
 			</article>
-
 		<?php endforeach ?>
+
+		<?php if ($provider->getCount() === 0): ?>
+			<div class="panel empty">
+				<strong>Sem salas</strong>
+				<p>Adicione a primeira sala para começar a configurar lugares.</p>
+			</div>
+		<?php endif ?>
 	</div>
 </main>

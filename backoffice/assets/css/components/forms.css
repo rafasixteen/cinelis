@@ -28,6 +28,40 @@
         opacity: 1;
     }
 
+    .localized-date-input {
+        position: relative;
+        display: block;
+        width: 100%;
+    }
+
+    .localized-date-input__display {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        display: flex;
+        align-items: center;
+        padding-inline: 0.75rem;
+        color: var(--foreground);
+        font-size: 0.78rem;
+        pointer-events: none;
+    }
+
+    .localized-date-input > .input {
+        position: relative;
+        z-index: 1;
+        display: block;
+        background: transparent;
+        color: transparent;
+    }
+
+    .localized-date-input > .input::-webkit-datetime-edit {
+        color: transparent;
+    }
+
+    .localized-date-input > .input::-webkit-calendar-picker-indicator {
+        opacity: 0.8;
+    }
+
     textarea.input {
         resize: vertical;
         min-height: 7rem;
@@ -47,6 +81,269 @@
 
     .form-grid--movie {
         grid-template-columns: 2fr 1fr 1fr;
+    }
+
+    .movie-editor {
+        max-width: 74rem;
+        margin-inline: auto;
+        padding: 1.75rem;
+    }
+
+    .movie-editor__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .movie-editor__eyebrow {
+        margin: 0 0 0.35rem;
+        color: var(--muted-foreground);
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .movie-editor__header h2 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 650;
+        letter-spacing: -0.025em;
+    }
+
+    .movie-editor__mode {
+        flex: 0 0 auto;
+        padding: 0.35rem 0.6rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: var(--muted-foreground);
+        font-size: 0.68rem;
+        font-weight: 650;
+    }
+
+    .movie-editor__section {
+        min-width: 0;
+        margin: 0;
+        padding: 1.5rem 0 0;
+        border: 0;
+    }
+
+    .movie-editor__section + .movie-editor__section {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+    }
+
+    .movie-editor__section legend {
+        width: 100%;
+        margin-bottom: 1rem;
+        padding: 0;
+        color: var(--foreground);
+        font-size: 0.82rem;
+        font-weight: 650;
+    }
+
+    .movie-editor__grid {
+        display: grid;
+        gap: 1.25rem 1.5rem;
+    }
+
+    .movie-editor__grid--primary {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .movie-editor__grid--metadata {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .movie-editor__grid--media {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .movie-editor__genres {
+        margin-top: 1.25rem;
+    }
+
+    .movie-editor__genres .ui-combobox {
+        position: relative;
+        display: block;
+    }
+
+    .movie-editor__genres .ui-combobox__control {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.35rem;
+        min-height: 2.6rem;
+        padding: 0.35rem 0.55rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--background);
+    }
+
+    .movie-editor__genres .ui-combobox__control:focus-within {
+        outline: 2px solid color-mix(in srgb, var(--primary) 55%, transparent);
+        outline-offset: 2px;
+    }
+
+    .movie-editor__genres .ui-combobox__selected {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.35rem;
+        flex: 0 1 auto;
+    }
+
+    .movie-editor__genres .ui-combobox__selected:empty {
+        display: none;
+    }
+
+    .movie-editor__genres .ui-combobox__tag {
+        padding: 0.25rem 0.45rem;
+        border-radius: var(--radius-sm);
+        background: color-mix(in srgb, var(--primary) 14%, var(--card));
+        color: var(--foreground);
+        font-size: 0.68rem;
+        font-weight: 600;
+    }
+
+    .movie-editor__genres .ui-combobox__input {
+        flex: 1 1 8rem;
+        min-width: 8rem;
+        min-height: 2rem;
+        padding: 0.25rem 0.1rem;
+        border: 0;
+        border-radius: 0;
+        outline: 0;
+        background: transparent;
+    }
+
+    .movie-editor__genres .ui-combobox__panel {
+        position: absolute;
+        z-index: 20;
+        top: calc(100% + 0.35rem);
+        right: 0;
+        left: 0;
+        max-height: 15rem;
+        overflow-y: auto;
+        padding: 0.35rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--card);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .movie-editor__genres .ui-combobox__option {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.55rem;
+        border-radius: var(--radius-sm);
+        color: var(--foreground);
+        cursor: pointer;
+        font-size: 0.75rem;
+    }
+
+    .movie-editor__genres .ui-combobox__option:hover {
+        background: var(--secondary);
+    }
+
+    .movie-editor__genres .ui-combobox__checkbox {
+        accent-color: var(--primary);
+    }
+
+    .movie-editor__genres .ui-combobox__empty {
+        margin: 0;
+        padding: 0.75rem 0.55rem;
+        color: var(--muted-foreground);
+        font-size: 0.72rem;
+    }
+
+    .movie-editor__genres small {
+        color: var(--muted-foreground);
+        font-size: 0.7rem;
+        line-height: 1.5;
+    }
+
+    .movie-editor__actions {
+        margin-top: 1.75rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--border);
+    }
+
+    .user-editor-card {
+        max-width: 52rem;
+        margin-inline: auto;
+        padding: 1.75rem;
+    }
+
+    .user-editor-card__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.75rem;
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .user-editor-card__identity {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        gap: 0.9rem;
+    }
+
+    .user-editor-card__avatar {
+        display: grid;
+        flex: 0 0 auto;
+        place-items: center;
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: var(--radius-lg);
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-size: 0.85rem;
+        font-weight: 700;
+    }
+
+    .user-editor-card__identity h2 {
+        margin: 0;
+        overflow: hidden;
+        color: var(--foreground);
+        font-size: 1rem;
+        font-weight: 650;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .user-editor-card__identity p {
+        margin: 0.2rem 0 0;
+        overflow: hidden;
+        color: var(--muted-foreground);
+        font-size: 0.72rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .user-editor-card__role {
+        flex: 0 0 auto;
+        padding: 0.35rem 0.6rem;
+        border: 1px solid color-mix(in srgb, var(--primary) 24%, var(--border));
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--primary) 8%, var(--card));
+        color: var(--primary);
+        font-size: 0.68rem;
+        font-weight: 650;
+    }
+
+    .user-editor-card__actions {
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--border);
     }
 
     .field--full {
@@ -124,6 +421,31 @@
         .form-actions .ui-button {
             flex: 1;
             min-width: 0;
+        }
+
+        .movie-editor {
+            padding: 1.1rem;
+        }
+
+        .movie-editor__header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .movie-editor__grid--metadata,
+        .movie-editor__grid--media {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .user-editor-card {
+            padding: 1.1rem;
+        }
+
+        .user-editor-card__header {
+            flex-direction: column;
+            align-items: flex-start;
         }
     }
 }

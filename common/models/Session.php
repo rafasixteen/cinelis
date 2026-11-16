@@ -44,10 +44,10 @@ class Session extends \yii\db\ActiveRecord
 	{
 		return [
 			[['status'], 'default', 'value' => 'scheduled'],
-			[['id', 'movie_id', 'room_id', 'starts_at', 'price'], 'required'],
+			[['movie_id', 'room_id', 'starts_at', 'price'], 'required'],
 			[['id', 'movie_id', 'room_id', 'status'], 'string'],
-			[['starts_at'], 'safe'],
-			[['price'], 'number'],
+			[['starts_at'], 'date', 'format' => 'php:Y-m-d H:i:s'],
+			[['price'], 'number', 'min' => 0],
 			['status', 'in', 'range' => array_keys(self::optsStatus())],
 			[['id'], 'unique'],
 			[['movie_id'], 'exist', 'skipOnError' => true, 'targetClass' => Movie::class, 'targetAttribute' => ['movie_id' => 'id']],

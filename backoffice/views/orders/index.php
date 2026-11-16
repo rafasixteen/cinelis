@@ -1,14 +1,12 @@
 <?php
 
-use backoffice\data\Operations;
-use common\widgets\Badge;
+use common\models\Order;
 use common\widgets\Button;
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var yii\data\ArrayDataProvider $provider */
+/** @var yii\data\ActiveDataProvider $provider */
 /** @var string $q */
-/** @var string $status */
 ?>
 
 <main id="main-content" class="page">
@@ -16,47 +14,19 @@ use yii\helpers\Html;
 		'title' => 'Encomendas',
 		'description' => 'Consulte as vendas e os bilhetes associados.',
 	]) ?>
-
-	<?= Html::beginForm(
-		['/orders/index'],
-		'get',
-		[
-			'class' => 'filters',
-		],
-	) ?>
-
+	<?= Html::beginForm(['/orders/index'], 'get', ['class' => 'filters']) ?>
 	<?= $this->render('../components/field', [
 		'name' => 'q',
 		'label' => 'Pesquisar encomenda',
 		'value' => $q,
-		'options' => ['placeholder' => 'Número, cliente ou filme…'],
+		'options' => ['placeholder' => 'UUID, cliente ou filme…'],
 	]) ?>
-
-	<?= $this->render('../components/field', [
-		'name' => 'status',
-		'label' => 'Estado',
-		'value' => $status,
-		'items' => [
-			'' => 'Todos',
-			'Paga' => 'Paga',
-			'Cancelada' => 'Cancelada',
-		],
-	]) ?>
-
 	<?= Button::widget([
 		'label' => 'Filtrar',
 		'variant' => 'secondary',
 		'options' => ['type' => 'submit'],
 	]) ?>
-
-	<?= Html::a(
-		'Limpar',
-		['/orders/index'],
-		[
-			'class' => 'text-link',
-		],
-	) ?>
-
+	<?= Html::a('Limpar', ['/orders/index'], ['class' => 'text-link']) ?>
 	<?= Html::endForm() ?>
 
 	<?= $this->render('../components/table', [
@@ -66,29 +36,31 @@ use yii\helpers\Html;
 			[
 				'label' => 'Encomenda',
 				'raw' => true,
-				'value' => static fn (array $record): string => Html::a(
-					'#'.$record['id'],
-					[
-						'/orders/view',
-						'id' => $record['id'],
-					],
-					['class' => 'text-link'],
+				'value' => static fn (Order $record): string => Html::a(
+					'#'.substr((string) $record->id, 0, 8),
+					['/orders/view', 'id' => $record->id],
+					['class' => 'text-link', 'title' => (string) $record->id],
 				),
 			],
-			['label' => 'Cliente', 'value' => 'customer'],
-			['label' => 'Filme', 'value' => 'movie'],
-			['label' => 'Bilhetes', 'value' => 'quantity'],
 			[
-				'label' => 'Total',
-				'value' => static fn (array $record): string => Operations::money($record['total']),
+				'label' => 'Cliente',
+				'value' => static fn (Order $record): string => $record->user?->username ?? '—',
 			],
 			[
-				'label' => 'Estado',
-				'raw' => true,
-				'value' => static fn (array $record): string => Badge::widget([
-					'label' => $record['status'],
-					'variant' => $record['status'] === 'Paga' ? 'success' : 'default',
-				]),
+				'label' => 'Filme',
+				'value' => static fn (Order $record): string => $record->tickets[0]?->session?->movie?->title ?? '—',
+			],
+			[
+				'label' => 'Bilhetes',
+				'value' => static fn (Order $record): string => (string) count($record->tickets),
+			],
+			[
+				'label' => 'Total',
+				'value' => static fn (Order $record): string => number_format((float) $record->total, 2, ',', '').' €',
+			],
+			[
+				'label' => 'Criada em',
+				'value' => static fn (Order $record): string => date('d/m/Y H:i', strtotime((string) $record->created_at)),
 			],
 		],
 	]) ?>
