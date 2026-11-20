@@ -78,7 +78,7 @@ compose up -d --wait --remove-orphans \
 	frontoffice \
 	caddy
 
-HEALTH_URL="https://${CADDY_DOMAIN}/api/health"
+HEALTH_URL="${CADDY_URL}/api/health"
 printf 'Checking application health: %s\n' "$HEALTH_URL"
 curl --fail --silent --show-error \
 	--retry 10 \
