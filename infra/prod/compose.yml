@@ -63,7 +63,7 @@ services:
             DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD}
             BACKOFFICE_COOKIE_VALIDATION_KEY: ${BACKOFFICE_COOKIE_VALIDATION_KEY:?Set BACKOFFICE_COOKIE_VALIDATION_KEY}
             CINELIS_APP_LABEL: Backoffice
-            CINELIS_APP_ORIGIN: https://${CADDY_DOMAIN:?Set CADDY_DOMAIN}/admin/
+            CINELIS_APP_ORIGIN: ${CADDY_URL:?Set CADDY_URL}/admin/
         depends_on:
             postgres:
                 condition: service_healthy
@@ -92,7 +92,7 @@ services:
             DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD}
             FRONTOFFICE_COOKIE_VALIDATION_KEY: ${FRONTOFFICE_COOKIE_VALIDATION_KEY:?Set FRONTOFFICE_COOKIE_VALIDATION_KEY}
             CINELIS_APP_LABEL: Frontoffice
-            CINELIS_APP_ORIGIN: https://${CADDY_DOMAIN:?Set CADDY_DOMAIN}/
+            CINELIS_APP_ORIGIN: ${CADDY_URL:?Set CADDY_URL}/
         depends_on:
             postgres:
                 condition: service_healthy
@@ -133,7 +133,7 @@ services:
         image: ${CADDY_IMAGE:?Set CADDY_IMAGE}
         restart: unless-stopped
         environment:
-            CADDY_DOMAIN: https://${CADDY_DOMAIN:?Set CADDY_DOMAIN}
+            CADDY_URL: ${CADDY_URL:?Set CADDY_URL}
             CADDY_API_UPSTREAM: ${CADDY_API_UPSTREAM:?Set CADDY_API_UPSTREAM}
             CADDY_BACKOFFICE_UPSTREAM: ${CADDY_BACKOFFICE_UPSTREAM:?Set CADDY_BACKOFFICE_UPSTREAM}
             CADDY_FRONTOFFICE_UPSTREAM: ${CADDY_FRONTOFFICE_UPSTREAM:?Set CADDY_FRONTOFFICE_UPSTREAM}

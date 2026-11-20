@@ -4,7 +4,7 @@
 }
 
 # Route the production domain through the three PHP-FPM services.
-{$CADDY_DOMAIN} {
+{$CADDY_URL} {
 	@api path /api /api/*
 	handle @api {
 		root * /var/www/cinelis/api/web
