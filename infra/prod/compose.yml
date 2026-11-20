@@ -1,39 +1,171 @@
+name: cinelis_prod
+
 services:
+    postgres:
+        image: postgres:18-alpine
+        restart: unless-stopped
+        command:
+            - postgres
+            - -p
+            - ${DB_CONTAINER_PORT:?Set DB_CONTAINER_PORT}
+        environment:
+            POSTGRES_DB: ${DB_NAME:?Set DB_NAME}
+            POSTGRES_USER: ${DB_USER:?Set DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD}
+        volumes:
+            - postgres-data:/var/lib/postgresql
+        healthcheck:
+            test:
+                - CMD-SHELL
+                - pg_isready -p ${DB_CONTAINER_PORT} -U ${DB_USER} -d ${DB_NAME}
+            interval: 5s
+            timeout: 5s
+            retries: 12
+
     api:
-        image: ${API_IMAGE:-cinelis-api-php-fpm:prod}
+        image: ${API_IMAGE:?Set API_IMAGE}
+        restart: unless-stopped
+        working_dir: /var/www/cinelis
         environment:
             APP_ENV: production
             YII_DEBUG: '0'
             YII_ENV: prod
+            DB_HOST: postgres
+            DB_PORT: ${DB_CONTAINER_PORT:?Set DB_CONTAINER_PORT}
+            DB_NAME: ${DB_NAME:?Set DB_NAME}
+            DB_USER: ${DB_USER:?Set DB_USER}
+            DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD}
+        depends_on:
+            postgres:
+                condition: service_healthy
+        build:
+            context: ../..
+            dockerfile: infra/docker/php-fpm/Dockerfile
+            args:
+                APP_DIRECTORY: api
+                COMPOSER_DEV_DEPENDENCIES: 'false'
+        volumes:
+            - cinelis-api-assets:/var/www/cinelis/api/web/assets
+            - cinelis-api-runtime:/var/www/cinelis/api/runtime
 
     backoffice:
-        image: ${BACKOFFICE_IMAGE:-cinelis-backoffice-php-fpm:prod}
+        image: ${BACKOFFICE_IMAGE:?Set BACKOFFICE_IMAGE}
+        restart: unless-stopped
+        working_dir: /var/www/cinelis
         environment:
             APP_ENV: production
             YII_DEBUG: '0'
             YII_ENV: prod
+            DB_HOST: postgres
+            DB_PORT: ${DB_CONTAINER_PORT:?Set DB_CONTAINER_PORT}
+            DB_NAME: ${DB_NAME:?Set DB_NAME}
+            DB_USER: ${DB_USER:?Set DB_USER}
+            DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD}
+            BACKOFFICE_COOKIE_VALIDATION_KEY: ${BACKOFFICE_COOKIE_VALIDATION_KEY:?Set BACKOFFICE_COOKIE_VALIDATION_KEY}
+            CINELIS_APP_LABEL: Backoffice
+            CINELIS_APP_ORIGIN: https://${CADDY_DOMAIN:?Set CADDY_DOMAIN}/admin/
+        depends_on:
+            postgres:
+                condition: service_healthy
+        build:
+            context: ../..
+            dockerfile: infra/docker/php-fpm/Dockerfile
+            args:
+                APP_DIRECTORY: backoffice
+                COMPOSER_DEV_DEPENDENCIES: 'false'
+        volumes:
+            - cinelis-backoffice-assets:/var/www/cinelis/backoffice/web/assets
+            - cinelis-backoffice-runtime:/var/www/cinelis/backoffice/runtime
 
     frontoffice:
-        image: ${FRONTOFFICE_IMAGE:-cinelis-frontoffice-php-fpm:prod}
+        image: ${FRONTOFFICE_IMAGE:?Set FRONTOFFICE_IMAGE}
+        restart: unless-stopped
+        working_dir: /var/www/cinelis
         environment:
             APP_ENV: production
             YII_DEBUG: '0'
             YII_ENV: prod
+            DB_HOST: postgres
+            DB_PORT: ${DB_CONTAINER_PORT:?Set DB_CONTAINER_PORT}
+            DB_NAME: ${DB_NAME:?Set DB_NAME}
+            DB_USER: ${DB_USER:?Set DB_USER}
+            DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD}
+            FRONTOFFICE_COOKIE_VALIDATION_KEY: ${FRONTOFFICE_COOKIE_VALIDATION_KEY:?Set FRONTOFFICE_COOKIE_VALIDATION_KEY}
+            CINELIS_APP_LABEL: Frontoffice
+            CINELIS_APP_ORIGIN: https://${CADDY_DOMAIN:?Set CADDY_DOMAIN}/
+        depends_on:
+            postgres:
+                condition: service_healthy
+        build:
+            context: ../..
+            dockerfile: infra/docker/php-fpm/Dockerfile
+            args:
+                APP_DIRECTORY: frontoffice
+                COMPOSER_DEV_DEPENDENCIES: 'false'
+        volumes:
+            - cinelis-frontoffice-assets:/var/www/cinelis/frontoffice/web/assets
+            - cinelis-frontoffice-runtime:/var/www/cinelis/frontoffice/runtime
+
+    console:
+        profiles: [ops]
+        image: ${CONSOLE_IMAGE:?Set CONSOLE_IMAGE}
+        working_dir: /var/www/cinelis
+        environment:
+            APP_ENV: production
+            YII_DEBUG: '0'
+            YII_ENV: prod
+            DB_HOST: postgres
+            DB_PORT: ${DB_CONTAINER_PORT:?Set DB_CONTAINER_PORT}
+            DB_NAME: ${DB_NAME:?Set DB_NAME}
+            DB_USER: ${DB_USER:?Set DB_USER}
+            DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD}
+        depends_on:
+            postgres:
+                condition: service_healthy
+        build:
+            context: ../..
+            dockerfile: infra/docker/php-fpm/Dockerfile
+            args:
+                APP_DIRECTORY: console
+                COMPOSER_DEV_DEPENDENCIES: 'false'
 
     caddy:
-        image: ${CADDY_IMAGE:-cinelis-caddy:prod}
+        image: ${CADDY_IMAGE:?Set CADDY_IMAGE}
+        restart: unless-stopped
+        environment:
+            CADDY_DOMAIN: https://${CADDY_DOMAIN:?Set CADDY_DOMAIN}
+            CADDY_API_UPSTREAM: ${CADDY_API_UPSTREAM:?Set CADDY_API_UPSTREAM}
+            CADDY_BACKOFFICE_UPSTREAM: ${CADDY_BACKOFFICE_UPSTREAM:?Set CADDY_BACKOFFICE_UPSTREAM}
+            CADDY_FRONTOFFICE_UPSTREAM: ${CADDY_FRONTOFFICE_UPSTREAM:?Set CADDY_FRONTOFFICE_UPSTREAM}
+        depends_on:
+            api:
+                condition: service_started
+            backoffice:
+                condition: service_started
+            frontoffice:
+                condition: service_started
         build:
-            context: ..
+            context: ../..
             dockerfile: infra/docker/caddy/Dockerfile
         ports:
-            - '80:80'
-            - '443:443'
-            - '443:443/udp'
+            - 80:80
+            - 443:443
+            - 443:443/udp
         volumes:
-            - ./prod/Caddyfile:/etc/caddy/Caddyfile:ro
+            - ./Caddyfile:/etc/caddy/Caddyfile:ro
+            - cinelis-api-assets:/var/www/cinelis/api/web/assets:ro
+            - cinelis-backoffice-assets:/var/www/cinelis/backoffice/web/assets:ro
+            - cinelis-frontoffice-assets:/var/www/cinelis/frontoffice/web/assets:ro
             - caddy-data:/data
             - caddy-config:/config
 
 volumes:
+    postgres-data:
+    cinelis-api-assets:
+    cinelis-api-runtime:
+    cinelis-backoffice-assets:
+    cinelis-backoffice-runtime:
+    cinelis-frontoffice-assets:
+    cinelis-frontoffice-runtime:
     caddy-data:
     caddy-config:

@@ -117,8 +117,9 @@ Common commands:
 - Initialize authentication and RBAC after migrations:
 
     ```powershell
-    php yii rbac/init
-    php yii rbac/create-admin admin@cinelis.pt 'change-this-password' 'Administrador CineLis'
+    # Production deployment runs rbac/init automatically.
+    # Use the production console container for an administrator:
+    docker compose --env-file .env -f infra/prod/compose.yml run --rm --no-deps console php yii rbac/create-admin admin@cinelis.pt 'change-this-password' 'Administrador CineLis'
     ```
 
 Anonymous front-office users receive the visitor default role. Front-office
@@ -147,3 +148,18 @@ task migrate
 
 Do not commit `.env`, `vendor/`, runtime files, generated assets, or local IDE
 configuration.
+
+## Production deployment
+
+Production uses its own Compose file and the manual deployment script:
+
+```sh
+cp .env.example .env
+chmod 600 .env
+./scripts/deploy.sh
+```
+
+The script updates the `main` checkout, builds the production images, backs up
+PostgreSQL, runs migrations and RBAC initialization, starts Caddy and the
+applications, and checks `/api/health`. See [`infra/README.md`](infra/README.md)
+for the server setup and rollback workflow.

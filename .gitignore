@@ -25,6 +25,7 @@ dekit.log
 tmp/
 temp/
 *.tmp
+.backups/
 
 # Mise local overrides/cache
 .mise.local.toml

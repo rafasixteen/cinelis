@@ -1,67 +1,42 @@
 # Console
 
-The console application contains Cinelis command-line functionality.
+The console application owns Yii database migrations and RBAC administration.
+In development and production it runs as a short-lived container from the
+environment-specific Compose file; it is not a continuously running service.
 
-It does not run an HTTP server.
+## Development
 
-It is used for:
-
-- database migrations
-- database seeders
-- maintenance tasks
-- imports and exports
-- scheduled commands
-- one-off administrative operations
-
-## Structure
-
-```text
-console/
-├── config/
-├── controllers/
-├── migrations/
-├── runtime/
-└── Taskfile.yml
-```
-
-## Database migrations
-
-Install the host-side Composer dependencies once, then start the database
-infrastructure:
-
-```bash
-composer install
-task infra:up
-```
-
-Create a migration from the repository root. The command runs through the
-host-side Yii console application and connects to the published PostgreSQL
-port:
-
-```bash
-task migrate:create -- create_movies_table
-```
-
-Apply migrations:
+From the repository root:
 
 ```bash
 task migrate
+task migrate:status
+task migrate:create -- create_example_table
 ```
 
-Initialize authentication and RBAC after migrations:
+These commands run the `console` service from `infra/dev/compose.yml`.
+Migration files are written back to the repository through the development
+console bind mount.
+
+## Production
+
+The deployment script runs the production console automatically:
 
 ```bash
-php yii rbac/init
-php yii rbac/create-admin admin@cinelis.pt 'change-this-password' 'Administrador CineLis'
+docker compose \
+    --env-file .env \
+    -f infra/prod/compose.yml \
+    run --rm --no-deps console php yii migrate --interactive=0
 ```
 
-The RBAC setup provides the anonymous visitor, registered customer,
-back-office employee, and privileged admin roles.
+RBAC initialization is then run with:
 
-Migration files belong in:
-
-```text
-console/migrations/
+```bash
+docker compose \
+    --env-file .env \
+    -f infra/prod/compose.yml \
+    run --rm --no-deps console php yii rbac/init
 ```
 
-There should be one migration history for the Cinelis database rather than separate migration sets for each application.
+Production database backups are created before migrations by
+`scripts/deploy.sh`.

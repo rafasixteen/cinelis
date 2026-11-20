@@ -1,159 +1,112 @@
 # Cinelis Infrastructure
 
-The API, frontoffice, backoffice, PostgreSQL, and Caddy run through Docker
-Compose. Development and production use the same PHP-FPM architecture, but
-their filesystem mounts, images, ports, and Caddy configuration are kept
-separate.
-
-## Structure
+Development and production are separate, self-contained Compose stacks:
 
 ```text
 infra/
-├── compose.yml              # Shared service topology
 ├── dev/
-│   ├── compose.yml          # Development overrides
-│   └── Caddyfile            # Local HTTP proxy
+│   ├── compose.yml       # Local development services
+│   └── Caddyfile         # Local HTTP routing
 ├── prod/
-│   ├── compose.yml          # Production overrides
-│   └── Caddyfile            # HTTPS proxy
+│   ├── compose.yml       # Production services
+│   └── Caddyfile         # HTTPS routing
 ├── docker/
-│   ├── caddy/
-│   │   └── Dockerfile
+│   ├── caddy/Dockerfile
 │   └── php-fpm/
-│       └── Dockerfile
-├── Taskfile.yml
-└── README.md
+│       ├── Dockerfile
+│       └── entrypoint.sh
+└── Taskfile.yml
 ```
 
-`compose.yml` contains the shared services, internal network behavior, health
-checks, PHP-FPM configuration, and named volumes. The environment-specific
-Compose files are applied on top of it.
+Neither stack extends or overrides another Compose file. Each Compose file
+defines its own services, volumes, builds, environment, and dependencies.
 
 ## Development
 
-Start the Docker infrastructure from the repository root:
+From the repository root:
 
 ```bash
 task infra:up
 ```
 
-This is equivalent to:
+This runs:
 
 ```bash
 docker compose \
     --env-file .env \
-    -f infra/compose.yml \
     -f infra/dev/compose.yml \
     up -d --build
 ```
 
-Development adds:
+The development stack provides PostgreSQL on `127.0.0.1`, source bind mounts,
+Composer development dependencies, Gii support, and local HTTP through Caddy.
 
-- Read-only bind mounts for API/frontoffice source; the backoffice development
-  mount keeps `common/` writable so Gii can generate shared models.
-- Composer development dependencies.
-- A fixed local PostgreSQL mapping on `127.0.0.1:5432` for external tools.
-- Caddy access on `127.0.0.1:${CADDY_HTTP_PORT}`.
-- The local HTTP-only `dev/Caddyfile`.
-- `YII_DEBUG=1` and `YII_ENV=dev`.
-- Compose Watch rebuilds the PHP-FPM services when Composer dependencies or
-  the PHP-FPM Dockerfile changes while `task dev` is running.
-
-Source changes are visible immediately because only the application source is
-mounted. Runtime data and Yii-published assets remain in named volumes.
-
-`task infra:up` keeps `--build` enabled, but Docker reuses cached layers when
-the build inputs are unchanged. During `task dev`, Compose Watch rebuilds the
-PHP-FPM services automatically when `composer.json`, `composer.lock`, or the
-PHP-FPM Dockerfile changes.
-
-For the complete workflow, including dekit and the Tailwind watchers, use:
+Use the infrastructure tasks for status, logs, restart, and shutdown:
 
 ```bash
-task dev
-```
-
-Use `task dev:stop` to stop both the dekit processes and the infrastructure.
-
-The local routes are:
-
-```text
-http://cinelis.localhost/       # frontoffice
-http://cinelis.localhost/admin/ # backoffice
-http://cinelis.localhost/api/   # API
-```
-
-Database configuration separates host access from the Docker network:
-`DB_HOST` and `DB_PORT` describe host-side access, while
-`DB_CONTAINER_HOST` and `DB_CONTAINER_PORT` are injected into the PHP
-containers and used by PostgreSQL. The fixed host mapping is only a local
-convenience and is not used by the PHP applications.
-
-## Production
-
-Production uses the same base topology with the production overrides:
-
-```bash
-docker compose \
-    --env-file .env.production \
-    -f infra/compose.yml \
-    -f infra/prod/compose.yml \
-    up -d --build
-```
-
-Production adds:
-
-- Immutable application images without source bind mounts.
-- Composer production dependencies only.
-- A Caddy image containing the public `web/` directories.
-- Caddy certificate and configuration volumes.
-- Public ports `80` and `443` only on Caddy.
-- No published PostgreSQL port.
-- The HTTPS `prod/Caddyfile`.
-- `YII_DEBUG=0` and `YII_ENV=prod`.
-
-Set `CADDY_DOMAIN` to the real domain and provide the database credentials and
-cookie keys through the production environment or a secret manager. The
-production PHP-FPM services are reachable only on the internal Compose
-network.
-
-## Routing
-
-Both Caddy configurations use the same path-based routing:
-
-```text
-/api/*   -> api:9000
-/admin/* -> backoffice:9000
-/*       -> frontoffice:9000
-```
-
-The PHP-FPM services listen on their internal FastCGI port `9000`. They do not
-publish host ports. Caddy is the only HTTP entrypoint.
-
-## Volumes
-
-PostgreSQL data is stored in `postgres-data`. Each Yii application has separate
-runtime and published-asset volumes. Caddy mounts the asset volumes read-only.
-
-Normal `docker compose down` preserves these volumes. Use `down -v` only when
-intentionally deleting local database and generated application data.
-
-## Commands
-
-```bash
-task infra:up
-task infra:down
-task infra:restart
-task infra:logs
 task infra:ps
+task infra:logs
+task infra:restart
+task infra:down
 ```
 
-Database migrations run through the host-side Yii console application. The
-console is not a Compose service:
+Database operations run inside the development console container:
 
 ```bash
 task migrate
+task migrate:status
+task migrate:create -- name
 ```
 
-The root `task dev` command starts this development stack and the Tailwind
-watchers through dekit.
+## Production
+
+Create a production environment file from the template:
+
+```bash
+cp .env.example .env
+chmod 600 .env
+```
+
+Set a real domain, strong database credentials, and long random cookie keys.
+Keep this file out of Git.
+
+The production stack contains PostgreSQL on a private Compose network, the
+three PHP-FPM applications, a one-off console image for migrations and RBAC,
+and Caddy as the only public HTTP entrypoint. PostgreSQL and Caddy data use
+persistent named volumes, with `YII_DEBUG=0` and `YII_ENV=prod`.
+
+Deploy from the repository checkout with:
+
+```bash
+./scripts/deploy.sh
+```
+
+The deployment script uses `infra/prod/compose.yml`, updates the `main`
+checkout, validates Compose, builds images, starts PostgreSQL, creates a
+custom-format database backup, runs migrations, initializes RBAC, starts the
+application services, and checks the API health endpoint.
+
+The same command can be run remotely:
+
+```bash
+ssh grupo-d-5@your-server \
+    'cd /opt/cinelis && ./scripts/deploy.sh'
+```
+
+The server needs Git, Docker Engine, Docker Compose, and `curl`. It does not
+need host-installed PHP, Composer, PostgreSQL, Caddy, or Nginx.
+
+## Rollback
+
+Rollbacks are Git operations. Revert the bad change on `main`, push it, and run
+the normal deployment command again:
+
+```bash
+git revert <commit>
+git push origin main
+ssh grupo-d-5@your-server \
+    'cd /opt/cinelis && ./scripts/deploy.sh'
+```
+
+The deployment script never runs `docker compose down -v`; named volumes are
+preserved between deployments.

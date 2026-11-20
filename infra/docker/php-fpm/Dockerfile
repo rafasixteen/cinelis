@@ -29,6 +29,7 @@ RUN if [ "$COMPOSER_DEV_DEPENDENCIES" = "true" ]; then \
 
 COPY common common
 COPY assets assets
+COPY yii yii
 COPY ${APP_DIRECTORY} ${APP_DIRECTORY}
 
 RUN mkdir -p \
