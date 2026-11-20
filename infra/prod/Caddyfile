@@ -5,13 +5,12 @@
 
 # Route the production domain through the three PHP-FPM services.
 {$CADDY_DOMAIN} {
-	# Preserve /api in the request so Yii can resolve API routes and generate
-	# URLs with the same public prefix.
 	@api path /api /api/*
 	handle @api {
 		root * /var/www/cinelis/api/web
 		php_fastcgi {$CADDY_API_UPSTREAM} {
 			root /var/www/cinelis/api/web
+			# Tell Yii that the API is mounted below /api at the public domain.
 			header_up X-Forwarded-Prefix /api
 		}
 	}
@@ -31,6 +30,7 @@
 		root * /var/www/cinelis/backoffice/web
 		php_fastcgi {$CADDY_BACKOFFICE_UPSTREAM} {
 			root /var/www/cinelis/backoffice/web
+			# Tell Yii that the backoffice is mounted below /admin.
 			header_up X-Forwarded-Prefix /admin
 		}
 		file_server

@@ -4,7 +4,7 @@ tasks:
     migrate:
         desc: Run pending database migrations
         cmds:
-            - php yii migrate
+            - docker compose --env-file .env -f infra/dev/compose.yml run --rm console php yii migrate
 
     migrate:create:
         desc: Create a database migration (pass its name after --)
@@ -13,14 +13,14 @@ tasks:
                   php -r "exit(trim('{{.CLI_ARGS}}') === '' ? 1 : 0);"
               msg: 'Usage: task migrate:create -- migration_name'
         cmds:
-            - php yii migrate/create {{.CLI_ARGS}}
+            - docker compose --env-file .env -f infra/dev/compose.yml run --rm console php yii migrate/create {{.CLI_ARGS}}
 
     migrate:down:
         desc: Revert the last database migration
         cmds:
-            - php yii migrate/down
+            - docker compose --env-file .env -f infra/dev/compose.yml run --rm console php yii migrate/down
 
     migrate:status:
         desc: Show migration history
         cmds:
-            - php yii migrate/history
+            - docker compose --env-file .env -f infra/dev/compose.yml run --rm console php yii migrate/history
