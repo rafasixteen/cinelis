@@ -1,6 +1,7 @@
 {
-	# Caddy manages HTTPS certificates for the production domain.
+	# HTTPS is disabled for this production stack.
 	admin off
+	auto_https off
 }
 
 # Route the production domain through the three PHP-FPM services.
