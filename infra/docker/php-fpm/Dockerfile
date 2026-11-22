@@ -32,17 +32,6 @@ COPY assets assets
 COPY yii yii
 COPY ${APP_DIRECTORY} ${APP_DIRECTORY}
 
-RUN if [ "$APP_DIRECTORY" = 'frontoffice' ] || [ "$APP_DIRECTORY" = 'backoffice' ]; then \
-		apk add --no-cache --virtual .tailwind-build-dependencies nodejs npm \
-		&& npm install --no-save --no-package-lock --ignore-scripts \
-			"@tailwindcss/cli@4.3.3" "tailwindcss@4.3.3" \
-		&& ./node_modules/.bin/tailwindcss \
-			-i "${APP_DIRECTORY}/assets/css/globals.css" \
-			-o "${APP_DIRECTORY}/web/css/globals.css" \
-		&& rm -rf node_modules package.json package-lock.json /root/.npm \
-		&& apk del .tailwind-build-dependencies; \
-	fi
-
 RUN mkdir -p \
 	${APP_DIRECTORY}/runtime \
 	${APP_DIRECTORY}/web/assets \
