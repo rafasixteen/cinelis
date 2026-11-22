@@ -1,11 +1,13 @@
 {
-	# HTTPS is disabled for this production stack.
+	# HTTPS uses Caddy's internal CA for the configured production address.
 	admin off
 	auto_https off
 }
 
 # Route the production domain through the three PHP-FPM services.
 {$CADDY_URL} {
+	tls internal
+
 	@api path /api /api/*
 	handle @api {
 		root * /var/www/cinelis/api/web
