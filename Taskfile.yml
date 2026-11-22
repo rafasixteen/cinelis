@@ -52,6 +52,11 @@ tasks:
             - dekit up
             - dekit attach
 
+    dev:restart:
+        desc: Restart the Docker development stack and refresh published assets
+        cmds:
+            - task infra:restart
+
     dev:attach:
         desc: Attach to the dekit development session
         cmds:

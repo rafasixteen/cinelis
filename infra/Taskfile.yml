@@ -1,27 +1,32 @@
 version: '3'
 
+vars:
+    COMPOSE: docker compose --env-file ../.env -f dev/compose.yml
+
 tasks:
     up:
         desc: Start the development infrastructure
         cmds:
-            - docker compose --env-file ../.env -f dev/compose.yml up -d --build
+            - '{{.COMPOSE}} up -d --build'
 
     down:
         desc: Stop the development infrastructure
         cmds:
-            - docker compose --env-file ../.env -f dev/compose.yml down
+            - '{{.COMPOSE}} down'
 
     restart:
-        desc: Restart the development infrastructure
+        desc: Restart the development infrastructure and refresh published assets
         cmds:
-            - docker compose --env-file ../.env -f dev/compose.yml restart
+            - '{{.COMPOSE}} down'
+            - docker volume rm cinelis_dev_cinelis-frontoffice-assets 2>/dev/null || true
+            - '{{.COMPOSE}} up -d --build --force-recreate --remove-orphans'
 
     logs:
         desc: Follow development infrastructure logs
         cmds:
-            - docker compose --env-file ../.env -f dev/compose.yml logs -f
+            - '{{.COMPOSE}} logs -f'
 
     ps:
         desc: Show development infrastructure status
         cmds:
-            - docker compose --env-file ../.env -f dev/compose.yml ps
+            - '{{.COMPOSE}} ps'
