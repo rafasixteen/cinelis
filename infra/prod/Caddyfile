@@ -1,5 +1,8 @@
 {
 	# HTTPS uses Caddy's internal CA for the configured production address.
+	# Docker can hide the host IP from clients that omit SNI during the TLS
+	# handshake, so use the configured host/IP as the certificate fallback.
+	default_sni {$CADDY_DEFAULT_SNI}
 	admin off
 	auto_https off
 }
