@@ -41,7 +41,9 @@ docker compose \
 The development stack provides PostgreSQL on `127.0.0.1`, source bind mounts,
 Composer development dependencies, Gii support, and local HTTP through Caddy.
 
-Use the infrastructure tasks for status, logs, restart, and shutdown:
+Use the infrastructure tasks for status, logs, restart, and shutdown. The
+restart task also recreates the generated frontoffice asset volume so changes
+to JavaScript, CSS, and fonts are republished:
 
 ```bash
 task infra:ps
