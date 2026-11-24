@@ -7,6 +7,14 @@ if [ "$#" -eq 0 ]; then
 	exit 64
 fi
 
+if [ "$(id -u)" -eq 0 ]; then
+	for directory in /var/www/cinelis/*/web/assets; do
+		if [ -d "$directory" ]; then
+			chown -R www-data:www-data "$directory"
+		fi
+	done
+fi
+
 if [ -n "${CINELIS_APP_ORIGIN:-}" ]; then
 	printf '[%s] %s\n' "${CINELIS_APP_LABEL:-Cinelis}" "$CINELIS_APP_ORIGIN"
 fi
