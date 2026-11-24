@@ -1,7 +1,8 @@
-name: cinelis_prod
+name: cinelis
 
 services:
     postgres:
+        container_name: cinelis-postgres
         image: postgres:18-alpine
         restart: unless-stopped
         command:
@@ -23,6 +24,7 @@ services:
             retries: 12
 
     api:
+        container_name: cinelis-api
         image: ${API_IMAGE:?Set API_IMAGE}
         restart: unless-stopped
         working_dir: /var/www/cinelis
@@ -49,6 +51,7 @@ services:
             - cinelis-api-runtime:/var/www/cinelis/api/runtime
 
     backoffice:
+        container_name: cinelis-backoffice
         image: ${BACKOFFICE_IMAGE:?Set BACKOFFICE_IMAGE}
         restart: unless-stopped
         working_dir: /var/www/cinelis
@@ -78,6 +81,7 @@ services:
             - cinelis-backoffice-runtime:/var/www/cinelis/backoffice/runtime
 
     frontoffice:
+        container_name: cinelis-frontoffice
         image: ${FRONTOFFICE_IMAGE:?Set FRONTOFFICE_IMAGE}
         restart: unless-stopped
         working_dir: /var/www/cinelis
@@ -107,6 +111,7 @@ services:
             - cinelis-frontoffice-runtime:/var/www/cinelis/frontoffice/runtime
 
     console:
+        container_name: cinelis-console
         profiles: [ops]
         image: ${CONSOLE_IMAGE:?Set CONSOLE_IMAGE}
         working_dir: /var/www/cinelis
@@ -130,6 +135,7 @@ services:
                 COMPOSER_DEV_DEPENDENCIES: 'false'
 
     caddy:
+        container_name: cinelis-caddy
         image: ${CADDY_IMAGE:?Set CADDY_IMAGE}
         restart: unless-stopped
         environment:
