@@ -2,6 +2,7 @@ name: cinelis_dev
 
 services:
     postgres:
+        container_name: cinelis-dev-postgres
         image: postgres:18-alpine
         restart: unless-stopped
         command:
@@ -25,6 +26,7 @@ services:
             retries: 12
 
     api:
+        container_name: cinelis-dev-api
         image: cinelis-api-php-fpm:dev
         working_dir: /var/www/cinelis
         environment:
@@ -60,6 +62,7 @@ services:
                   path: ../docker/php-fpm/Dockerfile
 
     backoffice:
+        container_name: cinelis-dev-backoffice
         image: cinelis-backoffice-php-fpm:dev
         working_dir: /var/www/cinelis
         environment:
@@ -100,6 +103,7 @@ services:
                   path: ../docker/php-fpm/Dockerfile
 
     frontoffice:
+        container_name: cinelis-dev-frontoffice
         image: cinelis-frontoffice-php-fpm:dev
         working_dir: /var/www/cinelis
         environment:
@@ -139,6 +143,7 @@ services:
                   path: ../docker/php-fpm/Dockerfile
 
     console:
+        container_name: cinelis-dev-console
         profiles: [ops]
         image: cinelis-console-php:dev
         working_dir: /var/www/cinelis
@@ -166,6 +171,7 @@ services:
             - ../../console:/var/www/cinelis/console
 
     caddy:
+        container_name: cinelis-dev-caddy
         image: caddy:2-alpine
         environment:
             CADDY_URL: ${CADDY_URL:?Set CADDY_URL}
