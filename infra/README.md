@@ -77,22 +77,38 @@ three PHP-FPM applications, a one-off console image for migrations and RBAC,
 and Caddy as the only public HTTP entrypoint. PostgreSQL and Caddy data use
 persistent named volumes, with `YII_DEBUG=0` and `YII_ENV=prod`.
 
-Deploy from the repository checkout with:
+Deploy from the repository checkout with the production Compose file by
+passing its environment name:
+
+```bash
+./scripts/deploy.sh prod
+```
+
+The target defaults to `prod`, so the following is equivalent:
 
 ```bash
 ./scripts/deploy.sh
 ```
 
-The deployment script uses `infra/prod/compose.yml`, updates the `main`
-checkout, validates Compose, builds images, starts PostgreSQL, creates a
-custom-format database backup, runs migrations, initializes RBAC, starts the
-application services, and checks the API health endpoint.
+The script selects `infra/<target>/compose.yml`, so other self-contained
+stacks can be deployed with the same workflow:
+
+```bash
+./scripts/deploy.sh dev
+./scripts/deploy.sh staging
+```
+
+The corresponding Compose file must exist before its target can be used. The
+script updates the `main` checkout, validates Compose, builds the selected
+stack's images, starts PostgreSQL, creates a custom-format database backup,
+runs migrations, initializes RBAC, starts the application services, and checks
+the API health endpoint.
 
 The same command can be run remotely:
 
 ```bash
 ssh grupo-d-5@your-server \
-    'cd /opt/cinelis && ./scripts/deploy.sh'
+    'cd /opt/cinelis && ./scripts/deploy.sh prod'
 ```
 
 The server needs Git, Docker Engine, Docker Compose, and `curl`. It does not

@@ -159,7 +159,16 @@ chmod 600 .env
 ./scripts/deploy.sh
 ```
 
-The script updates the `main` checkout, builds the production images, backs up
+The script defaults to `prod` and selects `infra/<target>/compose.yml`; pass
+`dev`, `prod`, or another target with a matching Compose file when needed:
+
+```sh
+./scripts/deploy.sh dev
+./scripts/deploy.sh prod
+./scripts/deploy.sh staging
+```
+
+It updates the `main` checkout, builds the selected images, backs up
 PostgreSQL, runs migrations and RBAC initialization, starts Caddy and the
 applications, and checks `/api/health`. See [`infra/README.md`](infra/README.md)
 for the server setup and rollback workflow.
