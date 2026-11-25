@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace backoffice\controllers;
 
 use common\models\User;
-use common\rbac\RbacInstaller;
+use common\rbac\RbacDefinitions;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -25,7 +25,7 @@ final class UsersController extends Controller
 				'rules' => [
 					[
 						'allow' => true,
-						'roles' => [RbacInstaller::PERMISSION_USERS_MANAGE],
+						'roles' => [RbacDefinitions::PERMISSION_USERS_MANAGE],
 					],
 				],
 			],
@@ -77,7 +77,7 @@ final class UsersController extends Controller
 
 		return $this->render('view', [
 			'model' => $model,
-			'role' => RbacInstaller::getUserRole(Yii::$app->authManager, $model->getId()),
+			'role' => $this->getAssignedRole($model->getId()),
 		]);
 	}
 
@@ -85,13 +85,13 @@ final class UsersController extends Controller
 	{
 		$model = new User();
 		$model->status = User::STATUS_ACTIVE;
-		$role = RbacInstaller::ROLE_EMPLOYEE;
+		$role = RbacDefinitions::ROLE_EMPLOYEE;
 
 		if ($model->load(Yii::$app->request->post())) {
 			$role = (string) Yii::$app->request->post('role', $role);
 
-			if ($this->isValidRole($role) && $model->save()) {
-				RbacInstaller::assignRole(Yii::$app->authManager, $model->getId(), $role);
+			if ($this->isValidRole($role) && $this->roleIsInitialized($role) && $model->save()) {
+				$this->assignRole($model->getId(), $role);
 
 				return $this->redirect(['view', 'id' => $model->id]);
 			}
@@ -108,13 +108,13 @@ final class UsersController extends Controller
 	{
 		$model = $this->findUser($id);
 
-		$role = RbacInstaller::getUserRole(Yii::$app->authManager, $model->getId());
+		$role = $this->getAssignedRole($model->getId());
 
 		if ($model->load(Yii::$app->request->post())) {
 			$role = (string) Yii::$app->request->post('role', $role);
 
-			if ($this->isValidRole($role) && $model->save()) {
-				RbacInstaller::assignRole(Yii::$app->authManager, $model->getId(), $role);
+			if ($this->isValidRole($role) && $this->roleIsInitialized($role) && $model->save()) {
+				$this->assignRole($model->getId(), $role);
 
 				return $this->redirect(['view', 'id' => $model->id]);
 			}
@@ -167,7 +167,42 @@ final class UsersController extends Controller
 
 	private function isValidRole(string $role): bool
 	{
-		return array_key_exists($role, RbacInstaller::ROLES);
+		return array_key_exists($role, RbacDefinitions::ROLES);
+	}
+
+	private function assignRole(string|int $userId, string $role): void
+	{
+		$authManager = Yii::$app->authManager;
+		$roleItem = $authManager->getRole($role);
+
+		if ($roleItem === null) {
+			throw new \RuntimeException('The selected role is not initialized. Run yii rbac/init first.');
+		}
+
+		$authManager->revokeAll((string) $userId);
+		$authManager->assign($roleItem, (string) $userId);
+	}
+
+	private function roleIsInitialized(string $role): bool
+	{
+		if (Yii::$app->authManager->getRole($role) !== null) {
+			return true;
+		}
+
+		throw new \RuntimeException('The selected role is not initialized. Run yii rbac/init first.');
+	}
+
+	private function getAssignedRole(string|int $userId): string
+	{
+		$authManager = Yii::$app->authManager;
+
+		foreach (array_keys($authManager->getAssignments((string) $userId)) as $role) {
+			if ($authManager->getRole($role) !== null) {
+				return $role;
+			}
+		}
+
+		return RbacDefinitions::ROLE_VISITOR;
 	}
 
 	private function isUuid(string $value): bool

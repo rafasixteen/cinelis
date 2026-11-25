@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace backoffice\controllers;
 
 use common\models\Order;
-use common\rbac\RbacInstaller;
+use common\rbac\RbacDefinitions;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
@@ -24,7 +24,7 @@ final class OrdersController extends Controller
 				'rules' => [
 					[
 						'allow' => true,
-						'roles' => [RbacInstaller::PERMISSION_ORDERS_VIEW],
+						'roles' => [RbacDefinitions::PERMISSION_ORDERS_VIEW],
 					],
 				],
 			],

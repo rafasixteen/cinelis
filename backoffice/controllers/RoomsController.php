@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace backoffice\controllers;
 
 use common\models\Room;
-use common\rbac\RbacInstaller;
+use common\rbac\RbacDefinitions;
 use common\services\RoomLayoutSynchronizer;
 use Yii;
 use yii\data\ActiveDataProvider;
@@ -26,7 +26,7 @@ final class RoomsController extends Controller
 				'rules' => [
 					[
 						'allow' => true,
-						'roles' => [RbacInstaller::PERMISSION_ROOMS_MANAGE],
+						'roles' => [RbacDefinitions::PERMISSION_ROOMS_MANAGE],
 					],
 				],
 			],

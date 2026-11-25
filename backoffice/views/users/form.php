@@ -1,6 +1,6 @@
 <?php
 
-use common\rbac\RbacInstaller;
+use common\rbac\RbacDefinitions;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -13,7 +13,7 @@ $this->title = $isNew ? 'Adicionar utilizador' : 'Editar utilizador';
 $this->params['section'] = 'Utilizadores';
 $displayName = trim((string) $model->username) !== '' ? $model->username : 'Novo utilizador';
 $initials = mb_strtoupper(mb_substr($displayName, 0, 2));
-$roleLabel = RbacInstaller::getRoleLabel($role);
+$roleLabel = RbacDefinitions::roleLabel($role);
 ?>
 
 <main id="main-content" class="page user-editor-page">

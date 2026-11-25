@@ -12,7 +12,7 @@ use common\models\Genre;
 use common\models\Movie;
 use common\models\MovieGenre;
 use common\models\User;
-use common\rbac\RbacInstaller;
+use common\rbac\RbacDefinitions;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -60,7 +60,10 @@ $employee = new User([
 	'status' => User::STATUS_ACTIVE,
 ]);
 $assert($employee->save(), implode('; ', $employee->getErrorSummary(true)));
-RbacInstaller::assignRole(Yii::$app->authManager, $employee->id, RbacInstaller::ROLE_EMPLOYEE);
+Yii::$app->authManager->assign(
+	Yii::$app->authManager->getRole(RbacDefinitions::ROLE_EMPLOYEE),
+	(string) $employee->id,
+);
 $genres = Genre::find()->orderBy(['name' => SORT_ASC])->limit(2)->all();
 $assert(count($genres) >= 2, 'the database must provide at least two genres');
 $runAction = static fn (string $route, array $params = []): mixed => Yii::$app->runAction($route, $params);

@@ -6,7 +6,7 @@ namespace backoffice\controllers;
 
 use common\models\Session;
 use common\models\Ticket;
-use common\rbac\RbacInstaller;
+use common\rbac\RbacDefinitions;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
@@ -25,7 +25,7 @@ final class TicketsController extends Controller
 				'rules' => [
 					[
 						'allow' => true,
-						'roles' => [RbacInstaller::PERMISSION_TICKETS_VIEW],
+						'roles' => [RbacDefinitions::PERMISSION_TICKETS_VIEW],
 					],
 				],
 			],

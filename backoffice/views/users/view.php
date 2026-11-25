@@ -29,7 +29,7 @@ $this->params['section'] = 'Utilizadores';
 		</div>
 		<div>
 			<strong>Roles</strong>
-			<p><?= Badge::widget(['label' => common\rbac\RbacInstaller::getRoleLabel($role)]) ?></p>
+			<p><?= Badge::widget(['label' => common\rbac\RbacDefinitions::roleLabel($role)]) ?></p>
 		</div>
 		<div>
 			<strong>Estado</strong>

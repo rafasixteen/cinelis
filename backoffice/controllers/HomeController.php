@@ -7,7 +7,7 @@ namespace backoffice\controllers;
 use common\models\Order;
 use common\models\Session;
 use common\models\Ticket;
-use common\rbac\RbacInstaller;
+use common\rbac\RbacDefinitions;
 use DateTimeImmutable;
 use DateTimeZone;
 use Yii;
@@ -27,7 +27,7 @@ final class HomeController extends Controller
 				'rules' => [
 					[
 						'allow' => true,
-						'roles' => [RbacInstaller::PERMISSION_BACK_OFFICE_DASHBOARD_VIEW],
+						'roles' => [RbacDefinitions::PERMISSION_BACK_OFFICE_DASHBOARD_VIEW],
 					],
 				],
 			],

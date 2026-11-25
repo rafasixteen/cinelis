@@ -7,7 +7,7 @@ namespace backoffice\controllers;
 use common\models\Genre;
 use common\models\Movie;
 use common\models\MovieGenre;
-use common\rbac\RbacInstaller;
+use common\rbac\RbacDefinitions;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -26,7 +26,7 @@ final class MoviesController extends Controller
 				'rules' => [
 					[
 						'allow' => true,
-						'roles' => [RbacInstaller::PERMISSION_MOVIES_MANAGE],
+						'roles' => [RbacDefinitions::PERMISSION_MOVIES_MANAGE],
 					],
 				],
 			],

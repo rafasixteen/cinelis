@@ -10,7 +10,7 @@ require dirname(__DIR__).'/common/config/bootstrap.php';
 
 use backoffice\controllers\HomeController;
 use common\models\User;
-use common\rbac\RbacInstaller;
+use common\rbac\RbacDefinitions;
 use yii\base\InvalidRouteException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -90,7 +90,10 @@ $visitor = new User([
 	'status' => User::STATUS_ACTIVE,
 ]);
 $assert($visitor->save(), implode('; ', $visitor->getErrorSummary(true)));
-RbacInstaller::assignRole(Yii::$app->authManager, $visitor->id, RbacInstaller::ROLE_CUSTOMER);
+Yii::$app->authManager->assign(
+	Yii::$app->authManager->getRole(RbacDefinitions::ROLE_CUSTOMER),
+	(string) $visitor->id,
+);
 $employee = new User([
 	'username' => 'auth-employee-'.uniqid(),
 	'email' => 'auth-employee-'.uniqid().'@example.test',
@@ -98,7 +101,10 @@ $employee = new User([
 	'status' => User::STATUS_ACTIVE,
 ]);
 $assert($employee->save(), implode('; ', $employee->getErrorSummary(true)));
-RbacInstaller::assignRole(Yii::$app->authManager, $employee->id, RbacInstaller::ROLE_EMPLOYEE);
+Yii::$app->authManager->assign(
+	Yii::$app->authManager->getRole(RbacDefinitions::ROLE_EMPLOYEE),
+	(string) $employee->id,
+);
 $admin = new User([
 	'username' => 'auth-admin-'.uniqid(),
 	'email' => 'auth-admin-'.uniqid().'@example.test',
@@ -106,7 +112,10 @@ $admin = new User([
 	'status' => User::STATUS_ACTIVE,
 ]);
 $assert($admin->save(), implode('; ', $admin->getErrorSummary(true)));
-RbacInstaller::assignRole(Yii::$app->authManager, $admin->id, RbacInstaller::ROLE_ADMIN);
+Yii::$app->authManager->assign(
+	Yii::$app->authManager->getRole(RbacDefinitions::ROLE_ADMIN),
+	(string) $admin->id,
+);
 
 $runAction = static fn (string $route, array $params = []): mixed => Yii::$app->runAction($route, $params);
 $denied = static function (callable $action): void {

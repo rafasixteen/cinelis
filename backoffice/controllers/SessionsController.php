@@ -9,7 +9,7 @@ use common\models\Room;
 use common\models\SeatHold;
 use common\models\Session;
 use common\models\Ticket;
-use common\rbac\RbacInstaller;
+use common\rbac\RbacDefinitions;
 use DateTimeImmutable;
 use DateTimeZone;
 use Yii;
@@ -32,7 +32,7 @@ final class SessionsController extends Controller
 				'rules' => [
 					[
 						'allow' => true,
-						'roles' => [RbacInstaller::PERMISSION_SESSIONS_MANAGE],
+						'roles' => [RbacDefinitions::PERMISSION_SESSIONS_MANAGE],
 					],
 				],
 			],

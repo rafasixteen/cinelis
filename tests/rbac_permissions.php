@@ -9,10 +9,10 @@ require dirname(__DIR__).'/common/config/bootstrap.php';
 $config = require dirname(__DIR__).'/console/config/main.php';
 new yii\console\Application($config);
 
-use common\rbac\RbacInstaller;
+use common\rbac\RbacDefinitions;
 
 $manager = Yii::$app->authManager;
-RbacInstaller::install($manager);
+Yii::$app->runAction('rbac/init');
 
 $backOfficePermissions = [
 	'backoffice.dashboard.view',
@@ -28,27 +28,27 @@ $assertions = [];
 foreach ($backOfficePermissions as $permission) {
 	$assertions[] = [
 		'name' => "visitor lacks {$permission}",
-		'passed' => !in_array($permission, array_keys($manager->getPermissionsByRole(RbacInstaller::ROLE_VISITOR)), true),
+		'passed' => !in_array($permission, array_keys($manager->getPermissionsByRole(RbacDefinitions::ROLE_VISITOR)), true),
 	];
 	$assertions[] = [
 		'name' => "customer lacks {$permission}",
-		'passed' => !in_array($permission, array_keys($manager->getPermissionsByRole(RbacInstaller::ROLE_CUSTOMER)), true),
+		'passed' => !in_array($permission, array_keys($manager->getPermissionsByRole(RbacDefinitions::ROLE_CUSTOMER)), true),
 	];
 	$assertions[] = [
 		'name' => "employee has {$permission}",
-		'passed' => in_array($permission, array_keys($manager->getPermissionsByRole(RbacInstaller::ROLE_EMPLOYEE)), true),
+		'passed' => in_array($permission, array_keys($manager->getPermissionsByRole(RbacDefinitions::ROLE_EMPLOYEE)), true),
 	];
 	$assertions[] = [
 		'name' => "admin has {$permission}",
-		'passed' => in_array($permission, array_keys($manager->getPermissionsByRole(RbacInstaller::ROLE_ADMIN)), true),
+		'passed' => in_array($permission, array_keys($manager->getPermissionsByRole(RbacDefinitions::ROLE_ADMIN)), true),
 	];
 }
 
 $assertions[] = [
 	'name' => 'admin has users.manage',
 	'passed' => in_array(
-		RbacInstaller::PERMISSION_USERS_MANAGE,
-		array_keys($manager->getPermissionsByRole(RbacInstaller::ROLE_ADMIN)),
+		RbacDefinitions::PERMISSION_USERS_MANAGE,
+		array_keys($manager->getPermissionsByRole(RbacDefinitions::ROLE_ADMIN)),
 		true,
 	),
 ];

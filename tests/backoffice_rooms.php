@@ -11,7 +11,7 @@ require dirname(__DIR__).'/common/config/bootstrap.php';
 use common\models\Room;
 use common\models\Seat;
 use common\models\User;
-use common\rbac\RbacInstaller;
+use common\rbac\RbacDefinitions;
 use yii\web\Response;
 
 $_SERVER['REQUEST_METHOD'] = 'GET';
@@ -72,7 +72,10 @@ $employee = new User([
 	'status' => User::STATUS_ACTIVE,
 ]);
 $assert($employee->save(), implode('; ', $employee->getErrorSummary(true)));
-RbacInstaller::assignRole(Yii::$app->authManager, $employee->id, RbacInstaller::ROLE_EMPLOYEE);
+Yii::$app->authManager->assign(
+	Yii::$app->authManager->getRole(RbacDefinitions::ROLE_EMPLOYEE),
+	(string) $employee->id,
+);
 $runAction = static fn (string $route, array $params = []): mixed => Yii::$app->runAction($route, $params);
 Yii::$app->user->login($employee, 0);
 Yii::$app->user->logout();

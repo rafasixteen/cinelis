@@ -1,6 +1,6 @@
 <?php
 
-use common\rbac\RbacInstaller;
+use common\rbac\RbacDefinitions;
 use common\widgets\Icon;
 use yii\helpers\Html;
 
@@ -8,7 +8,18 @@ use yii\helpers\Html;
 
 $identity = Yii::$app->user->identity;
 $username = $identity?->username ?? '';
-$role = $identity === null ? null : RbacInstaller::getUserRole(Yii::$app->authManager, $identity->getId());
+$role = null;
+
+if ($identity !== null) {
+	foreach (array_keys(Yii::$app->authManager->getAssignments((string) $identity->getId())) as $assignment) {
+		if (Yii::$app->authManager->getRole($assignment) !== null) {
+			$role = $assignment;
+			break;
+		}
+	}
+
+	$role ??= RbacDefinitions::ROLE_VISITOR;
+}
 
 $initials = $identity === null ? '' : mb_strtoupper(
 	mb_substr($username, 0, 2),
@@ -40,7 +51,7 @@ $initials = $identity === null ? '' : mb_strtoupper(
 					<span class="avatar" aria-hidden="true"><?= Html::encode($initials) ?></span>
 					<span class="profile-copy">
 						<strong><?= Html::encode($username) ?></strong>
-					<span><?= Html::encode($role === null ? '' : RbacInstaller::getRoleLabel($role)) ?></span>
+					<span><?= Html::encode($role === null ? '' : RbacDefinitions::roleLabel($role)) ?></span>
 					</span>
 					<?= Icon::widget([
 						'name' => 'chevron-down',
@@ -50,7 +61,7 @@ $initials = $identity === null ? '' : mb_strtoupper(
 				<div class="profile-dropdown">
 					<strong><?= Html::encode($username) ?></strong>
 					<small><?= Html::encode($identity->email) ?></small>
-					<?php if (Yii::$app->user->can(RbacInstaller::PERMISSION_USERS_MANAGE)): ?>
+					<?php if (Yii::$app->user->can(RbacDefinitions::PERMISSION_USERS_MANAGE)): ?>
 						<?= Html::a('O meu perfil', ['/users/update', 'id' => $identity->id]) ?>
 					<?php endif ?>
 					<?= Html::beginForm(['/auth/logout'], 'post') ?>
