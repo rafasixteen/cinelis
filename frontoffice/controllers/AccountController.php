@@ -4,7 +4,7 @@ namespace frontoffice\controllers;
 
 use common\models\LoginForm;
 use common\models\User;
-use common\rbac\RbacInstaller;
+use common\rbac\RbacDefinitions;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -72,17 +72,20 @@ final class AccountController extends PreviewController
 		$model = new User();
 		$model->status = User::STATUS_ACTIVE;
 
-		if (Yii::$app->request->isPost
-			&& $model->load(Yii::$app->request->post())
-			&& $model->save()) {
-			RbacInstaller::assignRole(
-				Yii::$app->authManager,
-				$model->getId(),
-				RbacInstaller::ROLE_CUSTOMER,
-			);
-			Yii::$app->user->login($model, 30 * 24 * 60 * 60);
+		if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
+			$authManager = Yii::$app->authManager;
+			$customerRole = $authManager->getRole(RbacDefinitions::ROLE_CUSTOMER);
 
-			return $this->redirect(['/account/index']);
+			if ($customerRole === null) {
+				throw new \RuntimeException('Customer role is not initialized. Run yii rbac/init first.');
+			}
+
+			if ($model->save()) {
+				$authManager->assign($customerRole, (string) $model->getId());
+				Yii::$app->user->login($model, 30 * 24 * 60 * 60);
+
+				return $this->redirect(['/account/index']);
+			}
 		}
 
 		return $this->render(

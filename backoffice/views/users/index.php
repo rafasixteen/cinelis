@@ -1,6 +1,6 @@
 <?php
 
-use common\rbac\RbacInstaller;
+use common\rbac\RbacDefinitions;
 use common\widgets\Button;
 use yii\helpers\Html;
 
@@ -66,11 +66,18 @@ use yii\helpers\Html;
 			[
 				'label' => 'Roles',
 				'raw' => true,
-				'value' => static fn (common\models\User $record): string => Html::encode(
-					RbacInstaller::getRoleLabel(
-						RbacInstaller::getUserRole(Yii::$app->authManager, $record->getId()),
-					),
-				),
+				'value' => static function (common\models\User $record): string {
+					$role = RbacDefinitions::ROLE_VISITOR;
+
+					foreach (array_keys(Yii::$app->authManager->getAssignments((string) $record->getId())) as $assignment) {
+						if (Yii::$app->authManager->getRole($assignment) !== null) {
+							$role = $assignment;
+							break;
+						}
+					}
+
+					return Html::encode(RbacDefinitions::roleLabel($role));
+				},
 			],
 			[
 				'label' => 'Estado',

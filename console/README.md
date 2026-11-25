@@ -3,6 +3,8 @@
 The console application owns Yii database migrations and RBAC administration.
 In development and production it runs as a short-lived container from the
 environment-specific Compose file; it is not a continuously running service.
+The RBAC migration creates the Yii tables, while `rbac/init` owns the
+application roles, permissions, and hierarchy.
 
 ## Development
 

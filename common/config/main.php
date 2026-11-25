@@ -1,6 +1,6 @@
 <?php
 
-use common\rbac\RbacInstaller;
+use common\rbac\RbacDefinitions;
 
 return [
 	'components' => [
@@ -10,7 +10,7 @@ return [
 		'db' => require __DIR__.'/db.php',
 		'authManager' => [
 			'class' => yii\rbac\DbManager::class,
-			'defaultRoles' => [RbacInstaller::ROLE_VISITOR],
+			'defaultRoles' => [RbacDefinitions::ROLE_VISITOR],
 		],
 	],
 ];

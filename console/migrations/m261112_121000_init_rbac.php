@@ -1,6 +1,5 @@
 <?php
 
-use common\rbac\RbacInstaller;
 use yii\db\Migration;
 use yii\rbac\DbManager;
 
@@ -55,7 +54,6 @@ class m261112_121000_init_rbac extends Migration
 			'user_id',
 		);
 
-		RbacInstaller::install(Yii::$app->authManager);
 	}
 
 	public function safeDown()
